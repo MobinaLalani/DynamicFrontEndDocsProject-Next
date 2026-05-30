@@ -9,6 +9,7 @@ import type {
   PageComponent,
   PageComponentType,
 } from "@/lib/docs/schema";
+import { createDefaultPage } from "@/lib/docs/schema";
 import {
   createDefaultWorkspace,
   createMenuGroup,
@@ -61,11 +62,26 @@ function buildUniqueSlug(baseSlug: string, pages: DocPage[]) {
   return nextSlug;
 }
 
+function createEmptyDraftPage(menuGroupId: string): DocPage {
+  const template = createDefaultPage();
+
+  return {
+    ...template,
+    id: 0,
+    slug: "",
+    title: "",
+    description: "",
+    menuGroupId: menuGroupId || template.menuGroupId,
+    menuTitle: "",
+    components: [],
+  };
+}
+
 export function useDocsBuilder() {
   const [workspace, setWorkspace] = useState<DocsWorkspace>(
     createDefaultWorkspace,
   );
-  const [activeView, setActiveView] = useState<BuilderView>("editor");
+  const [activeView, setActiveView] = useState<BuilderView>("preview");
   const [selectedPageSlug, setSelectedPageSlug] = useState<string>(
     workspace.pages[0]?.slug ?? "",
   );
@@ -80,6 +96,12 @@ export function useDocsBuilder() {
   const [newPageMenuGroupId, setNewPageMenuGroupId] = useState(
     workspace.menuGroups[0]?.id ?? "",
   );
+  const [newPageDraft, setNewPageDraft] = useState<DocPage>(() =>
+    createEmptyDraftPage(workspace.menuGroups[0]?.id ?? ""),
+  );
+  const [selectedCreateComponentId, setSelectedCreateComponentId] = useState<
+    string | null
+  >(null);
   const [copied, setCopied] = useState(false);
 
   const activePage =
@@ -90,6 +112,10 @@ export function useDocsBuilder() {
   const selectedComponent =
     activePage?.components.find(
       (component) => component.id === selectedComponentId,
+    ) ?? null;
+  const selectedCreateComponent =
+    newPageDraft.components.find(
+      (component) => component.id === selectedCreateComponentId,
     ) ?? null;
 
   const jsonOutput = useMemo(() => buildPrettyJson(workspace), [workspace]);
@@ -128,10 +154,31 @@ export function useDocsBuilder() {
     }));
   };
 
+  const updateNewPageDraft = (updater: (page: DocPage) => DocPage) => {
+    setNewPageDraft((current) => updater(current));
+  };
+
+  const updateSelectedCreateComponent = (
+    updater: (component: PageComponent) => PageComponent,
+  ) => {
+    if (!selectedCreateComponentId) {
+      return;
+    }
+
+    updateNewPageDraft((page) => ({
+      ...page,
+      components: page.components.map((component) =>
+        component.id === selectedCreateComponentId
+          ? updater(component)
+          : component,
+      ),
+    }));
+  };
+
   const selectPage = (slug: string) => {
     const nextPage = workspace.pages.find((page) => page.slug === slug);
 
-    setActiveView("editor");
+    setActiveView("preview");
     setSelectedPageSlug(slug);
     setSelectedComponentId(nextPage?.components[0]?.id ?? null);
   };
@@ -174,6 +221,42 @@ export function useDocsBuilder() {
     });
   };
 
+  const handleCreatePageDropAt = (
+    event: DragEvent<HTMLDivElement>,
+    targetIndex: number,
+  ) => {
+    event.preventDefault();
+
+    const paletteType = event.dataTransfer.getData(
+      paletteTransferKey,
+    ) as PageComponentType;
+    const componentId = event.dataTransfer.getData(componentTransferKey);
+
+    if (paletteType) {
+      updateNewPageDraft((page) => {
+        const result = insertComponent(page, paletteType, targetIndex);
+        setSelectedCreateComponentId(result.componentId);
+        return result.page;
+      });
+      return;
+    }
+
+    if (componentId) {
+      updateNewPageDraft((page) =>
+        moveComponent(page, componentId, targetIndex),
+      );
+      setSelectedCreateComponentId(componentId);
+    }
+  };
+
+  const addBlockToNewPage = (type: PageComponentType) => {
+    updateNewPageDraft((page) => {
+      const result = insertComponent(page, type, page.components.length);
+      setSelectedCreateComponentId(result.componentId);
+      return result.page;
+    });
+  };
+
   const removeComponent = (componentId: string) => {
     if (!activePage) {
       return;
@@ -186,6 +269,23 @@ export function useDocsBuilder() {
 
       if (selectedComponentId === componentId) {
         setSelectedComponentId(nextComponents[0]?.id ?? null);
+      }
+
+      return {
+        ...page,
+        components: nextComponents,
+      };
+    });
+  };
+
+  const removeDraftComponent = (componentId: string) => {
+    updateNewPageDraft((page) => {
+      const nextComponents = page.components.filter(
+        (component) => component.id !== componentId,
+      );
+
+      if (selectedCreateComponentId === componentId) {
+        setSelectedCreateComponentId(nextComponents[0]?.id ?? null);
       }
 
       return {
@@ -210,8 +310,36 @@ export function useDocsBuilder() {
     setSelectedComponentId(duplicated.id);
   };
 
+  const duplicateDraftComponent = (component: PageComponent) => {
+    const duplicated = {
+      ...component,
+      id: `${component.type}-${Math.random().toString(36).slice(2, 10)}`,
+    } as PageComponent;
+
+    updateNewPageDraft((page) => ({
+      ...page,
+      components: page.components.flatMap((item) =>
+        item.id === component.id ? [item, duplicated] : [item],
+      ),
+    }));
+    setSelectedCreateComponentId(duplicated.id);
+  };
+
   const addFieldToSelectedGroup = () => {
     updateSelectedComponent((component) => {
+      if (component.type !== "field-group") {
+        return component;
+      }
+
+      return {
+        ...component,
+        fields: [...component.fields, createField()],
+      };
+    });
+  };
+
+  const addFieldToCreateGroup = () => {
+    updateSelectedCreateComponent((component) => {
       if (component.type !== "field-group") {
         return component;
       }
@@ -243,8 +371,48 @@ export function useDocsBuilder() {
     });
   };
 
+  const addColumnToCreateTable = () => {
+    updateSelectedCreateComponent((component) => {
+      if (component.type !== "table") {
+        return component;
+      }
+
+      const nextColumnIndex = component.columns.length + 1;
+      const field = `field${nextColumnIndex}`;
+
+      return {
+        ...component,
+        columns: [
+          ...component.columns,
+          { title: `ستون ${nextColumnIndex}`, field },
+        ],
+        rows: (component.rows ?? []).map((row) => ({ ...row, [field]: "" })),
+      };
+    });
+  };
+
   const addRowToSelectedTable = () => {
     updateSelectedComponent((component) => {
+      if (component.type !== "table") {
+        return component;
+      }
+
+      const row = component.columns.reduce<
+        Record<string, string | number | null>
+      >((result, column) => {
+        result[column.field] = "";
+        return result;
+      }, {});
+
+      return {
+        ...component,
+        rows: [...(component.rows ?? []), row],
+      };
+    });
+  };
+
+  const addRowToCreateTable = () => {
+    updateSelectedCreateComponent((component) => {
       if (component.type !== "table") {
         return component;
       }
@@ -290,6 +458,10 @@ export function useDocsBuilder() {
     setNewMenuTitle("");
     setNewMenuDescription("");
     setNewPageMenuGroupId(menu.id);
+    setNewPageDraft((current) => ({
+      ...current,
+      menuGroupId: menu.id,
+    }));
   };
 
   const handleCreatePage = () => {
@@ -299,14 +471,21 @@ export function useDocsBuilder() {
 
     updateWorkspace((current) => {
       const draft = createPageFromTemplate(current.pages, {
-        title: newPageTitle,
-        slug: newPageSlug || newPageTitle,
-        menuGroupId: newPageMenuGroupId,
-        menuTitle: newPageMenuTitle || newPageTitle,
+        title: newPageDraft.title || newPageTitle,
+        slug: newPageDraft.slug || newPageSlug || newPageTitle,
+        menuGroupId: newPageDraft.menuGroupId || newPageMenuGroupId,
+        menuTitle: newPageDraft.menuTitle || newPageMenuTitle || newPageTitle,
       });
       const page = {
         ...draft,
         slug: buildUniqueSlug(draft.slug, current.pages),
+        title: newPageDraft.title.trim() || draft.title,
+        description: newPageDraft.description?.trim() || draft.description,
+        menuGroupId: newPageDraft.menuGroupId || draft.menuGroupId,
+        menuTitle: newPageDraft.menuTitle.trim() || draft.menuTitle,
+        components: JSON.parse(
+          JSON.stringify(newPageDraft.components),
+        ) as DocPage["components"],
       };
 
       setActiveView("editor");
@@ -322,6 +501,47 @@ export function useDocsBuilder() {
     setNewPageTitle("");
     setNewPageSlug("");
     setNewPageMenuTitle("");
+    setNewPageDraft(createEmptyDraftPage(newPageMenuGroupId));
+    setSelectedCreateComponentId(null);
+  };
+
+  const setCreatePageTitle = (value: string) => {
+    setNewPageTitle(value);
+    setNewPageDraft((current) => ({
+      ...current,
+      title: value,
+    }));
+  };
+
+  const setCreatePageSlug = (value: string) => {
+    setNewPageSlug(value);
+    setNewPageDraft((current) => ({
+      ...current,
+      slug: value,
+    }));
+  };
+
+  const setCreatePageMenuTitle = (value: string) => {
+    setNewPageMenuTitle(value);
+    setNewPageDraft((current) => ({
+      ...current,
+      menuTitle: value,
+    }));
+  };
+
+  const setCreatePageMenuGroup = (value: string) => {
+    setNewPageMenuGroupId(value);
+    setNewPageDraft((current) => ({
+      ...current,
+      menuGroupId: value,
+    }));
+  };
+
+  const setCreatePageDescription = (value: string) => {
+    setNewPageDraft((current) => ({
+      ...current,
+      description: value,
+    }));
   };
 
   const copyJson = async () => {
@@ -342,6 +562,9 @@ export function useDocsBuilder() {
       newPageSlug,
       newPageMenuTitle,
       newPageMenuGroupId,
+      newPageDraft,
+      selectedCreateComponentId,
+      selectedCreateComponent,
       copied,
       activePage,
       selectedComponent,
@@ -352,24 +575,35 @@ export function useDocsBuilder() {
       setSelectedComponentId,
       setNewMenuTitle,
       setNewMenuDescription,
-      setNewPageTitle,
-      setNewPageSlug,
-      setNewPageMenuTitle,
-      setNewPageMenuGroupId,
+      setNewPageTitle: setCreatePageTitle,
+      setNewPageSlug: setCreatePageSlug,
+      setNewPageMenuTitle: setCreatePageMenuTitle,
+      setNewPageMenuGroupId: setCreatePageMenuGroup,
+      setNewPageDescription: setCreatePageDescription,
       updateActivePage,
       updateSelectedComponent,
+      updateNewPageDraft,
+      updateSelectedCreateComponent,
       updateActivePageSlug,
       selectPage,
       handleDropAt,
       addBlockToActivePage,
+      handleCreatePageDropAt,
+      addBlockToNewPage,
       removeComponent,
+      removeDraftComponent,
       duplicateComponentInActivePage,
+      duplicateDraftComponent,
       addFieldToSelectedGroup,
+      addFieldToCreateGroup,
       addColumnToSelectedTable,
+      addColumnToCreateTable,
       addRowToSelectedTable,
+      addRowToCreateTable,
       handleCreateMenu,
       handleCreatePage,
       copyJson,
+      setSelectedCreateComponentId,
     },
   };
 }

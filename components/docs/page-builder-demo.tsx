@@ -75,6 +75,9 @@ export function PageBuilderDemo() {
             selectedComponentId={state.selectedComponentId}
             copied={state.copied}
             jsonOutput={state.jsonOutput}
+            newPageDraft={state.newPageDraft}
+            selectedCreateComponentId={state.selectedCreateComponentId}
+            selectedCreateComponent={state.selectedCreateComponent}
             onUpdatePage={actions.updateActivePage}
             onUpdatePageSlug={actions.updateActivePageSlug}
             onSelectComponent={actions.setSelectedComponentId}
@@ -87,12 +90,26 @@ export function PageBuilderDemo() {
             onSetNewPageSlug={actions.setNewPageSlug}
             onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
             onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
+            onSetNewPageDescription={actions.setNewPageDescription}
             onCreateMenu={actions.handleCreateMenu}
             onCreatePage={actions.handleCreatePage}
             onBackToEditor={() => actions.setActiveView("editor")}
+            onOpenEditPage={() => actions.setActiveView("editor")}
             onSelectPage={actions.selectPage}
             onOpenCreatePage={() => actions.setActiveView("create-page")}
             onCopyJson={actions.copyJson}
+            onAddBlockToActivePage={actions.addBlockToActivePage}
+            onCreatePageDropAt={actions.handleCreatePageDropAt}
+            onAddBlockToNewPage={actions.addBlockToNewPage}
+            onSelectCreateComponent={actions.setSelectedCreateComponentId}
+            onDuplicateCreateComponent={actions.duplicateDraftComponent}
+            onRemoveCreateComponent={actions.removeDraftComponent}
+            onUpdateSelectedCreateComponent={
+              actions.updateSelectedCreateComponent
+            }
+            onAddFieldToCreateGroup={actions.addFieldToCreateGroup}
+            onAddColumnToCreateTable={actions.addColumnToCreateTable}
+            onAddRowToCreateTable={actions.addRowToCreateTable}
             newMenuTitle={state.newMenuTitle}
             newMenuDescription={state.newMenuDescription}
             newPageTitle={state.newPageTitle}
