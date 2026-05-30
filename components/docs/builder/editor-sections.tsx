@@ -593,8 +593,137 @@ export function PreviewSection({
         interactive
         onSelectPage={onSelectPage}
         onCreatePage={onCreatePage}
+        showSidebar={false}
       />
     </section>
+  );
+}
+
+type EditorWorkspaceProps = {
+  activePage: DocPage;
+  menuGroups: MenuGroup[];
+  selectedComponentId: string | null;
+  selectedComponent: PageComponent | null;
+  onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
+  onUpdatePageSlug: (value: string) => void;
+  onSelectComponent: (componentId: string) => void;
+  onDropAt: (event: DragEvent<HTMLDivElement>, targetIndex: number) => void;
+  onDuplicateComponent: (component: PageComponent) => void;
+  onRemoveComponent: (componentId: string) => void;
+  onAddBlock: (type: PageComponentType) => void;
+  onUpdateSelectedComponent: (
+    updater: (component: PageComponent) => PageComponent,
+  ) => void;
+  onAddFieldToSelectedGroup: () => void;
+  onAddColumnToSelectedTable: () => void;
+  onAddRowToSelectedTable: () => void;
+};
+
+function EditorWorkspace({
+  activePage,
+  menuGroups,
+  selectedComponentId,
+  selectedComponent,
+  onUpdatePage,
+  onUpdatePageSlug,
+  onSelectComponent,
+  onDropAt,
+  onDuplicateComponent,
+  onRemoveComponent,
+  onAddBlock,
+  onUpdateSelectedComponent,
+  onAddFieldToSelectedGroup,
+  onAddColumnToSelectedTable,
+  onAddRowToSelectedTable,
+}: EditorWorkspaceProps) {
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+
+  return (
+    <>
+      <PageSettingsSection
+        activePage={activePage}
+        menuGroups={menuGroups}
+        allPages={[activePage]}
+        onUpdatePage={onUpdatePage}
+        onUpdatePageSlug={onUpdatePageSlug}
+      />
+
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-500">اکشن های صفحه</p>
+            <h3 className="text-xl font-semibold text-slate-950">
+              افزودن و ویرایش کامپوننت ها
+            </h3>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsPickerOpen((current) => !current)}
+            className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+          >
+            افزودن کامپوننت
+          </button>
+        </div>
+
+        {isPickerOpen ? (
+          <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 md:grid-cols-2 xl:grid-cols-3">
+            {paletteBlocks.map((block) => (
+              <button
+                key={block.type}
+                type="button"
+                onClick={() => {
+                  onAddBlock(block.type);
+                  setIsPickerOpen(false);
+                }}
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-right transition hover:border-slate-300 hover:bg-white"
+              >
+                <p className="font-semibold text-slate-900">
+                  {translateBlockLabel(block.label)}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {translateBlockDescription(block.type)}
+                </p>
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </section>
+
+      <CanvasSection
+        activePage={activePage}
+        selectedComponentId={selectedComponentId}
+        onSelectComponent={onSelectComponent}
+        onDropAt={onDropAt}
+        onDuplicateComponent={onDuplicateComponent}
+        onRemoveComponent={onRemoveComponent}
+        onEditComponent={(componentId) => {
+          onSelectComponent(componentId);
+        }}
+        title="کامپوننت های این صفحه"
+        description="روی ویرایش هر کامپوننت بزن تا دیتای همان بخش را پایین صفحه تغییر بدهی."
+      />
+
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-slate-500">ویرایش کامپوننت</p>
+          <h3 className="text-xl font-semibold text-slate-950">
+            دیتای کامپوننت انتخاب شده
+          </h3>
+          <p className="text-sm leading-6 text-slate-600">
+            اگر جدول انتخاب شده باشد، ستون ها و ردیف هایش را همینجا می‌توانی تغییر بدهی.
+          </p>
+        </div>
+
+        <InspectorPanel
+          selectedComponent={selectedComponent}
+          onUpdateSelectedComponent={onUpdateSelectedComponent}
+          onAddFieldToSelectedGroup={onAddFieldToSelectedGroup}
+          onAddColumnToSelectedTable={onAddColumnToSelectedTable}
+          onAddRowToSelectedTable={onAddRowToSelectedTable}
+        />
+      </section>
+    </>
   );
 }
 
@@ -633,6 +762,7 @@ type BuilderCenterPanelProps = {
   menuGroups: MenuGroup[];
   pages: DocPage[];
   selectedComponentId: string | null;
+  selectedComponent: PageComponent | null;
   copied: boolean;
   jsonOutput: string;
   onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
@@ -641,6 +771,12 @@ type BuilderCenterPanelProps = {
   onDropAt: (event: DragEvent<HTMLDivElement>, targetIndex: number) => void;
   onDuplicateComponent: (component: PageComponent) => void;
   onRemoveComponent: (componentId: string) => void;
+  onUpdateSelectedComponent: (
+    updater: (component: PageComponent) => PageComponent,
+  ) => void;
+  onAddFieldToSelectedGroup: () => void;
+  onAddColumnToSelectedTable: () => void;
+  onAddRowToSelectedTable: () => void;
   onSetNewMenuTitle: (value: string) => void;
   onSetNewMenuDescription: (value: string) => void;
   onSetNewPageTitle: (value: string) => void;
@@ -719,26 +855,23 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
       ) : null}
 
       {props.activeView === "editor" ? (
-        <>
-          <PageSettingsSection
-            activePage={props.activePage}
-            menuGroups={props.menuGroups}
-            allPages={props.pages}
-            onUpdatePage={props.onUpdatePage}
-            onUpdatePageSlug={props.onUpdatePageSlug}
-          />
-          <CanvasSection
-            activePage={props.activePage}
-            selectedComponentId={props.selectedComponentId}
-            onSelectComponent={props.onSelectComponent}
-            onDropAt={props.onDropAt}
-            onDuplicateComponent={props.onDuplicateComponent}
-            onRemoveComponent={props.onRemoveComponent}
-            onEditComponent={(componentId) => {
-              props.onSelectComponent(componentId);
-            }}
-          />
-        </>
+        <EditorWorkspace
+          activePage={props.activePage}
+          menuGroups={props.menuGroups}
+          selectedComponentId={props.selectedComponentId}
+          selectedComponent={props.selectedComponent}
+          onUpdatePage={props.onUpdatePage}
+          onUpdatePageSlug={props.onUpdatePageSlug}
+          onSelectComponent={props.onSelectComponent}
+          onDropAt={props.onDropAt}
+          onDuplicateComponent={props.onDuplicateComponent}
+          onRemoveComponent={props.onRemoveComponent}
+          onAddBlock={props.onAddBlockToActivePage}
+          onUpdateSelectedComponent={props.onUpdateSelectedComponent}
+          onAddFieldToSelectedGroup={props.onAddFieldToSelectedGroup}
+          onAddColumnToSelectedTable={props.onAddColumnToSelectedTable}
+          onAddRowToSelectedTable={props.onAddRowToSelectedTable}
+        />
       ) : null}
 
       {props.activeView === "preview" ? (

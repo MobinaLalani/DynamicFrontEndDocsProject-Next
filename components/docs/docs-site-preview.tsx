@@ -14,6 +14,7 @@ type DocsSitePreviewProps = {
   interactive?: boolean;
   onSelectPage?: (slug: string) => void;
   onCreatePage?: () => void;
+  showSidebar?: boolean;
 };
 
 export function DocsSitePreview({
@@ -23,6 +24,7 @@ export function DocsSitePreview({
   interactive = false,
   onSelectPage,
   onCreatePage,
+  showSidebar = true,
 }: DocsSitePreviewProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const activePage =
@@ -41,18 +43,19 @@ export function DocsSitePreview({
         <main
           dir="rtl"
           className={`min-w-0 p-4 transition-[padding] duration-300 sm:p-6 ${
-            isSidebarOpen ? "xl:pr-[344px]" : "xl:pr-24"
+            showSidebar ? (isSidebarOpen ? "xl:pr-[344px]" : "xl:pr-24") : ""
           }`}
         >
           <PageRenderer page={activePage} />
         </main>
 
-        <aside
-          dir="rtl"
-          className={`absolute inset-y-0 right-0 z-20 flex h-full flex-col border-l border-white/10 bg-slate-950 text-white transition-all duration-300 ${
-            isSidebarOpen ? "w-full sm:w-[320px]" : "w-[72px]"
-          }`}
-        >
+        {showSidebar ? (
+          <aside
+            dir="rtl"
+            className={`absolute inset-y-0 right-0 z-20 flex h-full flex-col border-l border-white/10 bg-slate-950 text-white transition-all duration-300 ${
+              isSidebarOpen ? "w-full sm:w-[320px]" : "w-[72px]"
+            }`}
+          >
           <button
             type="button"
             onClick={() => setIsSidebarOpen((current) => !current)}
@@ -211,7 +214,8 @@ export function DocsSitePreview({
               );
             })}
           </div>
-        </aside>
+          </aside>
+        ) : null}
       </div>
     </div>
   );

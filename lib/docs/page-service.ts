@@ -12,6 +12,12 @@ export async function getPageBySlug(slug: string): Promise<DocPage | null> {
 }
 
 export async function savePage(page: DocPage): Promise<DocPage> {
+  for (const [slug, existingPage] of mockDatabase.entries()) {
+    if (existingPage.id === page.id && slug !== page.slug) {
+      mockDatabase.delete(slug);
+    }
+  }
+
   mockDatabase.set(page.slug, page);
 
   return page;

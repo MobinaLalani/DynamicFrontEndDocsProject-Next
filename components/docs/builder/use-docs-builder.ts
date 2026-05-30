@@ -3,6 +3,7 @@
 import { useMemo, useState, type DragEvent } from "react";
 
 import { insertComponent, moveComponent } from "@/lib/docs/builder";
+import { saveDocPage } from "@/lib/docs/client";
 import type {
   ApiField,
   DocPage,
@@ -103,6 +104,8 @@ export function useDocsBuilder() {
     string | null
   >(null);
   const [copied, setCopied] = useState(false);
+  const [isSavingPage, setIsSavingPage] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   const activePage =
     workspace.pages.find((page) => page.slug === selectedPageSlug) ??
@@ -119,6 +122,14 @@ export function useDocsBuilder() {
     ) ?? null;
 
   const jsonOutput = useMemo(() => buildPrettyJson(workspace), [workspace]);
+  const activePageSnapshot = useMemo(
+    () => JSON.stringify(activePage ?? null),
+    [activePage],
+  );
+  const [lastSavedPageSnapshot, setLastSavedPageSnapshot] =
+    useState(activePageSnapshot);
+  const hasUnsavedPageChanges =
+    !!activePage && activePageSnapshot !== lastSavedPageSnapshot;
 
   const updateWorkspace = (
     updater: (current: DocsWorkspace) => DocsWorkspace,
@@ -131,6 +142,7 @@ export function useDocsBuilder() {
       return;
     }
 
+    setSaveMessage(null);
     updateWorkspace((current) => ({
       ...current,
       pages: current.pages.map((page) =>
@@ -181,6 +193,8 @@ export function useDocsBuilder() {
     setActiveView("preview");
     setSelectedPageSlug(slug);
     setSelectedComponentId(nextPage?.components[0]?.id ?? null);
+    setLastSavedPageSnapshot(JSON.stringify(nextPage ?? null));
+    setSaveMessage(null);
   };
 
   const handleDropAt = (
@@ -491,6 +505,8 @@ export function useDocsBuilder() {
       setActiveView("editor");
       setSelectedPageSlug(page.slug);
       setSelectedComponentId(page.components[0]?.id ?? null);
+      setLastSavedPageSnapshot(JSON.stringify(page));
+      setSaveMessage(null);
 
       return {
         ...current,
@@ -550,6 +566,36 @@ export function useDocsBuilder() {
     window.setTimeout(() => setCopied(false), 1200);
   };
 
+  const saveActivePage = async () => {
+    if (!activePage || !hasUnsavedPageChanges || isSavingPage) {
+      return;
+    }
+
+    setIsSavingPage(true);
+    setSaveMessage(null);
+
+    try {
+      const savedPage = await saveDocPage(activePage);
+      const savedSnapshot = JSON.stringify(savedPage);
+
+      updateWorkspace((current) => ({
+        ...current,
+        pages: current.pages.map((page) =>
+          page.id === savedPage.id ? savedPage : page,
+        ),
+      }));
+      setSelectedPageSlug(savedPage.slug);
+      setLastSavedPageSnapshot(savedSnapshot);
+      setSaveMessage("تغییرات صفحه با موفقیت ذخیره شد.");
+    } catch (error) {
+      setSaveMessage(
+        error instanceof Error ? error.message : "ذخیره صفحه انجام نشد.",
+      );
+    } finally {
+      setIsSavingPage(false);
+    }
+  };
+
   return {
     state: {
       workspace,
@@ -566,6 +612,9 @@ export function useDocsBuilder() {
       selectedCreateComponentId,
       selectedCreateComponent,
       copied,
+      isSavingPage,
+      saveMessage,
+      hasUnsavedPageChanges,
       activePage,
       selectedComponent,
       jsonOutput,
@@ -603,6 +652,7 @@ export function useDocsBuilder() {
       handleCreateMenu,
       handleCreatePage,
       copyJson,
+      saveActivePage,
       setSelectedCreateComponentId,
     },
   };

@@ -55,6 +55,32 @@ export function PageBuilderDemo() {
           />
         </div>
 
+        <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-500">
+              ذخیره تغییرات صفحه
+            </p>
+            <p className="mt-1 text-sm text-slate-600">
+              این دکمه فقط وقتی فعال می‌شود که محتوای صفحه یا JSON آن تغییر کرده
+              باشد.
+            </p>
+            {state.saveMessage ? (
+              <p className="mt-2 text-sm text-emerald-700">
+                {state.saveMessage}
+              </p>
+            ) : null}
+          </div>
+
+          <button
+            type="button"
+            onClick={actions.saveActivePage}
+            disabled={!state.hasUnsavedPageChanges || state.isSavingPage}
+            className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+          >
+            {state.isSavingPage ? "در حال ذخیره..." : "ذخیره تغییرات"}
+          </button>
+        </div>
+
         {state.activeView === "blocks" ? (
           <div dir="rtl" className="space-y-6">
             <ToolsPanelContent
@@ -73,6 +99,7 @@ export function PageBuilderDemo() {
             menuGroups={state.workspace.menuGroups}
             pages={state.workspace.pages}
             selectedComponentId={state.selectedComponentId}
+            selectedComponent={state.selectedComponent}
             copied={state.copied}
             jsonOutput={state.jsonOutput}
             newPageDraft={state.newPageDraft}
@@ -84,6 +111,10 @@ export function PageBuilderDemo() {
             onDropAt={actions.handleDropAt}
             onDuplicateComponent={actions.duplicateComponentInActivePage}
             onRemoveComponent={actions.removeComponent}
+            onUpdateSelectedComponent={actions.updateSelectedComponent}
+            onAddFieldToSelectedGroup={actions.addFieldToSelectedGroup}
+            onAddColumnToSelectedTable={actions.addColumnToSelectedTable}
+            onAddRowToSelectedTable={actions.addRowToSelectedTable}
             onSetNewMenuTitle={actions.setNewMenuTitle}
             onSetNewMenuDescription={actions.setNewMenuDescription}
             onSetNewPageTitle={actions.setNewPageTitle}
