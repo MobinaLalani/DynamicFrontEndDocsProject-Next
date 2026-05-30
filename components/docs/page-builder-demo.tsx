@@ -1,0 +1,309 @@
+"use client";
+
+import { useState } from "react";
+
+import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
+import { ToolsPanelContent } from "@/components/docs/builder/sidebars";
+import { StatCard } from "@/components/docs/builder/shared";
+import { useDocsBuilder } from "@/components/docs/builder/use-docs-builder";
+
+export function PageBuilderDemo() {
+  const { state, actions } = useDocsBuilder();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  if (!state.activePage) {
+    return null;
+  }
+
+  const expandedNavButtonClass = (view: typeof state.activeView) =>
+    `w-full rounded-2xl px-4 py-3 text-right text-sm font-medium transition ${
+      state.activeView === view
+        ? "bg-white text-slate-950 shadow-sm"
+        : "bg-white/5 text-slate-200 hover:bg-white/10"
+    }`;
+
+  const collapsedNavButtonClass = (view: typeof state.activeView) =>
+    `flex h-11 w-full items-center justify-center rounded-2xl text-sm transition ${
+      state.activeView === view
+        ? "bg-white text-slate-950 shadow-sm"
+        : "bg-white/5 text-slate-200 hover:bg-white/10"
+    }`;
+
+  return (
+    <section
+      dir="ltr"
+      className="relative min-h-[calc(100vh-4rem)] overflow-hidden rounded-[32px] border border-slate-200 bg-slate-100 shadow-sm"
+    >
+      <main
+        dir="rtl"
+        className={`min-h-[calc(100vh-4rem)] p-4 transition-[padding] duration-300 sm:p-6 ${
+          isSidebarOpen ? "xl:pr-[384px]" : "xl:pr-24"
+        }`}
+      >
+        <div className="mb-6 grid gap-3 sm:grid-cols-3">
+          <StatCard
+            label="تعداد صفحه"
+            value={String(state.workspace.pages.length)}
+          />
+          <StatCard
+            label="تعداد منو"
+            value={String(state.workspace.menuGroups.length)}
+          />
+          <StatCard
+            label="مسیر فعال"
+            value={`/pages/${state.activePage.slug}`}
+          />
+        </div>
+
+        {state.activeView === "blocks" ? (
+          <div dir="rtl" className="space-y-6">
+            <ToolsPanelContent
+              selectedComponent={state.selectedComponent}
+              onAddBlock={actions.addBlockToActivePage}
+              onUpdateSelectedComponent={actions.updateSelectedComponent}
+              onAddFieldToSelectedGroup={actions.addFieldToSelectedGroup}
+              onAddColumnToSelectedTable={actions.addColumnToSelectedTable}
+              onAddRowToSelectedTable={actions.addRowToSelectedTable}
+            />
+          </div>
+        ) : (
+          <BuilderCenterPanel
+            activeView={state.activeView}
+            activePage={state.activePage}
+            menuGroups={state.workspace.menuGroups}
+            pages={state.workspace.pages}
+            selectedComponentId={state.selectedComponentId}
+            copied={state.copied}
+            jsonOutput={state.jsonOutput}
+            onUpdatePage={actions.updateActivePage}
+            onUpdatePageSlug={actions.updateActivePageSlug}
+            onSelectComponent={actions.setSelectedComponentId}
+            onDropAt={actions.handleDropAt}
+            onDuplicateComponent={actions.duplicateComponentInActivePage}
+            onRemoveComponent={actions.removeComponent}
+            onSetNewMenuTitle={actions.setNewMenuTitle}
+            onSetNewMenuDescription={actions.setNewMenuDescription}
+            onSetNewPageTitle={actions.setNewPageTitle}
+            onSetNewPageSlug={actions.setNewPageSlug}
+            onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
+            onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
+            onCreateMenu={actions.handleCreateMenu}
+            onCreatePage={actions.handleCreatePage}
+            onBackToEditor={() => actions.setActiveView("editor")}
+            onSelectPage={actions.selectPage}
+            onOpenCreatePage={() => actions.setActiveView("create-page")}
+            onCopyJson={actions.copyJson}
+            newMenuTitle={state.newMenuTitle}
+            newMenuDescription={state.newMenuDescription}
+            newPageTitle={state.newPageTitle}
+            newPageSlug={state.newPageSlug}
+            newPageMenuTitle={state.newPageMenuTitle}
+            newPageMenuGroupId={state.newPageMenuGroupId}
+          />
+        )}
+      </main>
+
+      <aside
+        dir="rtl"
+        className={`absolute inset-y-0 right-0 z-20 flex h-full flex-col border-l border-white/10 bg-slate-950 text-white transition-all duration-300 ${
+          isSidebarOpen ? "w-full sm:w-[360px]" : "w-[72px]"
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => setIsSidebarOpen((current) => !current)}
+          className="absolute left-4 top-4 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20"
+        >
+          {isSidebarOpen ? "بستن" : "باز"}
+        </button>
+
+        <div
+          className={`border-b border-white/10 px-5 pb-5 pt-16 ${isSidebarOpen ? "" : "px-3"}`}
+        >
+          {isSidebarOpen ? (
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
+                  API DOCS CMS
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold">
+                  پنل مدیریت داکیومنت
+                </h2>
+              </div>
+              <p className="text-sm leading-6 text-slate-400">
+                همه بخش‌های پنل فقط از همین سایدبار در دسترس هستند.
+              </p>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <span className="rounded-2xl bg-white/10 px-3 py-2 text-xs text-slate-300">
+                پنل
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div
+          className={`flex-1 overflow-y-auto ${isSidebarOpen ? "space-y-6 px-5 py-5" : "space-y-3 px-3 py-4"}`}
+        >
+          <section className="space-y-2">
+            {isSidebarOpen ? (
+              <p className="text-xs font-medium text-slate-400">بخش‌های اصلی</p>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={() => actions.setActiveView("editor")}
+              className={
+                isSidebarOpen
+                  ? expandedNavButtonClass("editor")
+                  : collapsedNavButtonClass("editor")
+              }
+              title="ویرایش صفحه"
+            >
+              {isSidebarOpen ? "ویرایش صفحه" : "و"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => actions.setActiveView("blocks")}
+              className={
+                isSidebarOpen
+                  ? expandedNavButtonClass("blocks")
+                  : collapsedNavButtonClass("blocks")
+              }
+              title="بلوک‌ها و بازرس"
+            >
+              {isSidebarOpen ? "بلوک‌ها و بازرس" : "ب"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => actions.setActiveView("preview")}
+              className={
+                isSidebarOpen
+                  ? expandedNavButtonClass("preview")
+                  : collapsedNavButtonClass("preview")
+              }
+              title="پیش‌نمایش"
+            >
+              {isSidebarOpen ? "پیش‌نمایش" : "پ"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => actions.setActiveView("json")}
+              className={
+                isSidebarOpen
+                  ? expandedNavButtonClass("json")
+                  : collapsedNavButtonClass("json")
+              }
+              title="JSON ساختار"
+            >
+              {isSidebarOpen ? "JSON ساختار" : "J"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => actions.setActiveView("create-page")}
+              className={
+                isSidebarOpen
+                  ? expandedNavButtonClass("create-page")
+                  : `flex h-11 w-full items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30`
+              }
+              title="ایجاد صفحه جدید"
+            >
+              {isSidebarOpen ? "ایجاد صفحه جدید" : "+"}
+            </button>
+          </section>
+
+          <section className="space-y-4 border-t border-white/10 pt-4">
+            {isSidebarOpen ? (
+              <p className="text-xs font-medium text-slate-400">صفحه‌ها</p>
+            ) : null}
+
+            {state.workspace.menuGroups.map((group) => {
+              const groupPages = state.workspace.pages.filter(
+                (page) => page.menuGroupId === group.id,
+              );
+
+              return (
+                <div key={group.id} className="space-y-3">
+                  {isSidebarOpen ? (
+                    <div>
+                      <p className="font-semibold text-white">{group.title}</p>
+                      {group.description ? (
+                        <p className="mt-1 text-sm leading-6 text-slate-400">
+                          {group.description}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <div className="flex justify-center">
+                      <span
+                        title={group.title}
+                        className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-xs font-semibold text-white"
+                      >
+                        {group.title.slice(0, 1)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    {groupPages.map((page) => {
+                      const isActive =
+                        state.activeView !== "create-page" &&
+                        state.selectedPageSlug === page.slug;
+                      const pageButtonClass = isSidebarOpen
+                        ? `block w-full rounded-2xl px-4 py-3 text-right text-sm transition ${
+                            isActive
+                              ? "bg-white text-slate-950 shadow-sm"
+                              : "bg-white/5 text-slate-200 hover:bg-white/10"
+                          }`
+                        : `flex h-11 w-full items-center justify-center rounded-2xl text-sm transition ${
+                            isActive
+                              ? "bg-white text-slate-950 shadow-sm"
+                              : "bg-white/5 text-slate-200 hover:bg-white/10"
+                          }`;
+
+                      return (
+                        <button
+                          key={page.slug}
+                          type="button"
+                          onClick={() => actions.selectPage(page.slug)}
+                          className={pageButtonClass}
+                        >
+                          {isSidebarOpen ? (
+                            <>
+                              <span className="block font-medium">
+                                {page.menuTitle}
+                              </span>
+                              <span
+                                className={`mt-1 block text-xs ${
+                                  isActive ? "text-slate-500" : "text-slate-400"
+                                }`}
+                              >
+                                /pages/{page.slug}
+                              </span>
+                            </>
+                          ) : (
+                            <span
+                              title={page.menuTitle}
+                              className="font-medium"
+                            >
+                              {page.menuTitle.slice(0, 1)}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </section>
+        </div>
+      </aside>
+    </section>
+  );
+}

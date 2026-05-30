@@ -1,0 +1,130 @@
+import type { DocPage } from "@/lib/docs/schema";
+
+export const samplePages: DocPage[] = [
+  {
+    id: 1,
+    slug: "users",
+    title: "مستندات کاربران",
+    description: "نمونه ای از صفحه داکیومنت که از JSON سمت بک اند خوانده می شود.",
+    menuGroupId: "core-apis",
+    menuTitle: "کاربران",
+    components: [
+      {
+        id: "users-heading",
+        type: "heading",
+        text: "لیست کاربران",
+        level: 1,
+      },
+      {
+        id: "users-paragraph",
+        type: "paragraph",
+        text: "از این endpoint برای دریافت لیست کاربران سیستم استفاده می شود. جدول زیر نیز به صورت داینامیک از روی JSON رندر شده است.",
+      },
+      {
+        id: "users-endpoint",
+        type: "endpoint",
+        title: "دریافت لیست کاربران",
+        method: "GET",
+        path: "/api/users",
+        summary: "لیست صفحه بندی شده کاربران را برای پنل مدیریت برمی گرداند.",
+        auth: "Bearer Token",
+        requestContentType: "application/json",
+        responseContentType: "application/json",
+      },
+      {
+        id: "users-query-fields",
+        type: "field-group",
+        title: "پارامترهای Query",
+        kind: "query",
+        fields: [
+          {
+            id: "users-query-page",
+            name: "page",
+            type: "number",
+            required: false,
+            description: "شماره صفحه جاری را مشخص می کند.",
+          },
+          {
+            id: "users-query-search",
+            name: "search",
+            type: "string",
+            required: false,
+            description: "کاربران را بر اساس نام یا ایمیل فیلتر می کند.",
+          },
+        ],
+      },
+      {
+        id: "users-table",
+        type: "table",
+        title: "نمونه خروجی",
+        columns: [
+          { title: "Id", field: "id" },
+          { title: "نام", field: "name" },
+        ],
+        rows: [
+          { id: 1, name: "علی" },
+          { id: 2, name: "مریم" },
+          { id: 3, name: "رضا" },
+        ],
+        emptyMessage: "کاربری موجود نیست.",
+      },
+      {
+        id: "users-code",
+        type: "code",
+        title: "نمونه JSON پاسخ",
+        language: "json",
+        code: '{\n  "data": [\n    {\n      "id": 1,\n      "name": "علی"\n    }\n  ],\n  "meta": {\n    "page": 1\n  }\n}',
+      },
+    ],
+  },
+  {
+    id: 2,
+    slug: "health",
+    title: "وضعیت سرویس",
+    description: "صفحه دوم برای نمایش ساختار داینامیک و منوی چندبخشی.",
+    menuGroupId: "monitoring",
+    menuTitle: "سلامت سرویس",
+    components: [
+      {
+        id: "health-heading",
+        type: "heading",
+        text: "وضعیت سلامت سرویس",
+        level: 1,
+      },
+      {
+        id: "health-paragraph",
+        type: "paragraph",
+        text: "این پاسخ مشخص می کند که سرویس در دسترس است و وضعیت محیط فعلی را نیز گزارش می دهد.",
+      },
+      {
+        id: "health-endpoint",
+        type: "endpoint",
+        title: "بررسی سلامت سرویس",
+        method: "GET",
+        path: "/api/health",
+        summary: "بررسی می کند که سرویس به درستی در حال اجرا باشد.",
+        auth: "بدون نیاز به احراز هویت",
+        requestContentType: "application/json",
+        responseContentType: "application/json",
+      },
+      {
+        id: "health-table",
+        type: "table",
+        title: "فیلدهای پاسخ",
+        columns: [{ title: "فیلد", field: "field" }, { title: "مقدار", field: "value" }],
+        rows: [
+          { field: "status", value: "ok" },
+          { field: "environment", value: "production" },
+        ],
+        emptyMessage: "فیلدی تنظیم نشده است.",
+      },
+      {
+        id: "health-code",
+        type: "code",
+        title: "نمونه پاسخ",
+        language: "json",
+        code: '{\n  "status": "ok",\n  "environment": "production"\n}',
+      },
+    ],
+  },
+];
