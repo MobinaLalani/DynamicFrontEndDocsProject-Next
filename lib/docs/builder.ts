@@ -165,7 +165,7 @@ export const methodOptions: HttpMethod[] = [
   "DELETE",
 ];
 
-export const codeLanguageOptions: CodeLanguage[] = [
+export const codeLanguageOptions: CodeLanguage[] = [ 
   "json",
   "bash",
   "javascript",
@@ -173,6 +173,7 @@ export const codeLanguageOptions: CodeLanguage[] = [
 ];
 
 export const fieldGroupKinds: ApiFieldKind[] = [
+  
   "headers",
   "query",
   "path",
