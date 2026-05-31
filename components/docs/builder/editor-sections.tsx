@@ -1,26 +1,22 @@
 import { useState, type DragEvent } from "react";
 
+import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { DocsSitePreview } from "@/components/docs/docs-site-preview";
 import {
   componentTransferKey,
   getBlockLabel,
   getBlockMeta,
-  paletteTransferKey,
-  translateBlockDescription,
-  translateBlockLabel,
 } from "@/components/docs/builder/constants";
 import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 import { Field, inputClass } from "@/components/docs/builder/shared";
-import type { BuilderView } from "@/components/docs/builder/use-docs-builder";
+import type { BuilderView } from "@/components/docs/builder/types";
 import type { DocPage, PageComponent } from "@/lib/docs/schema";
 import type { PageComponentType } from "@/lib/docs/schema";
-import { paletteBlocks } from "@/lib/docs/builder";
 import type { MenuGroup } from "@/lib/docs/workspace";
 
 type PageSettingsSectionProps = {
   activePage: DocPage;
   menuGroups: MenuGroup[];
-  allPages: DocPage[];
   onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
   onUpdatePageSlug: (value: string) => void;
 };
@@ -261,12 +257,8 @@ type CreatePageViewProps = {
   draftPage: DocPage;
   selectedComponentId: string | null;
   selectedComponent: PageComponent | null;
-  newMenuTitle: string;
-  newMenuDescription: string;
-  newPageTitle: string;
-  newPageSlug: string;
-  newPageMenuTitle: string;
-  newPageMenuGroupId: string;
+  createMenuTitle: string;
+  createMenuDescription: string;
   onSetNewMenuTitle: (value: string) => void;
   onSetNewMenuDescription: (value: string) => void;
   onSetNewPageTitle: (value: string) => void;
@@ -293,12 +285,8 @@ export function CreatePageView({
   draftPage,
   selectedComponentId,
   selectedComponent,
-  newMenuTitle,
-  newMenuDescription,
-  newPageTitle,
-  newPageSlug,
-  newPageMenuTitle,
-  newPageMenuGroupId,
+  createMenuTitle,
+  createMenuDescription,
   onSetNewMenuTitle,
   onSetNewMenuDescription,
   onSetNewPageTitle,
@@ -352,7 +340,7 @@ export function CreatePageView({
               <Field label="عنوان صفحه">
                 <input
                   className={inputClass}
-                  value={newPageTitle}
+                  value={draftPage.title}
                   onChange={(event) => onSetNewPageTitle(event.target.value)}
                   placeholder="مثلا مدیریت کاربران"
                 />
@@ -361,7 +349,7 @@ export function CreatePageView({
               <Field label="Slug">
                 <input
                   className={inputClass}
-                  value={newPageSlug}
+                  value={draftPage.slug}
                   onChange={(event) => onSetNewPageSlug(event.target.value)}
                   placeholder="users-management"
                 />
@@ -370,7 +358,7 @@ export function CreatePageView({
               <Field label="گروه منو">
                 <select
                   className={inputClass}
-                  value={newPageMenuGroupId}
+                  value={draftPage.menuGroupId}
                   onChange={(event) => onSetNewPageMenuGroupId(event.target.value)}
                 >
                   {menuGroups.map((group) => (
@@ -384,7 +372,7 @@ export function CreatePageView({
               <Field label="عنوان در منو">
                 <input
                   className={inputClass}
-                  value={newPageMenuTitle}
+                  value={draftPage.menuTitle}
                   onChange={(event) => onSetNewPageMenuTitle(event.target.value)}
                   placeholder="نامی که در سایدبار نمایش داده می شود"
                 />
@@ -418,7 +406,7 @@ export function CreatePageView({
             <Field label="عنوان منو">
               <input
                 className={inputClass}
-                value={newMenuTitle}
+                value={createMenuTitle}
                 onChange={(event) => onSetNewMenuTitle(event.target.value)}
                 placeholder="مثلا احراز هویت"
               />
@@ -427,7 +415,7 @@ export function CreatePageView({
             <Field label="توضیح منو">
               <textarea
                 className={`${inputClass} min-h-24`}
-                value={newMenuDescription}
+                value={createMenuDescription}
                 onChange={(event) => onSetNewMenuDescription(event.target.value)}
                 placeholder="توضیح کوتاه درباره این گروه منو"
               />
@@ -455,26 +443,11 @@ export function CreatePageView({
               </p>
             </div>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {paletteBlocks.map((block) => (
-                <button
-                  key={block.type}
-                  type="button"
-                  draggable
-                  onDragStart={(event) =>
-                    event.dataTransfer.setData(paletteTransferKey, block.type)
-                  }
-                  onClick={() => onAddBlock(block.type)}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-right transition hover:border-slate-300 hover:bg-white"
-                >
-                  <p className="font-semibold text-slate-900">
-                    {translateBlockLabel(block.label)}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {translateBlockDescription(block.type)}
-                  </p>
-                </button>
-              ))}
+            <div className="mt-4">
+              <BlockPicker
+                onAddBlock={onAddBlock}
+                columnsClassName="md:grid-cols-2"
+              />
             </div>
           </div>
 
@@ -563,26 +536,14 @@ export function PreviewSection({
         </div>
 
         {isPickerOpen ? (
-          <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 md:grid-cols-2 xl:grid-cols-3">
-            {paletteBlocks.map((block) => (
-              <button
-                key={block.type}
-                type="button"
-                onClick={() => {
-                  onAddBlock(block.type);
-                  setIsPickerOpen(false);
-                  onEditPage();
-                }}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-right transition hover:border-slate-300 hover:bg-white"
-              >
-                <p className="font-semibold text-slate-900">
-                  {translateBlockLabel(block.label)}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {translateBlockDescription(block.type)}
-                </p>
-              </button>
-            ))}
+          <div className="mt-4 border-t border-slate-200 pt-4">
+            <BlockPicker
+              onAddBlock={(type) => {
+                onAddBlock(type);
+                setIsPickerOpen(false);
+                onEditPage();
+              }}
+            />
           </div>
         ) : null}
       </div>
@@ -643,7 +604,6 @@ function EditorWorkspace({
       <PageSettingsSection
         activePage={activePage}
         menuGroups={menuGroups}
-        allPages={[activePage]}
         onUpdatePage={onUpdatePage}
         onUpdatePageSlug={onUpdatePageSlug}
       />
@@ -667,25 +627,13 @@ function EditorWorkspace({
         </div>
 
         {isPickerOpen ? (
-          <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 md:grid-cols-2 xl:grid-cols-3">
-            {paletteBlocks.map((block) => (
-              <button
-                key={block.type}
-                type="button"
-                onClick={() => {
-                  onAddBlock(block.type);
-                  setIsPickerOpen(false);
-                }}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-right transition hover:border-slate-300 hover:bg-white"
-              >
-                <p className="font-semibold text-slate-900">
-                  {translateBlockLabel(block.label)}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {translateBlockDescription(block.type)}
-                </p>
-              </button>
-            ))}
+          <div className="mt-4 border-t border-slate-200 pt-4">
+            <BlockPicker
+              onAddBlock={(type) => {
+                onAddBlock(type);
+                setIsPickerOpen(false);
+              }}
+            />
           </div>
         ) : null}
       </section>
@@ -791,13 +739,9 @@ type BuilderCenterPanelProps = {
   onCopyJson: () => void;
   onOpenEditPage: () => void;
   onAddBlockToActivePage: (type: PageComponentType) => void;
-  newMenuTitle: string;
-  newMenuDescription: string;
-  newPageTitle: string;
-  newPageSlug: string;
-  newPageMenuTitle: string;
-  newPageMenuGroupId: string;
-  newPageDraft: DocPage;
+  createMenuTitle: string;
+  createMenuDescription: string;
+  createPageDraft: DocPage;
   selectedCreateComponentId: string | null;
   selectedCreateComponent: PageComponent | null;
   onSetNewPageDescription: (value: string) => void;
@@ -823,15 +767,11 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
       {props.activeView === "create-page" ? (
         <CreatePageView
           menuGroups={props.menuGroups}
-          draftPage={props.newPageDraft}
+          draftPage={props.createPageDraft}
           selectedComponentId={props.selectedCreateComponentId}
           selectedComponent={props.selectedCreateComponent}
-          newMenuTitle={props.newMenuTitle}
-          newMenuDescription={props.newMenuDescription}
-          newPageTitle={props.newPageTitle}
-          newPageSlug={props.newPageSlug}
-          newPageMenuTitle={props.newPageMenuTitle}
-          newPageMenuGroupId={props.newPageMenuGroupId}
+          createMenuTitle={props.createMenuTitle}
+          createMenuDescription={props.createMenuDescription}
           onSetNewMenuTitle={props.onSetNewMenuTitle}
           onSetNewMenuDescription={props.onSetNewMenuDescription}
           onSetNewPageTitle={props.onSetNewPageTitle}

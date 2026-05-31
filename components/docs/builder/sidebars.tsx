@@ -1,18 +1,15 @@
-import { paletteBlocks } from "@/lib/docs/builder";
 import type { PageComponent, PageComponentType } from "@/lib/docs/schema";
 import type { MenuGroup, DocsWorkspace } from "@/lib/docs/workspace";
 
-import {
-  translateBlockDescription,
-  translateBlockLabel,
-  paletteTransferKey,
-} from "@/components/docs/builder/constants";
+import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 
 type ToolsSidebarProps = {
   selectedComponent: PageComponent | null;
   onAddBlock: (type: PageComponentType) => void;
-  onUpdateSelectedComponent: (updater: (component: PageComponent) => PageComponent) => void;
+  onUpdateSelectedComponent: (
+    updater: (component: PageComponent) => PageComponent,
+  ) => void;
   onAddFieldToSelectedGroup: () => void;
   onAddColumnToSelectedTable: () => void;
   onAddRowToSelectedTable: () => void;
@@ -53,36 +50,22 @@ export function ToolsPanelContent({
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="space-y-2">
           <p className="text-sm font-medium text-slate-500">ابزارهای صفحه</p>
-          <h3 className="text-xl font-semibold text-slate-950">بلوک ها و ویرایشگر</h3>
+          <h3 className="text-xl font-semibold text-slate-950">
+            بلوک ها و ویرایشگر
+          </h3>
         </div>
       </section>
 
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="space-y-2">
           <p className="text-sm font-medium text-slate-500">بلوک ها</p>
-          <h3 className="text-lg font-semibold text-slate-950">افزودن کامپوننت</h3>
+          <h3 className="text-lg font-semibold text-slate-950">
+            افزودن کامپوننت
+          </h3>
         </div>
 
-        <div className="mt-4 space-y-3">
-          {paletteBlocks.map((block) => (
-            <button
-              key={block.type}
-              type="button"
-              draggable
-              onDragStart={(event) =>
-                event.dataTransfer.setData(paletteTransferKey, block.type)
-              }
-              onClick={() => onAddBlock(block.type)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-right transition hover:border-slate-300 hover:bg-white"
-            >
-              <p className="font-semibold text-slate-900">
-                {translateBlockLabel(block.label)}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {translateBlockDescription(block.type)}
-              </p>
-            </button>
-          ))}
+        <div className="mt-4">
+          <BlockPicker onAddBlock={onAddBlock} columnsClassName="grid-cols-1" />
         </div>
       </section>
 
@@ -148,7 +131,9 @@ export function MenuSidebar({
             <MenuGroupCard
               key={group.id}
               group={group}
-              pages={workspace.pages.filter((page) => page.menuGroupId === group.id)}
+              pages={workspace.pages.filter(
+                (page) => page.menuGroupId === group.id,
+              )}
               activeView={activeView}
               selectedPageSlug={selectedPageSlug}
               onSelectPage={onSelectPage}
@@ -178,7 +163,9 @@ function MenuGroupCard({
       <div className="space-y-1">
         <p className="font-semibold text-slate-900">{group.title}</p>
         {group.description ? (
-          <p className="text-sm leading-6 text-slate-600">{group.description}</p>
+          <p className="text-sm leading-6 text-slate-600">
+            {group.description}
+          </p>
         ) : null}
       </div>
 
