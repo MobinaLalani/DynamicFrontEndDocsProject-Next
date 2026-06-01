@@ -4,7 +4,8 @@ export type PageComponentType =
   | "endpoint"
   | "field-group"
   | "table"
-  | "code";
+  | "code"
+  |"radiobutton";
 
 export type HeadingLevel = 1 | 2 | 3;
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

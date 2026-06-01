@@ -45,6 +45,7 @@ export const paletteBlocks: PaletteBlock[] = [
     label: "Code Example",
     description: "Request samples, response payloads, and SDK snippets.",
   },
+
 ];
 
 function buildId(type: PageComponentType) {
