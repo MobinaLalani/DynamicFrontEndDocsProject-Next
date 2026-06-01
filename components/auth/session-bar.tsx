@@ -11,7 +11,7 @@ export function SessionBar({ session }: SessionBarProps) {
   return (
     <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
       <div className="space-y-1">
-        <p className="text-sm font-medium text-slate-500">حساب فعال</p>
+        <p className="text-sm font-medium text-slate-500"> فعال</p>
         <p className="text-lg font-semibold text-slate-950">{session.displayName}</p>
         <p className="text-sm text-slate-600">
           {session.username} | {roleLabel}
