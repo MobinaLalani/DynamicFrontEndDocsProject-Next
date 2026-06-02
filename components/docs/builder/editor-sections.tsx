@@ -1,7 +1,6 @@
 import { useState, type DragEvent } from "react";
 
 import { BlockPicker } from "@/components/docs/builder/block-picker";
-import { DocsSitePreview } from "@/components/docs/docs-site-preview";
 import {
   componentTransferKey,
   getBlockLabel,
@@ -9,7 +8,8 @@ import {
 } from "@/components/docs/builder/constants";
 import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 import { Field, inputClass } from "@/components/docs/builder/shared";
-import type { BuilderView } from "@/components/docs/builder/state";
+import { DocsSitePreview } from "@/features/docs-preview";
+import type { BuilderView } from "@/features/docs-builder/model";
 import type { DocPage, PageComponent } from "@/lib/docs/schema";
 import type { PageComponentType } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";

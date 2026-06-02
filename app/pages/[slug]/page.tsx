@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { SessionBar } from "@/components/auth/session-bar";
-import { DocsSitePreview } from "@/components/docs/docs-site-preview";
+import { DocsSitePreview } from "@/features/docs-preview";
 import { requireAuth } from "@/lib/auth/server";
 import { getAllPages, getPageBySlug } from "@/lib/docs/page-service";
 import { sampleMenuGroups } from "@/lib/docs/workspace";
