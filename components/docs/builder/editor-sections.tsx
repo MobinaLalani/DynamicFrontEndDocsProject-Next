@@ -2,6 +2,7 @@ import { useState, type DragEvent } from "react";
 
 import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { NewMenuSection } from "@/components/docs/builder/create-page/NewMenuSection";
+import { CollapsiblePanel } from "@/components/ui/CollapsiblePanel";
 import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
 import {
   componentTransferKey,
@@ -342,20 +343,19 @@ export function CreatePageView({
 
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-7">
-          <div className="flex w-full items-stretch gap-5 min-h-[400px]">
-            {/* Left: Page Details */}
-            <div className="flex flex-1 min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-              {/* Header */}
-              <div className="border-b border-slate-100 p-5">
-                <p className="text-sm font-medium text-slate-500">تعریف صفحه</p>
+          <CollapsiblePanel subtitle="مدیریت محتوا" title="تعریف صفحه و منو">
+            <div className="flex w-full items-stretch gap-5 min-h-[400px]">
+              {/* Left: Page Details */}
+              <div className="flex flex-1 min-w-0 flex-col">
+                <div className="border-b border-slate-100 pb-4 mb-4">
+                  <p className="text-sm font-medium text-slate-500">
+                    تعریف صفحه
+                  </p>
+                  <h4 className="text-xl font-semibold text-slate-950">
+                    مشخصات صفحه جدید
+                  </h4>
+                </div>
 
-                <h4 className="break-words text-xl font-semibold text-slate-950">
-                  مشخصات صفحه جدید
-                </h4>
-              </div>
-
-              {/* Body (scrollable if needed) */}
-              <div className="flex-1 overflow-y-auto p-5">
                 <NewPageDetailsSection
                   menuGroups={menuGroups}
                   draftPage={draftPage}
@@ -367,23 +367,18 @@ export function CreatePageView({
                   onCreatePage={onCreatePage}
                 />
               </div>
-            </div>
 
-            {/* Right: Menu */}
-            <div className="flex flex-1 min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-              {/* Header */}
-              <div className="border-b border-slate-100 p-5">
-                <p className="text-sm font-medium text-slate-500">
-                  در صورت نیاز
-                </p>
+              {/* Right: Menu */}
+              <div className="flex flex-1 min-w-0 flex-col">
+                <div className="border-b border-slate-100 pb-4 mb-4">
+                  <p className="text-sm font-medium text-slate-500">
+                    در صورت نیاز
+                  </p>
+                  <h4 className="text-xl font-semibold text-slate-950">
+                    تعریف منوی جدید
+                  </h4>
+                </div>
 
-                <h4 className="break-words text-xl font-semibold text-slate-950">
-                  تعریف منوی جدید
-                </h4>
-              </div>
-
-              {/* Body */}
-              <div className="flex-1 overflow-y-auto p-5">
                 <NewMenuSection
                   createMenuTitle={createMenuTitle}
                   createMenuDescription={createMenuDescription}
@@ -393,7 +388,7 @@ export function CreatePageView({
                 />
               </div>
             </div>
-          </div>
+          </CollapsiblePanel>
         </div>
         <div className="flex gap-6">
           <div className="flex w-87.5 flex-col gap-6">
