@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
-import { ToolsPanelContent } from "@/components/docs/builder/sidebars";
+import { ToolsPanelContent } from "@/components/layout/sidebars";
 import { StatCard } from "@/components/docs/builder/shared";
 import type { BuilderView } from "@/features/docs-builder/model";
 import { useDocsBuilder } from "@/features/docs-builder/model";
@@ -183,10 +183,10 @@ function AdminSidebar({
   onSelectPage,
 }: AdminSidebarProps) {
   const expandedNavButtonClass = (view: BuilderView) =>
-    `w-full rounded-2xl px-4 py-3 text-right text-sm font-medium transition ${
+    `w-full bg-white text-black rounded-2xl px-4 py-3 text-right text-xl font-bold transition ${
       activeView === view
-        ? "bg-white text-slate-950 shadow-sm"
-        : "bg-white/5 text-slate-200 hover:bg-white/10"
+        ? " shadow-sm"
+        : " "
     }`;
 
   const collapsedNavButtonClass = (view: BuilderView) =>
@@ -243,7 +243,7 @@ function AdminSidebar({
             <p className="text-xs font-medium text-slate-400">بخش‌های اصلی</p>
           ) : null}
 
-          <button
+          {/* <button
             type="button"
             onClick={() => onOpenView("editor")}
             className={
@@ -254,9 +254,9 @@ function AdminSidebar({
             title="ویرایش صفحه"
           >
             {isOpen ? "ویرایش صفحه" : "و"}
-          </button>
+          </button> */}
 
-          <button
+          {/* <button
             type="button"
             onClick={() => onOpenView("blocks")}
             className={
@@ -267,9 +267,9 @@ function AdminSidebar({
             title="بلوک‌ها و بازرس"
           >
             {isOpen ? "بلوک‌ها و بازرس" : "ب"}
-          </button>
+          </button> */}
 
-          <button
+          {/* <button
             type="button"
             onClick={() => onOpenView("preview")}
             className={
@@ -280,8 +280,8 @@ function AdminSidebar({
             title="پیش‌نمایش"
           >
             {isOpen ? "پیش‌نمایش" : "پ"}
-          </button>
-
+          </button> */}
+{/* 
           <button
             type="button"
             onClick={() => onOpenView("json")}
@@ -293,7 +293,7 @@ function AdminSidebar({
             title="JSON ساختار"
           >
             {isOpen ? "JSON ساختار" : "J"}
-          </button>
+          </button> */}
 
           <button
             type="button"
@@ -301,7 +301,7 @@ function AdminSidebar({
             className={
               isOpen
                 ? expandedNavButtonClass("create-page")
-                : "flex h-11 w-full items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30"
+                : "flex h-11 w-full items-center justify-center rounded-2xl bg-white-500/20 text-black  "
             }
             title="ایجاد صفحه جدید"
           >
