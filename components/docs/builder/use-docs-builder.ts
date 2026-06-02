@@ -14,11 +14,11 @@ import {
   paletteTransferKey,
 } from "@/components/docs/builder/constants";
 import {
+  type BuilderView,
   docsBuilderReducer,
   getBuilderSelectors,
   getInitialBuilderState,
 } from "@/components/docs/builder/state";
-import type { BuilderView } from "@/components/docs/builder/types";
 
 export function useDocsBuilder() {
   const [state, dispatch] = useReducer(
@@ -85,18 +85,6 @@ export function useDocsBuilder() {
     (scope: "active" | "create") => (componentId: string) => {
       dispatch({ type: "remove-block", scope, componentId });
     };
-
-  const addField = (scope: "active" | "create") => () => {
-    dispatch({ type: "add-field", scope });
-  };
-
-  const addColumn = (scope: "active" | "create") => () => {
-    dispatch({ type: "add-column", scope });
-  };
-
-  const addRow = (scope: "active" | "create") => () => {
-    dispatch({ type: "add-row", scope });
-  };
 
   const updateActivePageSlug = (value: string) => {
     dispatch({ type: "update-active-page-slug", value });
@@ -196,12 +184,6 @@ export function useDocsBuilder() {
       removeDraftComponent: removeComponent("create"),
       duplicateComponentInActivePage: duplicateComponent("active"),
       duplicateDraftComponent: duplicateComponent("create"),
-      addFieldToSelectedGroup: addField("active"),
-      addFieldToCreateGroup: addField("create"),
-      addColumnToSelectedTable: addColumn("active"),
-      addColumnToCreateTable: addColumn("create"),
-      addRowToSelectedTable: addRow("active"),
-      addRowToCreateTable: addRow("create"),
       handleCreateMenu: () => dispatch({ type: "create-menu" }),
       handleCreatePage: () => dispatch({ type: "create-page" }),
       copyJson,

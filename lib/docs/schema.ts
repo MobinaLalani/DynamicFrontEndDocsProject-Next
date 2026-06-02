@@ -5,7 +5,7 @@ export type PageComponentType =
   | "field-group"
   | "table"
   | "code"
-  |"radiobutton";
+  
 
 export type HeadingLevel = 1 | 2 | 3;
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

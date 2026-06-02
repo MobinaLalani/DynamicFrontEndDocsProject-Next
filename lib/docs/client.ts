@@ -14,11 +14,6 @@ export async function saveDocPage(page: DocPage): Promise<DocPage> {
       | { message?: string }
       | null;
 
-
-
-
-
-      
     throw new Error(payload?.message ?? "ذخیره صفحه با خطا مواجه شد.");
   }
 

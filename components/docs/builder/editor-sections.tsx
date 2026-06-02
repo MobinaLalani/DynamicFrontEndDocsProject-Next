@@ -9,7 +9,7 @@ import {
 } from "@/components/docs/builder/constants";
 import { InspectorPanel } from "@/components/docs/builder/inspector-panel";
 import { Field, inputClass } from "@/components/docs/builder/shared";
-import type { BuilderView } from "@/components/docs/builder/types";
+import type { BuilderView } from "@/components/docs/builder/state";
 import type { DocPage, PageComponent } from "@/lib/docs/schema";
 import type { PageComponentType } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
@@ -36,7 +36,9 @@ export function PageSettingsSection({
             تنظیمات صفحه فعال
           </h3>
         </div>
-        <p className="text-sm text-slate-600">در این بخش عنوان، مسیر و منوی صفحه را مشخص کن.</p>
+        <p className="text-sm text-slate-600">
+          در این بخش عنوان، مسیر و منوی صفحه را مشخص کن.
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -63,7 +65,10 @@ export function PageSettingsSection({
             className={inputClass}
             value={activePage.menuGroupId}
             onChange={(event) =>
-              onUpdatePage((page) => ({ ...page, menuGroupId: event.target.value }))
+              onUpdatePage((page) => ({
+                ...page,
+                menuGroupId: event.target.value,
+              }))
             }
           >
             {menuGroups.map((group) => (
@@ -79,7 +84,10 @@ export function PageSettingsSection({
             className={inputClass}
             value={activePage.menuTitle}
             onChange={(event) =>
-              onUpdatePage((page) => ({ ...page, menuTitle: event.target.value }))
+              onUpdatePage((page) => ({
+                ...page,
+                menuTitle: event.target.value,
+              }))
             }
           />
         </Field>
@@ -90,7 +98,10 @@ export function PageSettingsSection({
           className={`${inputClass} min-h-28`}
           value={activePage.description ?? ""}
           onChange={(event) =>
-            onUpdatePage((page) => ({ ...page, description: event.target.value }))
+            onUpdatePage((page) => ({
+              ...page,
+              description: event.target.value,
+            }))
           }
         />
       </Field>
@@ -186,7 +197,9 @@ export function CanvasSection({
                       {getBlockMeta(component)}
                     </span>
                   </div>
-                  <p className="text-lg font-semibold tracking-tight">{getBlockLabel(component)}</p>
+                  <p className="text-lg font-semibold tracking-tight">
+                    {getBlockLabel(component)}
+                  </p>
                 </div>
 
                 <div className="flex gap-2">
@@ -274,10 +287,9 @@ type CreatePageViewProps = {
   onSelectComponent: (componentId: string) => void;
   onDuplicateComponent: (component: PageComponent) => void;
   onRemoveComponent: (componentId: string) => void;
-  onUpdateSelectedComponent: (updater: (component: PageComponent) => PageComponent) => void;
-  onAddFieldToSelectedGroup: () => void;
-  onAddColumnToSelectedTable: () => void;
-  onAddRowToSelectedTable: () => void;
+  onUpdateSelectedComponent: (
+    updater: (component: PageComponent) => PageComponent,
+  ) => void;
 };
 
 export function CreatePageView({
@@ -303,9 +315,6 @@ export function CreatePageView({
   onDuplicateComponent,
   onRemoveComponent,
   onUpdateSelectedComponent,
-  onAddFieldToSelectedGroup,
-  onAddColumnToSelectedTable,
-  onAddRowToSelectedTable,
 }: CreatePageViewProps) {
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -316,7 +325,8 @@ export function CreatePageView({
             ایجاد صفحه جدید
           </h3>
           <p className="mt-2 text-sm leading-7 text-slate-600">
-            از این بخش یک صفحه جدید بساز، جای آن را در منو مشخص کن و در صورت نیاز همانجا یک منوی جدید هم تعریف کن.
+            از این بخش یک صفحه جدید بساز، جای آن را در منو مشخص کن و در صورت
+            نیاز همانجا یک منوی جدید هم تعریف کن.
           </p>
         </div>
         <button
@@ -333,7 +343,9 @@ export function CreatePageView({
           <div className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
             <div className="space-y-2">
               <p className="text-sm font-medium text-slate-500">تعریف صفحه</p>
-              <h4 className="text-xl font-semibold text-slate-950">مشخصات صفحه جدید</h4>
+              <h4 className="text-xl font-semibold text-slate-950">
+                مشخصات صفحه جدید
+              </h4>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -359,7 +371,9 @@ export function CreatePageView({
                 <select
                   className={inputClass}
                   value={draftPage.menuGroupId}
-                  onChange={(event) => onSetNewPageMenuGroupId(event.target.value)}
+                  onChange={(event) =>
+                    onSetNewPageMenuGroupId(event.target.value)
+                  }
                 >
                   {menuGroups.map((group) => (
                     <option key={group.id} value={group.id}>
@@ -373,7 +387,9 @@ export function CreatePageView({
                 <input
                   className={inputClass}
                   value={draftPage.menuTitle}
-                  onChange={(event) => onSetNewPageMenuTitle(event.target.value)}
+                  onChange={(event) =>
+                    onSetNewPageMenuTitle(event.target.value)
+                  }
                   placeholder="نامی که در سایدبار نمایش داده می شود"
                 />
               </Field>
@@ -383,7 +399,9 @@ export function CreatePageView({
               <textarea
                 className={`${inputClass} min-h-24`}
                 value={draftPage.description ?? ""}
-                onChange={(event) => onSetNewPageDescription(event.target.value)}
+                onChange={(event) =>
+                  onSetNewPageDescription(event.target.value)
+                }
                 placeholder="توضیح کوتاه درباره این صفحه"
               />
             </Field>
@@ -400,7 +418,9 @@ export function CreatePageView({
           <div className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
             <div className="space-y-2">
               <p className="text-sm font-medium text-slate-500">در صورت نیاز</p>
-              <h4 className="text-xl font-semibold text-slate-950">تعریف منوی جدید</h4>
+              <h4 className="text-xl font-semibold text-slate-950">
+                تعریف منوی جدید
+              </h4>
             </div>
 
             <Field label="عنوان منو">
@@ -416,7 +436,9 @@ export function CreatePageView({
               <textarea
                 className={`${inputClass} min-h-24`}
                 value={createMenuDescription}
-                onChange={(event) => onSetNewMenuDescription(event.target.value)}
+                onChange={(event) =>
+                  onSetNewMenuDescription(event.target.value)
+                }
                 placeholder="توضیح کوتاه درباره این گروه منو"
               />
             </Field>
@@ -439,7 +461,8 @@ export function CreatePageView({
                 بلوک های قابل استفاده در صفحه
               </h4>
               <p className="text-sm leading-6 text-slate-600">
-                بلوک ها را بکش و داخل بوم صفحه رها کن یا با کلیک مستقیم اضافه کن.
+                بلوک ها را بکش و داخل بوم صفحه رها کن یا با کلیک مستقیم اضافه
+                کن.
               </p>
             </div>
 
@@ -474,9 +497,6 @@ export function CreatePageView({
             <InspectorPanel
               selectedComponent={selectedComponent}
               onUpdateSelectedComponent={onUpdateSelectedComponent}
-              onAddFieldToSelectedGroup={onAddFieldToSelectedGroup}
-              onAddColumnToSelectedTable={onAddColumnToSelectedTable}
-              onAddRowToSelectedTable={onAddRowToSelectedTable}
             />
           </section>
         </div>
@@ -511,9 +531,12 @@ export function PreviewSection({
       <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500">پیش نمایش واقعی</p>
+            <p className="text-sm font-medium text-slate-500">
+              پیش نمایش واقعی
+            </p>
             <p className="mt-1 text-sm text-slate-600">
-              ابتدا نمای واقعی صفحه را می‌بینی و از همین بالا می‌توانی وارد ویرایش شوی.
+              ابتدا نمای واقعی صفحه را می‌بینی و از همین بالا می‌توانی وارد
+              ویرایش شوی.
             </p>
           </div>
 
@@ -575,9 +598,6 @@ type EditorWorkspaceProps = {
   onUpdateSelectedComponent: (
     updater: (component: PageComponent) => PageComponent,
   ) => void;
-  onAddFieldToSelectedGroup: () => void;
-  onAddColumnToSelectedTable: () => void;
-  onAddRowToSelectedTable: () => void;
 };
 
 function EditorWorkspace({
@@ -593,9 +613,6 @@ function EditorWorkspace({
   onRemoveComponent,
   onAddBlock,
   onUpdateSelectedComponent,
-  onAddFieldToSelectedGroup,
-  onAddColumnToSelectedTable,
-  onAddRowToSelectedTable,
 }: EditorWorkspaceProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
@@ -659,16 +676,14 @@ function EditorWorkspace({
             دیتای کامپوننت انتخاب شده
           </h3>
           <p className="text-sm leading-6 text-slate-600">
-            اگر جدول انتخاب شده باشد، ستون ها و ردیف هایش را همینجا می‌توانی تغییر بدهی.
+            اگر جدول انتخاب شده باشد، ستون ها و ردیف هایش را همینجا می‌توانی
+            تغییر بدهی.
           </p>
         </div>
 
         <InspectorPanel
           selectedComponent={selectedComponent}
           onUpdateSelectedComponent={onUpdateSelectedComponent}
-          onAddFieldToSelectedGroup={onAddFieldToSelectedGroup}
-          onAddColumnToSelectedTable={onAddColumnToSelectedTable}
-          onAddRowToSelectedTable={onAddRowToSelectedTable}
         />
       </section>
     </>
@@ -722,9 +737,6 @@ type BuilderCenterPanelProps = {
   onUpdateSelectedComponent: (
     updater: (component: PageComponent) => PageComponent,
   ) => void;
-  onAddFieldToSelectedGroup: () => void;
-  onAddColumnToSelectedTable: () => void;
-  onAddRowToSelectedTable: () => void;
   onSetNewMenuTitle: (value: string) => void;
   onSetNewMenuDescription: (value: string) => void;
   onSetNewPageTitle: (value: string) => void;
@@ -756,9 +768,6 @@ type BuilderCenterPanelProps = {
   onUpdateSelectedCreateComponent: (
     updater: (component: PageComponent) => PageComponent,
   ) => void;
-  onAddFieldToCreateGroup: () => void;
-  onAddColumnToCreateTable: () => void;
-  onAddRowToCreateTable: () => void;
 };
 
 export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
@@ -788,9 +797,6 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
           onDuplicateComponent={props.onDuplicateCreateComponent}
           onRemoveComponent={props.onRemoveCreateComponent}
           onUpdateSelectedComponent={props.onUpdateSelectedCreateComponent}
-          onAddFieldToSelectedGroup={props.onAddFieldToCreateGroup}
-          onAddColumnToSelectedTable={props.onAddColumnToCreateTable}
-          onAddRowToSelectedTable={props.onAddRowToCreateTable}
         />
       ) : null}
 
@@ -808,9 +814,6 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
           onRemoveComponent={props.onRemoveComponent}
           onAddBlock={props.onAddBlockToActivePage}
           onUpdateSelectedComponent={props.onUpdateSelectedComponent}
-          onAddFieldToSelectedGroup={props.onAddFieldToSelectedGroup}
-          onAddColumnToSelectedTable={props.onAddColumnToSelectedTable}
-          onAddRowToSelectedTable={props.onAddRowToSelectedTable}
         />
       ) : null}
 

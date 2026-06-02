@@ -2,7 +2,6 @@
 
 import { insertComponent, moveComponent } from "@/lib/docs/builder";
 import type {
-  ApiField,
   DocPage,
   PageComponent,
   PageComponentType,
@@ -15,11 +14,37 @@ import {
   type DocsWorkspace,
 } from "@/lib/docs/workspace";
 
-import type {
-  BuilderView,
-  DocsBuilderState,
-  PageEditorScope,
-} from "@/components/docs/builder/types";
+export type BuilderView =
+  | "editor"
+  | "create-page"
+  | "blocks"
+  | "preview"
+  | "json";
+
+type PageEditorScope = "active" | "create";
+
+type CreateMenuForm = {
+  title: string;
+  description: string;
+};
+
+type SaveState = {
+  status: "idle" | "saving" | "success" | "error";
+  message: string | null;
+  lastSavedPageSnapshot: string;
+};
+
+type DocsBuilderState = {
+  workspace: DocsWorkspace;
+  activeView: BuilderView;
+  selectedPageSlug: string;
+  selectedComponentId: string | null;
+  createPageDraft: DocPage;
+  selectedCreateComponentId: string | null;
+  createMenuForm: CreateMenuForm;
+  copied: boolean;
+  save: SaveState;
+};
 
 type BuilderAction =
   | { type: "set-active-view"; view: BuilderView }
@@ -40,7 +65,11 @@ type BuilderAction =
       updater: (component: PageComponent) => PageComponent;
     }
   | { type: "update-active-page-slug"; value: string }
-  | { type: "insert-block"; scope: PageEditorScope; blockType: PageComponentType }
+  | {
+      type: "insert-block";
+      scope: PageEditorScope;
+      blockType: PageComponentType;
+    }
   | {
       type: "move-block";
       scope: PageEditorScope;
@@ -48,10 +77,11 @@ type BuilderAction =
       targetIndex: number;
     }
   | { type: "remove-block"; scope: PageEditorScope; componentId: string }
-  | { type: "duplicate-block"; scope: PageEditorScope; component: PageComponent }
-  | { type: "add-field"; scope: PageEditorScope }
-  | { type: "add-column"; scope: PageEditorScope }
-  | { type: "add-row"; scope: PageEditorScope }
+  | {
+      type: "duplicate-block";
+      scope: PageEditorScope;
+      component: PageComponent;
+    }
   | { type: "create-menu" }
   | { type: "create-page" }
   | { type: "start-save" }
@@ -65,26 +95,6 @@ function buildPrettyJson(workspace: DocsWorkspace) {
 
 function cloneComponent<T extends PageComponent>(component: T): T {
   return JSON.parse(JSON.stringify(component)) as T;
-}
-
-function createField(): ApiField {
-  return {
-    id: `field-${Math.random().toString(36).slice(2, 10)}`,
-    name: "newField",
-    type: "string",
-    required: false,
-    description: "توضیح این فیلد را وارد کنید.",
-  };
-}
-
-function createEmptyTableRow(component: Extract<PageComponent, { type: "table" }>) {
-  return component.columns.reduce<Record<string, string | number | null>>(
-    (result, column) => {
-      result[column.field] = "";
-      return result;
-    },
-    {},
-  );
 }
 
 function buildUniqueSlug(baseSlug: string, pages: DocPage[]) {
@@ -127,13 +137,17 @@ function getPageByScope(state: DocsBuilderState, scope: PageEditorScope) {
   }
 
   return (
-    state.workspace.pages.find((page) => page.slug === state.selectedPageSlug) ??
+    state.workspace.pages.find(
+      (page) => page.slug === state.selectedPageSlug,
+    ) ??
     state.workspace.pages[0] ??
     null
   );
 }
 
-function updateSaveStateForDirtyPage(state: DocsBuilderState): DocsBuilderState {
+function updateSaveStateForDirtyPage(
+  state: DocsBuilderState,
+): DocsBuilderState {
   return {
     ...state,
     save: {
@@ -180,7 +194,9 @@ function updateSelectedComponentForScope(
 ) {
   const page = getPageByScope(state, scope);
   const selectedComponentId =
-    scope === "create" ? state.selectedCreateComponentId : state.selectedComponentId;
+    scope === "create"
+      ? state.selectedCreateComponentId
+      : state.selectedComponentId;
 
   if (!page || !selectedComponentId) {
     return state;
@@ -258,7 +274,7 @@ function removeBlock(
       ...nextState,
       selectedCreateComponentId:
         state.selectedCreateComponentId === componentId
-          ? nextComponents[0]?.id ?? null
+          ? (nextComponents[0]?.id ?? null)
           : state.selectedCreateComponentId,
     };
   }
@@ -267,7 +283,7 @@ function removeBlock(
     ...nextState,
     selectedComponentId:
       state.selectedComponentId === componentId
-        ? nextComponents[0]?.id ?? null
+        ? (nextComponents[0]?.id ?? null)
         : state.selectedComponentId,
   };
 }
@@ -292,49 +308,6 @@ function duplicateBlock(
   return scope === "create"
     ? { ...nextState, selectedCreateComponentId: duplicated.id }
     : { ...nextState, selectedComponentId: duplicated.id };
-}
-
-function addField(state: DocsBuilderState, scope: PageEditorScope) {
-  return updateSelectedComponentForScope(state, scope, (component) => {
-    if (component.type !== "field-group") {
-      return component;
-    }
-
-    return {
-      ...component,
-      fields: [...component.fields, createField()],
-    };
-  });
-}
-
-function addColumn(state: DocsBuilderState, scope: PageEditorScope) {
-  return updateSelectedComponentForScope(state, scope, (component) => {
-    if (component.type !== "table") {
-      return component;
-    }
-
-    const nextColumnIndex = component.columns.length + 1;
-    const field = `field${nextColumnIndex}`;
-
-    return {
-      ...component,
-      columns: [...component.columns, { title: `ستون ${nextColumnIndex}`, field }],
-      rows: (component.rows ?? []).map((row) => ({ ...row, [field]: "" })),
-    };
-  });
-}
-
-function addRow(state: DocsBuilderState, scope: PageEditorScope) {
-  return updateSelectedComponentForScope(state, scope, (component) => {
-    if (component.type !== "table") {
-      return component;
-    }
-
-    return {
-      ...component,
-      rows: [...(component.rows ?? []), createEmptyTableRow(component)],
-    };
-  });
 }
 
 export function getInitialBuilderState(): DocsBuilderState {
@@ -430,7 +403,11 @@ export function docsBuilderReducer(
       return updatePageForScope(state, action.scope, action.updater);
 
     case "update-selected-component":
-      return updateSelectedComponentForScope(state, action.scope, action.updater);
+      return updateSelectedComponentForScope(
+        state,
+        action.scope,
+        action.updater,
+      );
 
     case "update-active-page-slug": {
       const activePage = getPageByScope(state, "active");
@@ -472,15 +449,6 @@ export function docsBuilderReducer(
     case "duplicate-block":
       return duplicateBlock(state, action.scope, action.component);
 
-    case "add-field":
-      return addField(state, action.scope);
-
-    case "add-column":
-      return addColumn(state, action.scope);
-
-    case "add-row":
-      return addRow(state, action.scope);
-
     case "create-menu": {
       const menu = createMenuGroup({
         title: state.createMenuForm.title,
@@ -513,7 +481,8 @@ export function docsBuilderReducer(
         title: state.createPageDraft.title,
         slug: state.createPageDraft.slug || state.createPageDraft.title,
         menuGroupId: state.createPageDraft.menuGroupId,
-        menuTitle: state.createPageDraft.menuTitle || state.createPageDraft.title,
+        menuTitle:
+          state.createPageDraft.menuTitle || state.createPageDraft.title,
       });
       const page = {
         ...draft,
@@ -537,7 +506,9 @@ export function docsBuilderReducer(
         activeView: "editor",
         selectedPageSlug: page.slug,
         selectedComponentId: page.components[0]?.id ?? null,
-        createPageDraft: createEmptyDraftPage(state.createPageDraft.menuGroupId),
+        createPageDraft: createEmptyDraftPage(
+          state.createPageDraft.menuGroupId,
+        ),
         selectedCreateComponentId: null,
         save: {
           ...state.save,
@@ -602,7 +573,9 @@ export function docsBuilderReducer(
 
 export function getBuilderSelectors(state: DocsBuilderState) {
   const activePage =
-    state.workspace.pages.find((page) => page.slug === state.selectedPageSlug) ??
+    state.workspace.pages.find(
+      (page) => page.slug === state.selectedPageSlug,
+    ) ??
     state.workspace.pages[0] ??
     null;
   const selectedComponent =

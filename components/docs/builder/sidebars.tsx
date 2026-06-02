@@ -10,18 +10,12 @@ type ToolsSidebarProps = {
   onUpdateSelectedComponent: (
     updater: (component: PageComponent) => PageComponent,
   ) => void;
-  onAddFieldToSelectedGroup: () => void;
-  onAddColumnToSelectedTable: () => void;
-  onAddRowToSelectedTable: () => void;
 };
 
 export function ToolsSidebar({
   selectedComponent,
   onAddBlock,
   onUpdateSelectedComponent,
-  onAddFieldToSelectedGroup,
-  onAddColumnToSelectedTable,
-  onAddRowToSelectedTable,
 }: ToolsSidebarProps) {
   return (
     <aside dir="rtl" className="space-y-6">
@@ -29,9 +23,6 @@ export function ToolsSidebar({
         selectedComponent={selectedComponent}
         onAddBlock={onAddBlock}
         onUpdateSelectedComponent={onUpdateSelectedComponent}
-        onAddFieldToSelectedGroup={onAddFieldToSelectedGroup}
-        onAddColumnToSelectedTable={onAddColumnToSelectedTable}
-        onAddRowToSelectedTable={onAddRowToSelectedTable}
       />
     </aside>
   );
@@ -41,9 +32,6 @@ export function ToolsPanelContent({
   selectedComponent,
   onAddBlock,
   onUpdateSelectedComponent,
-  onAddFieldToSelectedGroup,
-  onAddColumnToSelectedTable,
-  onAddRowToSelectedTable,
 }: ToolsSidebarProps) {
   return (
     <>
@@ -80,9 +68,6 @@ export function ToolsPanelContent({
         <InspectorPanel
           selectedComponent={selectedComponent}
           onUpdateSelectedComponent={onUpdateSelectedComponent}
-          onAddFieldToSelectedGroup={onAddFieldToSelectedGroup}
-          onAddColumnToSelectedTable={onAddColumnToSelectedTable}
-          onAddRowToSelectedTable={onAddRowToSelectedTable}
         />
       </section>
     </>
