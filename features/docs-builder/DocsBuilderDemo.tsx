@@ -184,16 +184,7 @@ function AdminSidebar({
 }: AdminSidebarProps) {
   const expandedNavButtonClass = (view: BuilderView) =>
     `w-full bg-white text-black rounded-2xl px-4 py-3 text-right text-xl font-bold transition ${
-      activeView === view
-        ? " shadow-sm"
-        : " "
-    }`;
-
-  const collapsedNavButtonClass = (view: BuilderView) =>
-    `flex h-11 w-full items-center justify-center rounded-2xl text-sm transition ${
-      activeView === view
-        ? "bg-white text-slate-950 shadow-sm"
-        : "bg-white/5 text-slate-200 hover:bg-white/10"
+      activeView === view ? " shadow-sm" : " "
     }`;
 
   return (
@@ -220,7 +211,9 @@ function AdminSidebar({
               <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
                 API DOCS CMS
               </p>
-              <h2 className="mt-2 text-2xl font-semibold">پنل مدیریت داکیومنت</h2>
+              <h2 className="mt-2 text-2xl font-semibold">
+                پنل مدیریت داکیومنت
+              </h2>
             </div>
             <p className="text-sm leading-6 text-slate-400">
               همه بخش‌های پنل فقط از همین سایدبار در دسترس هستند.
@@ -281,7 +274,7 @@ function AdminSidebar({
           >
             {isOpen ? "پیش‌نمایش" : "پ"}
           </button> */}
-{/* 
+          {/* 
           <button
             type="button"
             onClick={() => onOpenView("json")}

@@ -1,6 +1,8 @@
 import { useState, type DragEvent } from "react";
 
 import { BlockPicker } from "@/components/docs/builder/block-picker";
+import { NewMenuSection } from "@/components/docs/builder/create-page/NewMenuSection";
+import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
 import {
   componentTransferKey,
   getBlockLabel,
@@ -338,167 +340,113 @@ export function CreatePageView({
         </button>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.15fr]">
-        <div className="space-y-6">
-          <div className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-500">تعریف صفحه</p>
-              <h4 className="text-xl font-semibold text-slate-950">
-                مشخصات صفحه جدید
-              </h4>
+      <div className="flex flex-col gap-7">
+        <div className="flex flex-col gap-7">
+          <div className="flex w-full items-stretch gap-5 min-h-[400px]">
+            {/* Left: Page Details */}
+            <div className="flex flex-1 min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              {/* Header */}
+              <div className="border-b border-slate-100 p-5">
+                <p className="text-sm font-medium text-slate-500">تعریف صفحه</p>
+
+                <h4 className="break-words text-xl font-semibold text-slate-950">
+                  مشخصات صفحه جدید
+                </h4>
+              </div>
+
+              {/* Body (scrollable if needed) */}
+              <div className="flex-1 overflow-y-auto p-5">
+                <NewPageDetailsSection
+                  menuGroups={menuGroups}
+                  draftPage={draftPage}
+                  onSetNewPageTitle={onSetNewPageTitle}
+                  onSetNewPageSlug={onSetNewPageSlug}
+                  onSetNewPageMenuTitle={onSetNewPageMenuTitle}
+                  onSetNewPageMenuGroupId={onSetNewPageMenuGroupId}
+                  onSetNewPageDescription={onSetNewPageDescription}
+                  onCreatePage={onCreatePage}
+                />
+              </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="عنوان صفحه">
-                <input
-                  className={inputClass}
-                  value={draftPage.title}
-                  onChange={(event) => onSetNewPageTitle(event.target.value)}
-                  placeholder="مثلا مدیریت کاربران"
-                />
-              </Field>
+            {/* Right: Menu */}
+            <div className="flex flex-1 min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              {/* Header */}
+              <div className="border-b border-slate-100 p-5">
+                <p className="text-sm font-medium text-slate-500">
+                  در صورت نیاز
+                </p>
 
-              <Field label="Slug">
-                <input
-                  className={inputClass}
-                  value={draftPage.slug}
-                  onChange={(event) => onSetNewPageSlug(event.target.value)}
-                  placeholder="users-management"
-                />
-              </Field>
+                <h4 className="break-words text-xl font-semibold text-slate-950">
+                  تعریف منوی جدید
+                </h4>
+              </div>
 
-              <Field label="گروه منو">
-                <select
-                  className={inputClass}
-                  value={draftPage.menuGroupId}
-                  onChange={(event) =>
-                    onSetNewPageMenuGroupId(event.target.value)
-                  }
-                >
-                  {menuGroups.map((group) => (
-                    <option key={group.id} value={group.id}>
-                      {group.title}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-
-              <Field label="عنوان در منو">
-                <input
-                  className={inputClass}
-                  value={draftPage.menuTitle}
-                  onChange={(event) =>
-                    onSetNewPageMenuTitle(event.target.value)
-                  }
-                  placeholder="نامی که در سایدبار نمایش داده می شود"
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto p-5">
+                <NewMenuSection
+                  createMenuTitle={createMenuTitle}
+                  createMenuDescription={createMenuDescription}
+                  onSetNewMenuTitle={onSetNewMenuTitle}
+                  onSetNewMenuDescription={onSetNewMenuDescription}
+                  onCreateMenu={onCreateMenu}
                 />
-              </Field>
+              </div>
             </div>
-
-            <Field label="توضیحات صفحه">
-              <textarea
-                className={`${inputClass} min-h-24`}
-                value={draftPage.description ?? ""}
-                onChange={(event) =>
-                  onSetNewPageDescription(event.target.value)
-                }
-                placeholder="توضیح کوتاه درباره این صفحه"
-              />
-            </Field>
-
-            <button
-              type="button"
-              onClick={onCreatePage}
-              className="w-full rounded-2xl bg-emerald-600 px-4 py-3 font-medium text-white"
-            >
-              ساخت صفحه جدید
-            </button>
-          </div>
-
-          <div className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-500">در صورت نیاز</p>
-              <h4 className="text-xl font-semibold text-slate-950">
-                تعریف منوی جدید
-              </h4>
-            </div>
-
-            <Field label="عنوان منو">
-              <input
-                className={inputClass}
-                value={createMenuTitle}
-                onChange={(event) => onSetNewMenuTitle(event.target.value)}
-                placeholder="مثلا احراز هویت"
-              />
-            </Field>
-
-            <Field label="توضیح منو">
-              <textarea
-                className={`${inputClass} min-h-24`}
-                value={createMenuDescription}
-                onChange={(event) =>
-                  onSetNewMenuDescription(event.target.value)
-                }
-                placeholder="توضیح کوتاه درباره این گروه منو"
-              />
-            </Field>
-
-            <button
-              type="button"
-              onClick={onCreateMenu}
-              className="w-full rounded-2xl bg-slate-950 px-4 py-3 font-medium text-white"
-            >
-              افزودن منوی جدید
-            </button>
           </div>
         </div>
+        <div className="flex gap-6">
+          <div className="flex w-87.5 flex-col gap-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-slate-500">
+                  کامپوننت ها
+                </p>
+                <h4 className="text-xl font-semibold text-slate-950">
+                  بلوک های قابل استفاده در صفحه
+                </h4>
+                <p className="text-sm leading-6 text-slate-600">
+                  بلوک ها را بکش و داخل بوم صفحه رها کن یا با کلیک مستقیم اضافه
+                  کن.
+                </p>
+              </div>
 
-        <div className="space-y-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-500">کامپوننت ها</p>
-              <h4 className="text-xl font-semibold text-slate-950">
-                بلوک های قابل استفاده در صفحه
-              </h4>
-              <p className="text-sm leading-6 text-slate-600">
-                بلوک ها را بکش و داخل بوم صفحه رها کن یا با کلیک مستقیم اضافه
-                کن.
-              </p>
+              <div className="mt-4">
+                <BlockPicker
+                  onAddBlock={onAddBlock}
+                  columnsClassName="grid-cols-1"
+                />
+              </div>
             </div>
 
-            <div className="mt-4">
-              <BlockPicker
-                onAddBlock={onAddBlock}
-                columnsClassName="md:grid-cols-2"
+            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-slate-500">بازرس</p>
+                <h4 className="text-xl font-semibold text-slate-950">
+                  ویرایش کامپوننت انتخاب شده
+                </h4>
+                <p className="text-sm leading-6 text-slate-600">
+                  روی هر بلوک داخل بوم کلیک کن تا تنظیماتش همینجا باز شود.
+                </p>
+              </div>
+
+              <InspectorPanel
+                selectedComponent={selectedComponent}
+                onUpdateSelectedComponent={onUpdateSelectedComponent}
               />
-            </div>
+            </section>
           </div>
 
-          <CanvasSection
-            activePage={draftPage}
-            selectedComponentId={selectedComponentId}
-            onSelectComponent={onSelectComponent}
-            onDropAt={onDropAt}
-            onDuplicateComponent={onDuplicateComponent}
-            onRemoveComponent={onRemoveComponent}
-          />
-
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-500">بازرس</p>
-              <h4 className="text-xl font-semibold text-slate-950">
-                ویرایش کامپوننت انتخاب شده
-              </h4>
-              <p className="text-sm leading-6 text-slate-600">
-                روی هر بلوک داخل بوم کلیک کن تا تنظیماتش همینجا باز شود.
-              </p>
-            </div>
-
-            <InspectorPanel
-              selectedComponent={selectedComponent}
-              onUpdateSelectedComponent={onUpdateSelectedComponent}
+          <div className="flex-1 min-w-0">
+            <CanvasSection
+              activePage={draftPage}
+              selectedComponentId={selectedComponentId}
+              onSelectComponent={onSelectComponent}
+              onDropAt={onDropAt}
+              onDuplicateComponent={onDuplicateComponent}
+              onRemoveComponent={onRemoveComponent}
             />
-          </section>
+          </div>
         </div>
       </div>
     </section>
