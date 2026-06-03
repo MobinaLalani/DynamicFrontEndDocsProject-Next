@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { SessionBar } from "@/components/auth/session-bar";
 import { DocsSitePreview } from "@/features/docs-preview";
 import { requireAuth } from "@/lib/auth/server";
-import { getAllPages, getPageBySlug } from "@/lib/docs/page-service";
-import { sampleMenuGroups } from "@/lib/docs/workspace";
+import { getStoredWorkspace } from "@/lib/docs/workspace-service";
 
 type DynamicPageProps = {
   params: Promise<{
@@ -15,8 +14,8 @@ type DynamicPageProps = {
 export default async function DynamicPage({ params }: DynamicPageProps) {
   const session = await requireAuth();
   const { slug } = await params;
-  const pages = await getAllPages();
-  const page = await getPageBySlug(slug);
+  const workspace = await getStoredWorkspace();
+  const page = workspace.pages.find((item) => item.slug === slug) ?? null;
 
   if (!page) {
     notFound();
@@ -26,8 +25,8 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
     <main className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
       <SessionBar session={session} />
       <DocsSitePreview
-        menuGroups={sampleMenuGroups}
-        pages={pages}
+        menuGroups={workspace.menuGroups}
+        pages={workspace.pages}
         activePageSlug={page.slug}
       />
     </main>

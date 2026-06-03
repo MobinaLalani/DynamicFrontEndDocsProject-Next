@@ -1,7 +1,7 @@
 import {
   createDefaultWorkspace,
   createMenuGroup,
-  createPageFromTemplate,
+  createPageFromDraft,
 } from "@/lib/docs/workspace";
 
 import {
@@ -21,13 +21,14 @@ import type {
   DocsBuilderState,
 } from "@/features/docs-builder/model/types";
 
-export function getInitialBuilderState(): DocsBuilderState {
-  const workspace = createDefaultWorkspace();
+export function getInitialBuilderState(
+  workspace = createDefaultWorkspace(),
+): DocsBuilderState {
   const activePage = workspace.pages[0] ?? null;
 
   return {
     workspace,
-    activeView: "preview",
+    activeView: activePage ? "preview" : "create-page",
     selectedPageSlug: activePage?.slug ?? "",
     selectedComponentId: activePage?.components[0]?.id ?? null,
     createPageDraft: createEmptyDraftPage(workspace.menuGroups[0]?.id ?? ""),
@@ -188,21 +189,13 @@ export function docsBuilderReducer(
         return state;
       }
 
-      const draft = createPageFromTemplate(state.workspace.pages, {
-        title: state.createPageDraft.title,
-        slug: state.createPageDraft.slug || state.createPageDraft.title,
-        menuGroupId: state.createPageDraft.menuGroupId,
-        menuTitle:
-          state.createPageDraft.menuTitle || state.createPageDraft.title,
-      });
-      const page = {
-        ...draft,
-        slug: buildUniqueSlug(draft.slug, state.workspace.pages),
-        title: state.createPageDraft.title.trim() || draft.title,
-        description:
-          state.createPageDraft.description?.trim() || draft.description,
-        menuGroupId: state.createPageDraft.menuGroupId || draft.menuGroupId,
-        menuTitle: state.createPageDraft.menuTitle.trim() || draft.menuTitle,
+      const generatedPage = createPageFromDraft(
+        state.workspace.pages,
+        state.createPageDraft,
+      );
+      const page = action.page ?? {
+        ...generatedPage,
+        slug: buildUniqueSlug(generatedPage.slug, state.workspace.pages),
         components: state.createPageDraft.components.map((component) =>
           cloneComponent(component),
         ),
@@ -217,7 +210,9 @@ export function docsBuilderReducer(
         activeView: "editor",
         selectedPageSlug: page.slug,
         selectedComponentId: page.components[0]?.id ?? null,
-        createPageDraft: createEmptyDraftPage(state.createPageDraft.menuGroupId),
+        createPageDraft: createEmptyDraftPage(
+          state.createPageDraft.menuGroupId,
+        ),
         selectedCreateComponentId: null,
         save: {
           ...state.save,

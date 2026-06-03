@@ -74,7 +74,7 @@ export type BuilderAction =
       component: PageComponent;
     }
   | { type: "create-menu" }
-  | { type: "create-page" }
+  | { type: "create-page"; page?: DocPage }
   | { type: "start-save" }
   | { type: "save-success"; page: DocPage }
   | { type: "save-error"; message: string }

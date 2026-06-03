@@ -1,5 +1,4 @@
-import { samplePages } from "@/lib/docs/sample-pages";
-import { createDefaultPage, type DocPage } from "@/lib/docs/schema";
+import type { DocPage } from "@/lib/docs/schema";
 
 export type MenuGroup = {
   id: string;
@@ -12,27 +11,10 @@ export type DocsWorkspace = {
   pages: DocPage[];
 };
 
-export const sampleMenuGroups: MenuGroup[] = [
-  {
-    id: "core-apis",
-    title: "مستندات اصلی",
-    description: "endpoint های اصلی پروژه",
-  },
-  {
-    id: "monitoring",
-    title: "مانیتورینگ",
-    description: "سلامت سرویس و وضعیت سیستم",
-  },
-];
-
-function clonePages(pages: DocPage[]) {
-  return JSON.parse(JSON.stringify(pages)) as DocPage[];
-}
-
 export function createDefaultWorkspace(): DocsWorkspace {
   return {
-    menuGroups: [...sampleMenuGroups],
-    pages: clonePages(samplePages),
+    menuGroups: [],
+    pages: [],
   };
 }
 
@@ -52,22 +34,40 @@ export function createPageFromTemplate(
     slug: string;
     menuGroupId: string;
     menuTitle: string;
-  }
+    description?: string;
+    components?: DocPage["components"];
+  },
 ): DocPage {
-  const nextId = currentPages.reduce((max, page) => Math.max(max, page.id), 0) + 1;
-  const template = createDefaultPage();
+  const nextId =
+    currentPages.reduce((max, page) => Math.max(max, page.id), 0) + 1;
   const slug = sanitizeSlug(input.slug) || `page-${nextId}`;
 
   return {
-    ...template,
     id: nextId,
     slug,
     title: input.title.trim() || "صفحه جدید",
-    description: "این صفحه تازه ایجاد شده و آماده ویرایش است.",
+    description: input.description?.trim() || "",
     menuGroupId: input.menuGroupId,
     menuTitle: input.menuTitle.trim() || input.title.trim() || "صفحه جدید",
-    components: template.components.map((component) => ({ ...component })),
+    components:
+      input.components?.map((component) =>
+        JSON.parse(JSON.stringify(component)),
+      ) ?? [],
   };
+}
+
+export function createPageFromDraft(
+  currentPages: DocPage[],
+  draftPage: DocPage,
+): DocPage {
+  return createPageFromTemplate(currentPages, {
+    title: draftPage.title,
+    slug: draftPage.slug || draftPage.title,
+    menuGroupId: draftPage.menuGroupId,
+    menuTitle: draftPage.menuTitle || draftPage.title,
+    description: draftPage.description,
+    components: draftPage.components,
+  });
 }
 
 export function createMenuGroup(input: {

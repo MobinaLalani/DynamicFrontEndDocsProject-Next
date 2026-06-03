@@ -9,13 +9,14 @@ import type { BuilderView } from "@/features/docs-builder/model";
 import { useDocsBuilder } from "@/features/docs-builder/model";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
 
-export function DocsBuilderDemo() {
-  const { state, actions } = useDocsBuilder();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+type DocsBuilderDemoProps = {
+  initialWorkspace: DocsWorkspace;
+};
 
-  if (!state.activePage) {
-    return null;
-  }
+export function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
+  const { state, actions } = useDocsBuilder(initialWorkspace);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const displayPage = state.activePage ?? state.createPageDraft;
 
   return (
     <section
@@ -30,7 +31,7 @@ export function DocsBuilderDemo() {
       >
         <BuilderStats
           workspace={state.workspace}
-          activePageSlug={state.activePage.slug}
+          activePageSlug={displayPage.slug}
         />
 
         {state.activeView !== "create-page" ? (
@@ -53,7 +54,7 @@ export function DocsBuilderDemo() {
         ) : (
           <BuilderCenterPanel
             activeView={state.activeView}
-            activePage={state.activePage}
+            activePage={displayPage}
             menuGroups={state.workspace.menuGroups}
             pages={state.workspace.pages}
             selectedComponentId={state.selectedComponentId}

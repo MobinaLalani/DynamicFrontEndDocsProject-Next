@@ -2,12 +2,14 @@
 
 import { useMemo, useReducer, type DragEvent } from "react";
 
-import { saveDocPage } from "@/lib/docs/client";
+import { saveDocPageWithWorkspace } from "@/lib/docs/client";
 import type {
   DocPage,
   PageComponent,
   PageComponentType,
 } from "@/lib/docs/schema";
+import { createPageFromDraft } from "@/lib/docs/workspace";
+import type { DocsWorkspace } from "@/lib/docs/workspace";
 
 import {
   componentTransferKey,
@@ -20,10 +22,10 @@ import {
 } from "@/features/docs-builder/model/reducer";
 import type { BuilderView } from "@/features/docs-builder/model/types";
 
-export function useDocsBuilder() {
+export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
   const [state, dispatch] = useReducer(
     docsBuilderReducer,
-    undefined,
+    initialWorkspace,
     getInitialBuilderState,
   );
   const selectors = useMemo(() => getBuilderSelectors(state), [state]);
@@ -185,12 +187,31 @@ export function useDocsBuilder() {
       duplicateComponentInActivePage: duplicateComponent("active"),
       duplicateDraftComponent: duplicateComponent("create"),
       handleCreateMenu: () => dispatch({ type: "create-menu" }),
-      handleCreatePage: () => {
+      handleCreatePage: async () => {
+        if (!state.createPageDraft.menuGroupId) {
+          return;
+        }
+
+        const page = createPageFromDraft(
+          state.workspace.pages,
+          state.createPageDraft,
+        );
+
         console.log(
           "[create-page] payload for database:",
-          JSON.stringify(state.createPageDraft, null, 2),
+          JSON.stringify(page, null, 2),
         );
-        dispatch({ type: "create-page" });
+
+        try {
+          const savedPage = await saveDocPageWithWorkspace(
+            page,
+            state.workspace.menuGroups,
+          );
+
+          dispatch({ type: "create-page", page: savedPage });
+        } catch (error) {
+          console.error("ذخیره فایل JSON صفحه جدید با خطا مواجه شد:", error);
+        }
       },
       copyJson,
       saveActivePage,

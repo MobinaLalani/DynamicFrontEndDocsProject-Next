@@ -139,77 +139,11 @@ export type DocPage = {
 };
 
 export const createDefaultPage = (): DocPage => ({
-  id: 1,
-  slug: "users",
-  title: "مستندات کاربران",
-  description: "این صفحه به صورت داینامیک از روی JSON ساخته می شود.",
-  menuGroupId: "core-apis",
-  menuTitle: "کاربران",
-  components: [
-    {
-      id: "heading-users-list",
-      type: "heading",
-      text: "API کاربران",
-      level: 1,
-    },
-    {
-      id: "paragraph-users-description",
-      type: "paragraph",
-      text: "این صفحه نشان می دهد که چگونه یک قرارداد JSON تمیز می تواند بخش های مختلف داکیومنت API را توصیف و به صورت داینامیک رندر کند.",
-    },
-    {
-      id: "endpoint-users-list",
-      type: "endpoint",
-      title: "دریافت لیست کاربران",
-      method: "GET",
-      path: "/api/users",
-      summary: "لیست صفحه بندی شده کاربران را برمی گرداند.",
-      auth: "Bearer Token",
-      requestContentType: "application/json",
-      responseContentType: "application/json",
-    },
-    {
-      id: "field-group-users-query",
-      type: "field-group",
-      title: "پارامترهای Query",
-      kind: "query",
-      fields: [
-        {
-          id: "field-page",
-          name: "page",
-          type: "number",
-          required: false,
-          description: "شماره صفحه فعلی.",
-        },
-        {
-          id: "field-limit",
-          name: "limit",
-          type: "number",
-          required: false,
-          description: "حداکثر تعداد آیتم در هر صفحه.",
-        },
-      ],
-    },
-    {
-      id: "table-users",
-      type: "table",
-      title: "نمونه خروجی",
-      columns: [
-        { title: "Id", field: "id" },
-        { title: "نام", field: "name" },
-      ],
-      rows: [
-        { id: 1, name: "علی" },
-        { id: 2, name: "مریم" },
-      ],
-      emptyMessage: "هنوز داده ای تنظیم نشده است.",
-    },
-    {
-      id: "code-users-response",
-      type: "code",
-      title: "نمونه پاسخ",
-      language: "json",
-      code: '{\n  "data": [\n    {\n      "id": 1,\n      "name": "علی"\n    }\n  ]\n}',
-    },
-  ],
+  id: 0,
+  slug: "",
+  title: "",
+  description: "",
+  menuGroupId: "",
+  menuTitle: "",
+  components: [],
 });

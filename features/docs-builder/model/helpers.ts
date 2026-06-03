@@ -1,5 +1,4 @@
 import { insertComponent, moveComponent } from "@/lib/docs/builder";
-import { createDefaultPage } from "@/lib/docs/schema";
 import type { DocPage, PageComponent, PageComponentType } from "@/lib/docs/schema";
 
 import type { DocsBuilderState, PageEditorScope } from "@/features/docs-builder/model/types";
@@ -32,15 +31,12 @@ export function buildUniqueSlug(baseSlug: string, pages: DocPage[]) {
 }
 
 export function createEmptyDraftPage(menuGroupId: string): DocPage {
-  const template = createDefaultPage();
-
   return {
-    ...template,
     id: 0,
     slug: "",
     title: "",
     description: "",
-    menuGroupId: menuGroupId || template.menuGroupId,
+    menuGroupId,
     menuTitle: "",
     components: [],
   };
