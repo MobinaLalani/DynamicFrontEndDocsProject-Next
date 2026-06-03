@@ -4,6 +4,7 @@ import { BlockPicker } from "@/components/docs/builder/block-picker";
 import { NewMenuSection } from "@/components/docs/builder/create-page/NewMenuSection";
 import { CollapsiblePanel } from "@/components/ui/CollapsiblePanel";
 import { NewPageDetailsSection } from "@/components/docs/builder/create-page/NewPageDetailsSection";
+import { PageRenderer } from "@/features/page-renderer";
 import {
   componentTransferKey,
   getBlockLabel,
@@ -137,17 +138,49 @@ export function CanvasSection({
   description = "از سایدبار بلوک ها را بکش یا بلوک های فعلی را جابه جا کن.",
   showDropHint = true,
 }: CanvasSectionProps) {
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+      <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">بوم صفحه</p>
           <h3 className="text-2xl font-semibold tracking-tight text-slate-950">
             {title}
           </h3>
         </div>
-        <p className="text-sm text-slate-600">{description}</p>
+        <div className="flex flex-col items-start gap-3 lg:items-end">
+          <p className="text-sm text-slate-600">{description}</p>
+          <button
+            type="button"
+            onClick={() => setIsPreviewVisible((current) => !current)}
+            className={`rounded-2xl px-4 py-2 text-sm font-medium transition ${
+              isPreviewVisible
+                ? "bg-slate-950 text-white hover:bg-slate-800"
+                : "border border-slate-300 bg-white text-slate-700 hover:border-slate-400"
+            }`}
+          >
+            {isPreviewVisible ? "بستن پیش نمایش" : "نمایش پیش نمایش"}
+          </button>
+        </div>
       </div>
+
+      {isPreviewVisible ? (
+        <div className="mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-slate-500">خروجی صفحه</p>
+              <p className="mt-1 text-sm text-slate-600">
+                پیش نمایش زنده همین صفحه بر اساس چیدمان فعلی
+              </p>
+            </div>
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
+              /pages/{activePage.slug}
+            </span>
+          </div>
+          <PageRenderer page={activePage} />
+        </div>
+      ) : null}
 
       <div className="space-y-3">
         {activePage.components.map((component, index) => (
