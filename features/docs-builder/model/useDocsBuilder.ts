@@ -185,7 +185,13 @@ export function useDocsBuilder() {
       duplicateComponentInActivePage: duplicateComponent("active"),
       duplicateDraftComponent: duplicateComponent("create"),
       handleCreateMenu: () => dispatch({ type: "create-menu" }),
-      handleCreatePage: () => dispatch({ type: "create-page" }),
+      handleCreatePage: () => {
+        console.log(
+          "[create-page] payload for database:",
+          JSON.stringify(state.createPageDraft, null, 2),
+        );
+        dispatch({ type: "create-page" });
+      },
       copyJson,
       saveActivePage,
     },

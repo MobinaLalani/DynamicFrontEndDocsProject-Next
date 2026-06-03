@@ -10,7 +10,6 @@ type NewPageDetailsSectionProps = {
   onSetNewPageMenuTitle: (value: string) => void;
   onSetNewPageMenuGroupId: (value: string) => void;
   onSetNewPageDescription: (value: string) => void;
-  onCreatePage: () => void;
 };
 
 export function NewPageDetailsSection({
@@ -21,13 +20,10 @@ export function NewPageDetailsSection({
   onSetNewPageMenuTitle,
   onSetNewPageMenuGroupId,
   onSetNewPageDescription,
-  onCreatePage,
 }: NewPageDetailsSectionProps) {
   return (
     <div className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-3">
       <div className="space-y-3">
-    
-
         <div className="grid w-full gap-2 lg:grid-cols-2">
           <Field label="عنوان صفحه">
             <input
@@ -79,14 +75,6 @@ export function NewPageDetailsSection({
             placeholder="توضیح کوتاه درباره این صفحه"
           />
         </Field>
-
-        <button
-          type="button"
-          onClick={onCreatePage}
-          className="w-full rounded-2xl bg-emerald-600 px-4 py-3 font-medium text-white transition-colors hover:bg-emerald-700"
-        >
-          ساخت صفحه جدید
-        </button>
       </div>
     </div>
   );

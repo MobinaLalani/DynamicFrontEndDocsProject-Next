@@ -33,12 +33,14 @@ export function DocsBuilderDemo() {
           activePageSlug={state.activePage.slug}
         />
 
-        <SaveChangesBanner
-          hasUnsavedChanges={state.hasUnsavedPageChanges}
-          isSaving={state.isSavingPage}
-          message={state.saveMessage}
-          onSave={actions.saveActivePage}
-        />
+        {state.activeView !== "create-page" ? (
+          <SaveChangesBanner
+            hasUnsavedChanges={state.hasUnsavedPageChanges}
+            isSaving={state.isSavingPage}
+            message={state.saveMessage}
+            onSave={actions.saveActivePage}
+          />
+        ) : null}
 
         {state.activeView === "blocks" ? (
           <div dir="rtl" className="space-y-6">

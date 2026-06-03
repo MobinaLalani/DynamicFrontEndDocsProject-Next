@@ -397,7 +397,6 @@ export function CreatePageView({
                   onSetNewPageMenuTitle={onSetNewPageMenuTitle}
                   onSetNewPageMenuGroupId={onSetNewPageMenuGroupId}
                   onSetNewPageDescription={onSetNewPageDescription}
-                  onCreatePage={onCreatePage}
                 />
               </div>
 
@@ -474,6 +473,27 @@ export function CreatePageView({
               onDuplicateComponent={onDuplicateComponent}
               onRemoveComponent={onRemoveComponent}
             />
+          </div>
+        </div>
+
+        <div className="border-t border-slate-200 pt-6">
+          <div className="flex flex-col gap-3 rounded-3xl bg-emerald-50 p-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-medium text-emerald-700">
+                ثبت صفحه جدید
+              </p>
+              <p className="mt-1 text-sm text-emerald-900/80">
+                با این دکمه، JSON کامل همین صفحه جدید برای ثبت نهایی آماده
+                می‌شود و در لاگ هم نمایش داده خواهد شد.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onCreatePage}
+              className="rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
+            >
+              ذخیره صفحه جدید
+            </button>
           </div>
         </div>
       </div>
