@@ -153,7 +153,7 @@ export function DocsSitePreview({
                             >
                               {isSidebarOpen ? (
                                 <>
-                                  <span className="block font-medium">
+                                  <span className="block font-medium text-black">
                                     {page.menuTitle}
                                   </span>
                                   <span
@@ -169,7 +169,7 @@ export function DocsSitePreview({
                               ) : (
                                 <span
                                   title={page.menuTitle}
-                                  className="font-medium"
+                                  className="font-medium text-black"
                                 >
                                   {page.menuTitle.slice(0, 1)}
                                 </span>
@@ -186,7 +186,7 @@ export function DocsSitePreview({
                           >
                             {isSidebarOpen ? (
                               <>
-                                <span className="block font-medium">
+                                <span className="block font-medium text-black">
                                   {page.menuTitle}
                                 </span>
                                 <span
@@ -202,7 +202,7 @@ export function DocsSitePreview({
                             ) : (
                               <span
                                 title={page.menuTitle}
-                                className="font-medium"
+                              className="font-medium text-black"
                               >
                                 {page.menuTitle.slice(0, 1)}
                               </span>

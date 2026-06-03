@@ -162,15 +162,15 @@ function MenuGroupCard({
             onClick={() => onSelectPage(page.slug)}
             className={`block w-full rounded-2xl px-4 py-3 text-right text-sm transition ${
               activeView === "editor" && selectedPageSlug === page.slug
-                ? "bg-slate-950 text-white"
+                ? "bg-slate-950 text-black"
                 : "bg-white text-slate-700 hover:border-slate-300"
             }`}
           >
-            <span className="block font-medium">{page.menuTitle}</span>
+            <span className="block font-medium text-black">{page.menuTitle}</span>
             <span
               className={`mt-1 block text-xs ${
                 activeView === "editor" && selectedPageSlug === page.slug
-                  ? "text-slate-300"
+                  ? "text-black"
                   : "text-slate-500"
               }`}
             >

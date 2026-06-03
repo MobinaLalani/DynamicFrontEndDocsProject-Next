@@ -363,19 +363,22 @@ function AdminSidebar({
                       >
                         {isOpen ? (
                           <>
-                            <span className="block font-medium">
+                            <span className="block font-medium text-black">
                               {page.menuTitle}
                             </span>
                             <span
                               className={`mt-1 block text-xs ${
-                                isActive ? "text-slate-500" : "text-slate-400"
+                                isActive ? "text-black" : "text-black"
                               }`}
                             >
                               /pages/{page.slug}
                             </span>
                           </>
                         ) : (
-                          <span title={page.menuTitle} className="font-medium">
+                          <span
+                            title={page.menuTitle}
+                            className="font-medium text-black"
+                          >
                             {page.menuTitle.slice(0, 1)}
                           </span>
                         )}
