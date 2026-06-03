@@ -35,14 +35,11 @@ export function DocsSitePreview({
   }
 
   return (
-    <div
-      dir="ltr"
-      className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm"
-    >
-      <div className="relative min-h-[820px] bg-slate-100">
+    <div dir="ltr" className="relative min-h-screen overflow-hidden bg-white">
+      <div className="relative min-h-screen bg-slate-100">
         <main
           dir="rtl"
-          className={`min-w-0 p-4 transition-[padding] duration-300 sm:p-6 ${
+          className={`min-w-0 p-4 pt-24 transition-[padding] duration-300 sm:p-6 sm:pt-28 ${
             showSidebar ? (isSidebarOpen ? "xl:pr-[344px]" : "xl:pr-24") : ""
           }`}
         >
@@ -111,7 +108,9 @@ export function DocsSitePreview({
                   <section key={group.id} className="space-y-3">
                     {isSidebarOpen ? (
                       <div>
-                        <p className="font-semibold text-white">{group.title}</p>
+                        <p className="font-semibold text-white">
+                          {group.title}
+                        </p>
                         {group.description ? (
                           <p className="mt-1 text-sm leading-6 text-slate-400">
                             {group.description}

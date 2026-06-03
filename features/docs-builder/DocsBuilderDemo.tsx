@@ -21,11 +21,11 @@ export function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
   return (
     <section
       dir="ltr"
-      className="relative min-h-[calc(100vh-4rem)] overflow-hidden rounded-[32px] border border-slate-200 bg-slate-100 shadow-sm"
+      className="relative min-h-screen overflow-hidden bg-slate-100"
     >
       <main
         dir="rtl"
-        className={`min-h-[calc(100vh-4rem)] p-4 transition-[padding] duration-300 sm:p-6 ${
+        className={`min-h-screen p-4 pt-24 transition-[padding] duration-300 sm:p-6 sm:pt-28 ${
           isSidebarOpen ? "xl:pr-[384px]" : "xl:pr-24"
         }`}
       >
