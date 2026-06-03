@@ -6,10 +6,11 @@ import type { HeadingInspectorProps } from "@/components/docs/builder/inspector/
 export default function HeadingInspector({
   component,
   onChange,
+  activeTab,
 }: HeadingInspectorProps) {
-  return (
-    <div className="space-y-4">
-      <Field label="متن">
+  if (activeTab === "data") {
+    return (
+      <Field label="متن هدینگ">
         <input
           className={inputClass}
           value={component.text}
@@ -21,23 +22,25 @@ export default function HeadingInspector({
           }
         />
       </Field>
+    );
+  }
 
-      <Field label="سطح هدینگ">
-        <select
-          className={inputClass}
-          value={component.level ?? 1}
-          onChange={(event) =>
-            onChange((current: HeadingComponent) => ({
-              ...current,
-              level: Number(event.target.value) as HeadingComponent["level"],
-            }))
-          }
-        >
-          <option value={1}>H1</option>
-          <option value={2}>H2</option>
-          <option value={3}>H3</option>
-        </select>
-      </Field>
-    </div>
+  return (
+    <Field label="سطح هدینگ">
+      <select
+        className={inputClass}
+        value={component.level ?? 1}
+        onChange={(event) =>
+          onChange((current: HeadingComponent) => ({
+            ...current,
+            level: Number(event.target.value) as HeadingComponent["level"],
+          }))
+        }
+      >
+        <option value={1}>H1</option>
+        <option value={2}>H2</option>
+        <option value={3}>H3</option>
+      </select>
+    </Field>
   );
 }

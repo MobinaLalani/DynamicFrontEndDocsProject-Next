@@ -6,7 +6,25 @@ import type { CodeInspectorProps } from "@/components/docs/builder/inspector/typ
 export default function CodeInspector({
   component,
   onChange,
+  activeTab,
 }: CodeInspectorProps) {
+  if (activeTab === "data") {
+    return (
+      <Field label="کد">
+        <textarea
+          className={`${inputClass} min-h-64 font-mono text-sm`}
+          value={component.code}
+          onChange={(event) =>
+            onChange((current) => ({
+              ...current,
+              code: event.target.value,
+            }))
+          }
+        />
+      </Field>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <Field label="عنوان">
@@ -39,19 +57,6 @@ export default function CodeInspector({
             </option>
           ))}
         </select>
-      </Field>
-
-      <Field label="کد">
-        <textarea
-          className={`${inputClass} min-h-64 font-mono text-sm`}
-          value={component.code}
-          onChange={(event) =>
-            onChange((current) => ({
-              ...current,
-              code: event.target.value,
-            }))
-          }
-        />
       </Field>
     </div>
   );

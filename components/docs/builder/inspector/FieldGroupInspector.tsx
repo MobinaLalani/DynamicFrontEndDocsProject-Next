@@ -11,41 +11,48 @@ import {
 export default function FieldGroupInspector({
   component,
   onChange,
+  activeTab,
 }: FieldGroupInspectorProps) {
+  if (activeTab === "properties") {
+    return (
+      <div className="space-y-4">
+        <Field label="عنوان">
+          <input
+            className={inputClass}
+            value={component.title}
+            onChange={(event) =>
+              onChange((current) => ({
+                ...current,
+                title: event.target.value,
+              }))
+            }
+          />
+        </Field>
+
+        <Field label="نوع گروه">
+          <select
+            className={inputClass}
+            value={component.kind}
+            onChange={(event) =>
+              onChange((current) => ({
+                ...current,
+                kind: event.target.value as typeof current.kind,
+              }))
+            }
+          >
+            {fieldGroupKinds.map((kind) => (
+              <option key={kind} value={kind}>
+                {kind}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <Field label="عنوان">
-        <input
-          className={inputClass}
-          value={component.title}
-          onChange={(event) =>
-            onChange((current) => ({
-              ...current,
-              title: event.target.value,
-            }))
-          }
-        />
-      </Field>
-
-      <Field label="نوع گروه">
-        <select
-          className={inputClass}
-          value={component.kind}
-          onChange={(event) =>
-            onChange((current) => ({
-              ...current,
-              kind: event.target.value as typeof current.kind,
-            }))
-          }
-        >
-          {fieldGroupKinds.map((kind) => (
-            <option key={kind} value={kind}>
-              {kind}
-            </option>
-          ))}
-        </select>
-      </Field>
-
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-slate-700">فیلدها</p>
         <button
@@ -130,9 +137,7 @@ export default function FieldGroupInspector({
               <button
                 type="button"
                 onClick={() =>
-                  onChange((current) =>
-                    removeFieldFromGroup(current, field.id),
-                  )
+                  onChange((current) => removeFieldFromGroup(current, field.id))
                 }
                 className="rounded-full bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700"
               >

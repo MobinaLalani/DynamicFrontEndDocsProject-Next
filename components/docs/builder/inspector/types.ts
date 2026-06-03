@@ -8,9 +8,12 @@ import type {
   TableComponent,
 } from "@/lib/docs/schema";
 
+export type InspectorTab = "properties" | "data";
+
 export type InspectorProps<T extends PageComponent> = {
   component: T;
   onChange: (updater: (component: T) => T) => void;
+  activeTab: InspectorTab;
 };
 
 export type HeadingInspectorProps = InspectorProps<HeadingComponent>;

@@ -4,7 +4,17 @@ import type { ParagraphInspectorProps } from "@/components/docs/builder/inspecto
 export default function ParagraphInspector({
   component,
   onChange,
+  activeTab,
 }: ParagraphInspectorProps) {
+  if (activeTab === "properties") {
+    return (
+      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
+        این بلوک تنظیمات نمایشی جداگانه ندارد. متن و محتوای آن را از تب Data
+        مدیریت کن.
+      </div>
+    );
+  }
+
   return (
     <Field label="متن">
       <textarea

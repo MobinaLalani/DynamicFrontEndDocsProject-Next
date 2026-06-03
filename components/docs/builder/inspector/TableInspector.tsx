@@ -5,6 +5,7 @@ import type { TableInspectorProps } from "@/components/docs/builder/inspector/ty
 export default function TableInspector({
   component,
   onChange,
+  activeTab,
 }: TableInspectorProps) {
   const {
     setTitle,
@@ -18,24 +19,30 @@ export default function TableInspector({
     deleteRow,
   } = useTableEditor({ onChange });
 
+  if (activeTab === "properties") {
+    return (
+      <div className="space-y-4">
+        <Field label="عنوان">
+          <input
+            className={inputClass}
+            value={component.title ?? ""}
+            onChange={(event) => setTitle(event.target.value)}
+          />
+        </Field>
+
+        <Field label="متن حالت خالی">
+          <input
+            className={inputClass}
+            value={component.emptyMessage ?? ""}
+            onChange={(event) => setEmptyMessage(event.target.value)}
+          />
+        </Field>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <Field label="عنوان">
-        <input
-          className={inputClass}
-          value={component.title ?? ""}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-      </Field>
-
-      <Field label="متن حالت خالی">
-        <input
-          className={inputClass}
-          value={component.emptyMessage ?? ""}
-          onChange={(event) => setEmptyMessage(event.target.value)}
-        />
-      </Field>
-
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-slate-700">ستون ها</p>
         <button

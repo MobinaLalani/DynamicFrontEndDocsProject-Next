@@ -53,7 +53,7 @@ export function ToolsPanelContent({
         </div>
 
         <div className="mt-4">
-          <BlockPicker onAddBlock={onAddBlock} columnsClassName="grid-cols-1" />
+          <BlockPicker onAddBlock={onAddBlock} columnsClassName="grid-cols-3" />
         </div>
       </section>
 

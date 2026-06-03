@@ -6,7 +6,68 @@ import type { EndpointInspectorProps } from "@/components/docs/builder/inspector
 export default function EndpointInspector({
   component,
   onChange,
+  activeTab,
 }: EndpointInspectorProps) {
+  if (activeTab === "data") {
+    return (
+      <div className="space-y-4">
+        <Field label="خلاصه">
+          <textarea
+            className={`${inputClass} min-h-24`}
+            value={component.summary}
+            onChange={(event) =>
+              onChange((current) => ({
+                ...current,
+                summary: event.target.value,
+              }))
+            }
+          />
+        </Field>
+
+        <Field label="احراز هویت">
+          <input
+            className={inputClass}
+            value={component.auth ?? ""}
+            onChange={(event) =>
+              onChange((current) => ({
+                ...current,
+                auth: event.target.value,
+              }))
+            }
+          />
+        </Field>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Request Content-Type">
+            <input
+              className={inputClass}
+              value={component.requestContentType ?? ""}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  requestContentType: event.target.value,
+                }))
+              }
+            />
+          </Field>
+
+          <Field label="Response Content-Type">
+            <input
+              className={inputClass}
+              value={component.responseContentType ?? ""}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  responseContentType: event.target.value,
+                }))
+              }
+            />
+          </Field>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <Field label="عنوان">
@@ -50,60 +111,6 @@ export default function EndpointInspector({
               onChange((current) => ({
                 ...current,
                 path: event.target.value,
-              }))
-            }
-          />
-        </Field>
-      </div>
-
-      <Field label="خلاصه">
-        <textarea
-          className={`${inputClass} min-h-24`}
-          value={component.summary}
-          onChange={(event) =>
-            onChange((current) => ({
-              ...current,
-              summary: event.target.value,
-            }))
-          }
-        />
-      </Field>
-
-      <Field label="احراز هویت">
-        <input
-          className={inputClass}
-          value={component.auth ?? ""}
-          onChange={(event) =>
-            onChange((current) => ({
-              ...current,
-              auth: event.target.value,
-            }))
-          }
-        />
-      </Field>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Request Content-Type">
-          <input
-            className={inputClass}
-            value={component.requestContentType ?? ""}
-            onChange={(event) =>
-              onChange((current) => ({
-                ...current,
-                requestContentType: event.target.value,
-              }))
-            }
-          />
-        </Field>
-
-        <Field label="Response Content-Type">
-          <input
-            className={inputClass}
-            value={component.responseContentType ?? ""}
-            onChange={(event) =>
-              onChange((current) => ({
-                ...current,
-                responseContentType: event.target.value,
               }))
             }
           />

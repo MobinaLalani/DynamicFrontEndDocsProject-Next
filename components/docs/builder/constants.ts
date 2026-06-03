@@ -1,7 +1,42 @@
 import type { PageComponent, PageComponentType } from "@/lib/docs/schema";
+import type { LucideIcon } from "lucide-react";
+import {
+  AlignLeft,
+  Braces,
+  Heading1,
+  Network,
+  Rows3,
+  Table,
+} from "lucide-react";
 
 export const paletteTransferKey = "application/x-docs-palette";
 export const componentTransferKey = "application/x-docs-component-id";
+
+const blockTypeLabels: Record<PageComponentType, string> = {
+  heading: "هدینگ",
+  paragraph: "پاراگراف",
+  endpoint: "اندپوینت",
+  "field-group": "گروه فیلد",
+  table: "جدول",
+  code: "کد نمونه",
+};
+
+const blockTypeIcons: Record<PageComponentType, LucideIcon> = {
+  heading: Heading1,
+  paragraph: AlignLeft,
+  endpoint: Network,
+  "field-group": Rows3,
+  table: Table,
+  code: Braces,
+};
+
+export function getBlockTypeLabel(type: PageComponentType) {
+  return blockTypeLabels[type];
+}
+
+export function getBlockTypeIcon(type: PageComponentType) {
+  return blockTypeIcons[type];
+}
 
 export function getBlockLabel(component: PageComponent) {
   if (component.type === "heading") {
@@ -53,12 +88,12 @@ export function getBlockMeta(component: PageComponent) {
 
 export function translateBlockLabel(label: string) {
   const labels: Record<string, string> = {
-    Heading: "هدینگ",
-    Paragraph: "پاراگراف",
-    Endpoint: "اندپوینت",
-    "Field Group": "گروه فیلد",
-    Table: "جدول",
-    "Code Example": "کد نمونه",
+    Heading: blockTypeLabels.heading,
+    Paragraph: blockTypeLabels.paragraph,
+    Endpoint: blockTypeLabels.endpoint,
+    "Field Group": blockTypeLabels["field-group"],
+    Table: blockTypeLabels.table,
+    "Code Example": blockTypeLabels.code,
   };
 
   return labels[label] ?? label;
