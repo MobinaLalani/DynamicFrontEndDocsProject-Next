@@ -4,13 +4,52 @@ export type PageComponentType =
   | "endpoint"
   | "field-group"
   | "table"
-  | "code"
-  
+  | "code";
 
 export type HeadingLevel = 1 | 2 | 3;
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 export type ApiFieldKind = "headers" | "query" | "path" | "body" | "response";
 export type CodeLanguage = "json" | "bash" | "javascript" | "typescript";
+export type FontSizeToken = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
+export type FontWeightToken = "normal" | "medium" | "semibold" | "bold";
+export type TextAlignToken = "right" | "center" | "left";
+export type LineHeightToken = "normal" | "relaxed" | "loose";
+
+export type TextStyle = {
+  color?: string;
+  fontSize?: FontSizeToken;
+  fontWeight?: FontWeightToken;
+  italic?: boolean;
+  underline?: boolean;
+  align?: TextAlignToken;
+  lineHeight?: LineHeightToken;
+};
+
+export type TableStyle = {
+  titleColor?: string;
+  borderColor?: string;
+  headerBackgroundColor?: string;
+  headerTextColor?: string;
+  bodyTextColor?: string;
+  rowStripeColor?: string;
+  textSize?: FontSizeToken;
+  headerFontWeight?: FontWeightToken;
+};
+
+export type EndpointStyle = {
+  titleColor?: string;
+  summaryColor?: string;
+  pathBackgroundColor?: string;
+  pathTextColor?: string;
+};
+
+export type CodeStyle = {
+  titleColor?: string;
+  textColor?: string;
+  backgroundColor?: string;
+  borderColor?: string;
+  fontSize?: FontSizeToken;
+};
 
 export type BaseComponent = {
   id: string;
@@ -21,11 +60,13 @@ export type HeadingComponent = BaseComponent & {
   type: "heading";
   text: string;
   level?: HeadingLevel;
+  style?: TextStyle;
 };
 
 export type ParagraphComponent = BaseComponent & {
   type: "paragraph";
   text: string;
+  style?: TextStyle;
 };
 
 export type EndpointComponent = BaseComponent & {
@@ -37,6 +78,7 @@ export type EndpointComponent = BaseComponent & {
   auth?: string;
   requestContentType?: string;
   responseContentType?: string;
+  style?: EndpointStyle;
 };
 
 export type ApiField = {
@@ -67,6 +109,7 @@ export type TableComponent = BaseComponent & {
   columns: TableColumn[];
   rows?: TableRow[];
   emptyMessage?: string;
+  style?: TableStyle;
 };
 
 export type CodeComponent = BaseComponent & {
@@ -74,6 +117,7 @@ export type CodeComponent = BaseComponent & {
   title?: string;
   language: CodeLanguage;
   code: string;
+  style?: CodeStyle;
 };
 
 export type PageComponent =

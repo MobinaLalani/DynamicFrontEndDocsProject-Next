@@ -8,9 +8,122 @@ export default function ParagraphInspector({
 }: ParagraphInspectorProps) {
   if (activeTab === "properties") {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
-        این بلوک تنظیمات نمایشی جداگانه ندارد. متن و محتوای آن را از تب Data
-        مدیریت کن.
+      <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="رنگ متن">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.color ?? "#475569"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, color: event.target.value },
+                }))
+              }
+            />
+          </Field>
+
+          <Field label="سایز متن">
+            <select
+              className={inputClass}
+              value={component.style?.fontSize ?? "base"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: {
+                    ...current.style,
+                    fontSize: event.target.value as NonNullable<
+                      typeof current.style
+                    >["fontSize"],
+                  },
+                }))
+              }
+            >
+              <option value="sm">Small</option>
+              <option value="base">Base</option>
+              <option value="lg">Large</option>
+              <option value="xl">XL</option>
+            </select>
+          </Field>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="ضخامت متن">
+            <select
+              className={inputClass}
+              value={component.style?.fontWeight ?? "normal"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: {
+                    ...current.style,
+                    fontWeight: event.target.value as NonNullable<
+                      typeof current.style
+                    >["fontWeight"],
+                  },
+                }))
+              }
+            >
+              <option value="normal">Normal</option>
+              <option value="medium">Medium</option>
+              <option value="semibold">Semibold</option>
+              <option value="bold">Bold</option>
+            </select>
+          </Field>
+
+          <Field label="فاصله خطوط">
+            <select
+              className={inputClass}
+              value={component.style?.lineHeight ?? "relaxed"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: {
+                    ...current.style,
+                    lineHeight: event.target.value as NonNullable<
+                      typeof current.style
+                    >["lineHeight"],
+                  },
+                }))
+              }
+            >
+              <option value="normal">Normal</option>
+              <option value="relaxed">Relaxed</option>
+              <option value="loose">Loose</option>
+            </select>
+          </Field>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={component.style?.italic ?? false}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, italic: event.target.checked },
+                }))
+              }
+            />
+            italic
+          </label>
+
+          <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={component.style?.underline ?? false}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, underline: event.target.checked },
+                }))
+              }
+            />
+            underline
+          </label>
+        </div>
       </div>
     );
   }

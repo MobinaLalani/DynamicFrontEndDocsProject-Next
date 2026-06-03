@@ -37,6 +37,147 @@ export default function TableInspector({
             onChange={(event) => setEmptyMessage(event.target.value)}
           />
         </Field>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="رنگ عنوان جدول">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.titleColor ?? "#020617"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, titleColor: event.target.value },
+                }))
+              }
+            />
+          </Field>
+
+          <Field label="رنگ حاشیه جدول">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.borderColor ?? "#e2e8f0"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, borderColor: event.target.value },
+                }))
+              }
+            />
+          </Field>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="رنگ پس زمینه هدر">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.headerBackgroundColor ?? "#f8fafc"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: {
+                    ...current.style,
+                    headerBackgroundColor: event.target.value,
+                  },
+                }))
+              }
+            />
+          </Field>
+
+          <Field label="رنگ متن هدر">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.headerTextColor ?? "#334155"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, headerTextColor: event.target.value },
+                }))
+              }
+            />
+          </Field>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="رنگ متن بدنه">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.bodyTextColor ?? "#475569"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, bodyTextColor: event.target.value },
+                }))
+              }
+            />
+          </Field>
+
+          <Field label="رنگ ردیف های زوج">
+            <input
+              type="color"
+              className={`${inputClass} h-12 p-2`}
+              value={component.style?.rowStripeColor ?? "#f8fafc"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: { ...current.style, rowStripeColor: event.target.value },
+                }))
+              }
+            />
+          </Field>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="سایز متن جدول">
+            <select
+              className={inputClass}
+              value={component.style?.textSize ?? "sm"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: {
+                    ...current.style,
+                    textSize: event.target.value as NonNullable<
+                      typeof current.style
+                    >["textSize"],
+                  },
+                }))
+              }
+            >
+              <option value="xs">XS</option>
+              <option value="sm">SM</option>
+              <option value="base">Base</option>
+              <option value="lg">LG</option>
+            </select>
+          </Field>
+
+          <Field label="ضخامت متن هدر">
+            <select
+              className={inputClass}
+              value={component.style?.headerFontWeight ?? "medium"}
+              onChange={(event) =>
+                onChange((current) => ({
+                  ...current,
+                  style: {
+                    ...current.style,
+                    headerFontWeight: event.target.value as NonNullable<
+                      typeof current.style
+                    >["headerFontWeight"],
+                  },
+                }))
+              }
+            >
+              <option value="normal">Normal</option>
+              <option value="medium">Medium</option>
+              <option value="semibold">Semibold</option>
+              <option value="bold">Bold</option>
+            </select>
+          </Field>
+        </div>
       </div>
     );
   }
