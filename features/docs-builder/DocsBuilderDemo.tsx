@@ -3,17 +3,21 @@
 import { useState } from "react";
 import { User } from "lucide-react";
 import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
+import { Popover } from "@/components/ui/Popover";
+import { requireRole } from "@/lib/auth/server";
 import { ToolsPanelContent } from "@/components/layout/sidebars";
 import { StatCard } from "@/components/docs/builder/shared";
 import type { BuilderView } from "@/features/docs-builder/model";
 import { useDocsBuilder } from "@/features/docs-builder/model";
+import { SessionBar } from "@/components/auth/session-bar";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
 
 type DocsBuilderDemoProps = {
   initialWorkspace: DocsWorkspace;
 };
 
-export function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
+export    function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
+  
   const { state, actions } = useDocsBuilder(initialWorkspace);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const displayPage = state.activePage ?? state.createPageDraft;
@@ -176,7 +180,7 @@ type AdminSidebarProps = {
   onSelectPage: (slug: string) => void;
 };
 
-function AdminSidebar({
+ async function AdminSidebar({
   isOpen,
   activeView,
   workspace,
@@ -185,6 +189,7 @@ function AdminSidebar({
   onOpenView,
   onSelectPage,
 }: AdminSidebarProps) {
+  // const session = await requireRole("admin");
   const expandedNavButtonClass = (view: BuilderView) =>
     `w-full bg-white text-black rounded-2xl px-4 py-3 text-right text-xl font-bold transition ${
       activeView === view ? " shadow-sm" : " "
@@ -199,7 +204,19 @@ function AdminSidebar({
     >
   <div className={`flex ${isOpen?'flex-row':'flex-col gap-2'} items-center justify-between  p-4`}>
 <div className="rounded-full bg-white p-1">
-  <User className="text-black" />
+<Popover
+  position="bottom-right"
+  trigger={
+    <div className="rounded-full bg-white p-2 ring-2 ring-slate-200 cursor-pointer">
+      <User className="text-black" />
+    </div>
+  }
+>
+  <div>
+    odocjiojio
+  </div>
+  {/* <SessionBar session={session} /> */}
+</Popover>
     </div>
       <button
         type="button"
