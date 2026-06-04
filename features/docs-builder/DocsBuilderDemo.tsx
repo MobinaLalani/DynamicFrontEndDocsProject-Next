@@ -29,10 +29,10 @@ export function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
           isSidebarOpen ? "xl:pr-[384px]" : "xl:pr-24"
         }`}
       >
-        <BuilderStats
+        {/* <BuilderStats
           workspace={state.workspace}
           activePageSlug={displayPage.slug}
-        />
+        /> */}
 
         {state.activeView !== "create-page" ? (
           <SaveChangesBanner
@@ -156,15 +156,15 @@ type BuilderStatsProps = {
   activePageSlug: string;
 };
 
-function BuilderStats({ workspace, activePageSlug }: BuilderStatsProps) {
-  return (
-    <div className="mb-6 grid gap-3 sm:grid-cols-3">
-      <StatCard label="تعداد صفحه" value={String(workspace.pages.length)} />
-      <StatCard label="تعداد منو" value={String(workspace.menuGroups.length)} />
-      <StatCard label="مسیر فعال" value={`/pages/${activePageSlug}`} />
-    </div>
-  );
-}
+// function BuilderStats({ workspace, activePageSlug }: BuilderStatsProps) {
+//   return (
+//     <div className="mb-6 grid gap-3 sm:grid-cols-3">
+//       <StatCard label="تعداد صفحه" value={String(workspace.pages.length)} />
+//       <StatCard label="تعداد منو" value={String(workspace.menuGroups.length)} />
+//       <StatCard label="مسیر فعال" value={`/pages/${activePageSlug}`} />
+//     </div>
+//   );
+// }
 
 type AdminSidebarProps = {
   isOpen: boolean;
