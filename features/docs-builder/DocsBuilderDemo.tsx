@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { User } from "lucide-react";
 import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
 import { ToolsPanelContent } from "@/components/layout/sidebars";
 import { StatCard } from "@/components/docs/builder/shared";
@@ -197,13 +197,20 @@ function AdminSidebar({
         isOpen ? "w-full sm:w-[360px]" : "w-[72px]"
       }`}
     >
+  <div className={`flex ${isOpen?'flex-row':'flex-col gap-2'} items-center justify-between  p-4`}>
+<div className="rounded-full bg-white p-1">
+  <User className="text-black" />
+    </div>
       <button
         type="button"
         onClick={onToggle}
-        className="absolute left-4 top-4 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20"
+        className="rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20"
       >
         {isOpen ? "بستن" : "باز"}
       </button>
+
+    </div>
+    
 
       <div
         className={`border-b border-white/10 px-5 pb-5 pt-16 ${isOpen ? "" : "px-3"}`}
