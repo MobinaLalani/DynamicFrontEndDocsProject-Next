@@ -213,7 +213,7 @@ type AdminSidebarProps = {
   }
 >
   <div>
-    odocjiojio
+    this is test text
   </div>
   {/* <SessionBar session={session} /> */}
 </Popover>
