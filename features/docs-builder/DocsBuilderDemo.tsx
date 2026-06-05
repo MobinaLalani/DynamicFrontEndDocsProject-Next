@@ -204,31 +204,20 @@ type AdminSidebarProps = {
     >
   <div className={`flex ${isOpen?'flex-row':'flex-col gap-2'} items-center justify-between  p-4`}>
 <div className="rounded-full bg-white p-1">
-<Popover
-  position="bottom-right"
-  trigger={
-    <div className="rounded-full bg-white p-2 ring-2 ring-slate-200 cursor-pointer">
+      <div className="rounded-full bg-white p-2 ring-2 ring-black cursor-pointer">
       <User className="text-black" />
     </div>
-  }
->
-  <div>
-    this is test text
-  </div>
-  {/* <SessionBar session={session} /> */}
-</Popover>
+
     </div>
       <button
         type="button"
         onClick={onToggle}
-        className="rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20"
+        className="rounded-full border border-white bg-white/10 px-3 font-bold py-2 text-xs text-white transition hover:bg-white/20"
       >
         {isOpen ? "بستن" : "باز"}
       </button>
 
     </div>
-    
-
       <div
         className={`border-b border-white/10 px-5 pb-5 pt-16 ${isOpen ? "" : "px-3"}`}
       >
