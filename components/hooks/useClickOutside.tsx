@@ -1,17 +1,39 @@
 import { useEffect } from "react";
 
+type OutsideRef = React.RefObject<HTMLElement | null>;
+
 export function useClickOutside(
-  ref: React.RefObject<HTMLElement | null>,
-  handler: () => void
+  refs: OutsideRef | OutsideRef[],
+  handler: () => void,
 ) {
   useEffect(() => {
-    const listener = (event: MouseEvent) => {
-      const el = ref?.current;
-      if (!el || el.contains(event.target as Node)) return;
+    const refList = Array.isArray(refs) ? refs : [refs];
+
+    const listener = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+
+      if (!target) {
+        return;
+      }
+
+      const clickedInside = refList.some((ref) => {
+        const element = ref.current;
+        return element ? element.contains(target) : false;
+      });
+
+      if (clickedInside) {
+        return;
+      }
+
       handler();
     };
 
     document.addEventListener("mousedown", listener);
-    return () => document.removeEventListener("mousedown", listener);
-  }, [ref, handler]);
+    document.addEventListener("touchstart", listener);
+
+    return () => {
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
+    };
+  }, [handler, refs]);
 }

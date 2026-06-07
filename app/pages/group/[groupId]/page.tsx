@@ -18,20 +18,20 @@ export default async function GroupLandingPage({
   const session = await requireAuth();
   const { groupId } = await params;
   const workspace = await getStoredWorkspace();
-  const group = workspace.menuGroups.find((item) => item.id === groupId) ?? null;
+  const group =
+    workspace.menuGroups.find((item) => item.id === groupId) ?? null;
 
   if (!group) {
     notFound();
   }
 
-  const groupPages = workspace.pages.filter((page) => page.menuGroupId === group.id);
+  const groupPages = workspace.pages.filter(
+    (page) => page.menuGroupId === group.id,
+  );
 
   return (
     <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden bg-slate-100">
-      <SessionBar
-        session={session}
-        className="absolute left-4 top-4 z-30 mb-0 w-[calc(100%-6rem)] max-w-md"
-      />
+      <SessionBar session={session} className="absolute left-4 top-4 z-30" />
       <DocsSitePreview
         menuGroups={workspace.menuGroups}
         pages={workspace.pages}
@@ -63,7 +63,8 @@ export default async function GroupLandingPage({
                       {page.menuTitle}
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {page.description?.trim() || "این صفحه توضیحی ثبت نشده است."}
+                      {page.description?.trim() ||
+                        "این صفحه توضیحی ثبت نشده است."}
                     </p>
                     <p className="mt-4 text-xs font-medium text-slate-500">
                       /pages/{page.slug}

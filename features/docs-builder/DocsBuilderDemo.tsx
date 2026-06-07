@@ -1,23 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { User } from "lucide-react";
 import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
-import { Popover } from "@/components/ui/Popover";
-import { requireRole } from "@/lib/auth/server";
+import { SessionMenu } from "@/components/auth/SessionMenu";
 import { ToolsPanelContent } from "@/components/layout/sidebars";
-import { StatCard } from "@/components/docs/builder/shared";
 import type { BuilderView } from "@/features/docs-builder/model";
 import { useDocsBuilder } from "@/features/docs-builder/model";
-import { SessionBar } from "@/components/auth/session-bar";
+import type { AuthSession } from "@/lib/auth/types";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
 
 type DocsBuilderDemoProps = {
   initialWorkspace: DocsWorkspace;
+  session: AuthSession;
 };
 
-export    function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
-  
+export function DocsBuilderDemo({
+  initialWorkspace,
+  session,
+}: DocsBuilderDemoProps) {
   const { state, actions } = useDocsBuilder(initialWorkspace);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const displayPage = state.activePage ?? state.createPageDraft;
@@ -105,6 +105,7 @@ export    function DocsBuilderDemo({ initialWorkspace }: DocsBuilderDemoProps) {
       </main>
 
       <AdminSidebar
+        session={session}
         isOpen={isSidebarOpen}
         activeView={state.activeView}
         workspace={state.workspace}
@@ -155,11 +156,6 @@ function SaveChangesBanner({
   );
 }
 
-type BuilderStatsProps = {
-  workspace: DocsWorkspace;
-  activePageSlug: string;
-};
-
 // function BuilderStats({ workspace, activePageSlug }: BuilderStatsProps) {
 //   return (
 //     <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -171,6 +167,7 @@ type BuilderStatsProps = {
 // }
 
 type AdminSidebarProps = {
+  session: AuthSession;
   isOpen: boolean;
   activeView: BuilderView;
   workspace: DocsWorkspace;
@@ -180,7 +177,8 @@ type AdminSidebarProps = {
   onSelectPage: (slug: string) => void;
 };
 
- async function AdminSidebar({
+function AdminSidebar({
+  session,
   isOpen,
   activeView,
   workspace,
@@ -202,22 +200,22 @@ type AdminSidebarProps = {
         isOpen ? "w-full sm:w-[360px]" : "w-[72px]"
       }`}
     >
-  <div className={`flex ${isOpen?'flex-row':'flex-col gap-2'} items-center justify-between  p-4`}>
-<div className="rounded-full bg-white p-1">
-      <div className="rounded-full bg-white p-2 ring-2 ring-black cursor-pointer">
-      <User className="text-black" />
-    </div>
-
-    </div>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="rounded-full border border-white bg-white/10 px-3 font-bold py-2 text-xs text-white transition hover:bg-white/20"
+      <div
+        className={`flex ${isOpen ? "flex-row" : "flex-col gap-2"} items-center justify-between p-4`}
       >
-        {isOpen ? "بستن" : "باز"}
-      </button>
-
-    </div>
+        <SessionMenu
+          session={session}
+          triggerClassName="flex h-12 w-12 items-center justify-center rounded-full bg-white p-2 text-black ring-2 ring-black transition hover:bg-slate-100"
+          panelClassName="w-[280px] p-4"
+        />
+        <button
+          type="button"
+          onClick={onToggle}
+          className="rounded-full border border-white bg-white/10 px-3 font-bold py-2 text-xs text-white transition hover:bg-white/20"
+        >
+          {isOpen ? "بستن" : "باز"}
+        </button>
+      </div>
       <div
         className={`border-b border-white/10 px-5 pb-5 pt-16 ${isOpen ? "" : "px-3"}`}
       >
