@@ -31,7 +31,7 @@ export default async function GroupLandingPage({
 
   return (
     <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden bg-slate-100">
-      <SessionBar session={session} className="absolute left-4 top-4 z-30" />
+      <SessionBar session={session} className="absolute left-1 top-1 z-30 " />
       <DocsSitePreview
         menuGroups={workspace.menuGroups}
         pages={workspace.pages}

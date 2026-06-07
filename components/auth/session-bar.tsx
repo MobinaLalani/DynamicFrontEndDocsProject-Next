@@ -10,7 +10,7 @@ type SessionBarProps = {
 
 export function SessionBar({ session, className }: SessionBarProps) {
   return (
-    <div className={`relative w-fit ${className ?? ""}`}>
+    <div className={`relative w-fit ${className ?? ""} `}>
       <SessionMenu session={session} />
     </div>
   );

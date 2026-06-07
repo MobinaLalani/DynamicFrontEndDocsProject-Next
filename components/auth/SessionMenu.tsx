@@ -30,14 +30,14 @@ export function SessionMenu({
           aria-label="باز کردن منوی کاربر"
           className={
             triggerClassName ??
-            "flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+            "flex h-6 w-6 items-center justify-center  rounded-2xl border border-slate-200  text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
           }
         >
           <User className="h-5 w-5" />
         </button>
       }
     >
-      <div dir="rtl" className={panelClassName ?? "w-[280px] p-4"}>
+      <div dir="rtl" className={panelClassName ?? "w-[200px] p-4"}>
         <div className="space-y-3">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
