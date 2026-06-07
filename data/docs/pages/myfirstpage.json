@@ -50,6 +50,12 @@
         "underline": true,
         "fontSize": "3xl"
       }
+    },
+    {
+      "id": "heading-h2sqw20p",
+      "type": "heading",
+      "text": "ببزرلالبرت",
+      "level": 2
     }
   ]
 }

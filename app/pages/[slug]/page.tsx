@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { SessionBar } from "@/components/auth/session-bar";
 import { DocsSitePreview } from "@/features/docs-preview";
@@ -12,6 +13,7 @@ type DynamicPageProps = {
 };
 
 export default async function DynamicPage({ params }: DynamicPageProps) {
+  await connection();
   const session = await requireAuth();
   const { slug } = await params;
   const workspace = await getStoredWorkspace();

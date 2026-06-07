@@ -2,7 +2,7 @@
 
 import { useMemo, useReducer, type DragEvent } from "react";
 
-import { saveDocPageWithWorkspace } from "@/lib/docs/client";
+import { saveDocPage, saveDocPageWithWorkspace } from "@/lib/docs/client";
 import type {
   DocPage,
   PageComponent,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { SessionBar } from "@/components/auth/session-bar";
 import { DocsSitePreview } from "@/features/docs-preview";
@@ -15,6 +16,7 @@ type GroupLandingPageProps = {
 export default async function GroupLandingPage({
   params,
 }: GroupLandingPageProps) {
+  await connection();
   const session = await requireAuth();
   const { groupId } = await params;
   const workspace = await getStoredWorkspace();

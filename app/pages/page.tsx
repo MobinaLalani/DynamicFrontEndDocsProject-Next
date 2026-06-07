@@ -1,9 +1,11 @@
 import { notFound, redirect } from "next/navigation";
+import { connection } from "next/server";
 
 import { requireAuth } from "@/lib/auth/server";
 import { getStoredWorkspace } from "@/lib/docs/workspace-service";
 
 export default async function DocsIndexPage() {
+  await connection();
   await requireAuth();
 
   const workspace = await getStoredWorkspace();

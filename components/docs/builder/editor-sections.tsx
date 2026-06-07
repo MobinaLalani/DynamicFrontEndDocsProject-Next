@@ -584,6 +584,9 @@ type EditorWorkspaceProps = {
   menuGroups: MenuGroup[];
   selectedComponentId: string | null;
   selectedComponent: PageComponent | null;
+  hasUnsavedChanges: boolean;
+  isSaving: boolean;
+  saveMessage: string | null;
   onUpdatePage: (updater: (page: DocPage) => DocPage) => void;
   onUpdatePageSlug: (value: string) => void;
   onSelectComponent: (componentId: string) => void;
@@ -591,6 +594,7 @@ type EditorWorkspaceProps = {
   onDuplicateComponent: (component: PageComponent) => void;
   onRemoveComponent: (componentId: string) => void;
   onAddBlock: (type: PageComponentType) => void;
+  onSavePage: () => void;
   onUpdateSelectedComponent: (
     updater: (component: PageComponent) => PageComponent,
   ) => void;
@@ -601,6 +605,9 @@ function EditorWorkspace({
   menuGroups,
   selectedComponentId,
   selectedComponent,
+  hasUnsavedChanges,
+  isSaving,
+  saveMessage,
   onUpdatePage,
   onUpdatePageSlug,
   onSelectComponent,
@@ -608,6 +615,7 @@ function EditorWorkspace({
   onDuplicateComponent,
   onRemoveComponent,
   onAddBlock,
+  onSavePage,
   onUpdateSelectedComponent,
 }: EditorWorkspaceProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -682,6 +690,31 @@ function EditorWorkspace({
           onUpdateSelectedComponent={onUpdateSelectedComponent}
         />
       </section>
+
+      <div className="border-t border-slate-200 pt-6">
+        <div className="flex flex-col gap-3 rounded-3xl bg-sky-50 p-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-medium text-sky-700">
+              ذخیره تغییرات صفحه
+            </p>
+            <p className="mt-1 text-sm text-sky-900/80">
+              بعد از ویرایش کامپوننت ها و تنظیمات صفحه، با این دکمه فایل JSON
+              همین صفحه بازنویسی می‌شود.
+            </p>
+            {saveMessage ? (
+              <p className="mt-2 text-sm text-sky-700">{saveMessage}</p>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            onClick={onSavePage}
+            disabled={!hasUnsavedChanges || isSaving}
+            className="rounded-2xl bg-sky-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+          >
+            {isSaving ? "در حال ذخیره..." : "ذخیره تغییرات صفحه"}
+          </button>
+        </div>
+      </div>
     </>
   );
 }
@@ -764,6 +797,10 @@ type BuilderCenterPanelProps = {
   onUpdateSelectedCreateComponent: (
     updater: (component: PageComponent) => PageComponent,
   ) => void;
+  hasUnsavedPageChanges: boolean;
+  isSavingPage: boolean;
+  saveMessage: string | null;
+  onSaveActivePage: () => void;
 };
 
 export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
@@ -802,6 +839,9 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
           menuGroups={props.menuGroups}
           selectedComponentId={props.selectedComponentId}
           selectedComponent={props.selectedComponent}
+          hasUnsavedChanges={props.hasUnsavedPageChanges}
+          isSaving={props.isSavingPage}
+          saveMessage={props.saveMessage}
           onUpdatePage={props.onUpdatePage}
           onUpdatePageSlug={props.onUpdatePageSlug}
           onSelectComponent={props.onSelectComponent}
@@ -809,6 +849,7 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
           onDuplicateComponent={props.onDuplicateComponent}
           onRemoveComponent={props.onRemoveComponent}
           onAddBlock={props.onAddBlockToActivePage}
+          onSavePage={props.onSaveActivePage}
           onUpdateSelectedComponent={props.onUpdateSelectedComponent}
         />
       ) : null}

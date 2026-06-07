@@ -38,15 +38,6 @@ export function DocsBuilderDemo({
           activePageSlug={displayPage.slug}
         /> */}
 
-        {state.activeView !== "create-page" ? (
-          <SaveChangesBanner
-            hasUnsavedChanges={state.hasUnsavedPageChanges}
-            isSaving={state.isSavingPage}
-            message={state.saveMessage}
-            onSave={actions.saveActivePage}
-          />
-        ) : null}
-
         {state.activeView === "blocks" ? (
           <div dir="rtl" className="space-y-6">
             <ToolsPanelContent
@@ -100,6 +91,10 @@ export function DocsBuilderDemo({
             }
             createMenuTitle={state.createMenuForm.title}
             createMenuDescription={state.createMenuForm.description}
+            hasUnsavedPageChanges={state.hasUnsavedPageChanges}
+            isSavingPage={state.isSavingPage}
+            saveMessage={state.saveMessage}
+            onSaveActivePage={actions.saveActivePage}
           />
         )}
       </main>
@@ -115,44 +110,6 @@ export function DocsBuilderDemo({
         onSelectPage={actions.selectPage}
       />
     </section>
-  );
-}
-
-type SaveChangesBannerProps = {
-  hasUnsavedChanges: boolean;
-  isSaving: boolean;
-  message: string | null;
-  onSave: () => void;
-};
-
-function SaveChangesBanner({
-  hasUnsavedChanges,
-  isSaving,
-  message,
-  onSave,
-}: SaveChangesBannerProps) {
-  return (
-    <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-      <div>
-        <p className="text-sm font-medium text-slate-500">ذخیره تغییرات صفحه</p>
-        <p className="mt-1 text-sm text-slate-600">
-          این دکمه فقط وقتی فعال می‌شود که محتوای صفحه یا JSON آن تغییر کرده
-          باشد.
-        </p>
-        {message ? (
-          <p className="mt-2 text-sm text-emerald-700">{message}</p>
-        ) : null}
-      </div>
-
-      <button
-        type="button"
-        onClick={onSave}
-        disabled={!hasUnsavedChanges || isSaving}
-        className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
-      >
-        {isSaving ? "در حال ذخیره..." : "ذخیره تغییرات"}
-      </button>
-    </div>
   );
 }
 
