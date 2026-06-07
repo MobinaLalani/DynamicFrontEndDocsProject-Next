@@ -2,14 +2,18 @@
 
 import { useMemo, useReducer, type DragEvent } from "react";
 
-import { saveDocPage, saveDocPageWithWorkspace } from "@/lib/docs/client";
+import {
+  saveDocPage,
+  saveDocPageWithWorkspace,
+  saveMenuGroups,
+} from "@/lib/docs/client";
 import type {
   DocPage,
   PageComponent,
   PageComponentType,
 } from "@/lib/docs/schema";
-import { createPageFromDraft } from "@/lib/docs/workspace";
-import type { DocsWorkspace } from "@/lib/docs/workspace";
+import { createMenuGroup, createPageFromDraft } from "@/lib/docs/workspace";
+import type { DocsWorkspace, MenuGroup } from "@/lib/docs/workspace";
 
 import {
   componentTransferKey,
@@ -124,6 +128,53 @@ export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
     }
   };
 
+  const createMenuAndSave = async () => {
+    const nextMenu = createMenuGroup({
+      title: state.createMenuForm.title,
+      description: state.createMenuForm.description,
+      isActive: state.createMenuForm.isActive,
+    });
+    const nextMenuGroups = [...state.workspace.menuGroups, nextMenu];
+
+    await saveMenuGroups(nextMenuGroups);
+    dispatch({ type: "append-menu-group", menu: nextMenu });
+  };
+
+  const saveMenuGroupChanges = async (
+    menuGroupId: string,
+    input: {
+      title: string;
+      description: string;
+      isActive: boolean;
+    },
+  ) => {
+    const nextMenuGroups = state.workspace.menuGroups.map((menuGroup) =>
+      menuGroup.id === menuGroupId
+        ? {
+            ...menuGroup,
+            title: input.title.trim() || "منوی جدید",
+            description:
+              input.description.trim() || "گروه منوی تازه ایجاد شده",
+            isActive: input.isActive,
+          }
+        : menuGroup,
+    );
+
+    await saveMenuGroups(nextMenuGroups);
+    dispatch({ type: "replace-menu-groups", menuGroups: nextMenuGroups });
+    dispatch({ type: "reset-create-menu-form" });
+  };
+
+  const deleteMenuGroupAndSave = async (menuGroupId: string) => {
+    const nextMenuGroups = state.workspace.menuGroups.filter(
+      (menuGroup) => menuGroup.id !== menuGroupId,
+    );
+
+    await saveMenuGroups(nextMenuGroups);
+    dispatch({ type: "replace-menu-groups", menuGroups: nextMenuGroups });
+    dispatch({ type: "reset-create-menu-form" });
+  };
+
   return {
     state: {
       ...state,
@@ -142,6 +193,13 @@ export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
         dispatch({ type: "set-create-menu-title", value }),
       setNewMenuDescription: (value: string) =>
         dispatch({ type: "set-create-menu-description", value }),
+      setNewMenuActive: (value: boolean) =>
+        dispatch({ type: "set-create-menu-active", value }),
+      resetMenuForm: () => dispatch({ type: "reset-create-menu-form" }),
+      updateMenuGroup: (
+        menuGroupId: string,
+        updater: (menuGroup: MenuGroup) => MenuGroup,
+      ) => dispatch({ type: "update-menu-group", menuGroupId, updater }),
       setNewPageTitle: (value: string) =>
         dispatch({
           type: "update-page",
@@ -186,7 +244,9 @@ export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
       removeDraftComponent: removeComponent("create"),
       duplicateComponentInActivePage: duplicateComponent("active"),
       duplicateDraftComponent: duplicateComponent("create"),
-      handleCreateMenu: () => dispatch({ type: "create-menu" }),
+      handleCreateMenu: createMenuAndSave,
+      saveMenuGroupChanges,
+      deleteMenuGroup: deleteMenuGroupAndSave,
       handleCreatePage: async () => {
         if (!state.createPageDraft.menuGroupId) {
           return;
@@ -213,6 +273,7 @@ export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
           console.error("ذخیره فایل JSON صفحه جدید با خطا مواجه شد:", error);
         }
       },
+      saveMenuGroups: () => saveMenuGroups(state.workspace.menuGroups),
       copyJson,
       saveActivePage,
     },

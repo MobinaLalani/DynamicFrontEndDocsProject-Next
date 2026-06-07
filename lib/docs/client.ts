@@ -27,3 +27,25 @@ export async function saveDocPageWithWorkspace(
 
   return (await response.json()) as DocPage;
 }
+
+export async function saveMenuGroups(
+  menuGroups: MenuGroup[],
+): Promise<MenuGroup[]> {
+  const response = await fetch("/api/menu-groups", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ menuGroups }),
+  });
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as {
+      message?: string;
+    } | null;
+
+    throw new Error(payload?.message ?? "ذخیره منوها با خطا مواجه شد.");
+  }
+
+  return (await response.json()) as MenuGroup[];
+}

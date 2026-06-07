@@ -3,11 +3,12 @@ import type {
   PageComponent,
   PageComponentType,
 } from "@/lib/docs/schema";
-import type { DocsWorkspace } from "@/lib/docs/workspace";
+import type { DocsWorkspace, MenuGroup } from "@/lib/docs/workspace";
 
 export type BuilderView =
   | "editor"
   | "create-page"
+  | "menus"
   | "blocks"
   | "preview"
   | "json";
@@ -17,6 +18,7 @@ export type PageEditorScope = "active" | "create";
 export type CreateMenuForm = {
   title: string;
   description: string;
+  isActive: boolean;
 };
 
 export type SaveState = {
@@ -45,6 +47,15 @@ export type BuilderAction =
   | { type: "set-copied"; copied: boolean }
   | { type: "set-create-menu-title"; value: string }
   | { type: "set-create-menu-description"; value: string }
+  | { type: "set-create-menu-active"; value: boolean }
+  | { type: "reset-create-menu-form" }
+  | { type: "append-menu-group"; menu: MenuGroup }
+  | { type: "replace-menu-groups"; menuGroups: MenuGroup[] }
+  | {
+      type: "update-menu-group";
+      menuGroupId: string;
+      updater: (menuGroup: MenuGroup) => MenuGroup;
+    }
   | {
       type: "update-page";
       scope: PageEditorScope;

@@ -303,19 +303,32 @@ export function CanvasSection({
 
 type CreatePageViewProps = {
   menuGroups: MenuGroup[];
+  pages: DocPage[];
   draftPage: DocPage;
   selectedComponentId: string | null;
   selectedComponent: PageComponent | null;
   createMenuTitle: string;
   createMenuDescription: string;
+  createMenuIsActive: boolean;
   onSetNewMenuTitle: (value: string) => void;
   onSetNewMenuDescription: (value: string) => void;
+  onSetNewMenuActive: (value: boolean) => void;
   onSetNewPageTitle: (value: string) => void;
   onSetNewPageSlug: (value: string) => void;
   onSetNewPageMenuTitle: (value: string) => void;
   onSetNewPageMenuGroupId: (value: string) => void;
   onSetNewPageDescription: (value: string) => void;
-  onCreateMenu: () => void;
+  onCreateMenu: () => Promise<void>;
+  onSaveMenuGroupChanges: (
+    menuGroupId: string,
+    input: {
+      title: string;
+      description: string;
+      isActive: boolean;
+    },
+  ) => Promise<void>;
+  onDeleteMenuGroup: (menuGroupId: string) => Promise<void>;
+  onResetMenuForm: () => void;
   onCreatePage: () => void;
   onBackToEditor: () => void;
   onAddBlock: (type: PageComponentType) => void;
@@ -330,19 +343,25 @@ type CreatePageViewProps = {
 
 export function CreatePageView({
   menuGroups,
+  pages,
   draftPage,
   selectedComponentId,
   selectedComponent,
   createMenuTitle,
   createMenuDescription,
+  createMenuIsActive,
   onSetNewMenuTitle,
   onSetNewMenuDescription,
+  onSetNewMenuActive,
   onSetNewPageTitle,
   onSetNewPageSlug,
   onSetNewPageMenuTitle,
   onSetNewPageMenuGroupId,
   onSetNewPageDescription,
   onCreateMenu,
+  onSaveMenuGroupChanges,
+  onDeleteMenuGroup,
+  onResetMenuForm,
   onCreatePage,
   onBackToEditor,
   onAddBlock,
@@ -412,11 +431,18 @@ export function CreatePageView({
                 </div>
 
                 <NewMenuSection
+                  menuGroups={menuGroups}
+                  pages={pages}
                   createMenuTitle={createMenuTitle}
                   createMenuDescription={createMenuDescription}
+                  createMenuIsActive={createMenuIsActive}
                   onSetNewMenuTitle={onSetNewMenuTitle}
                   onSetNewMenuDescription={onSetNewMenuDescription}
+                  onSetNewMenuActive={onSetNewMenuActive}
                   onCreateMenu={onCreateMenu}
+                  onSaveMenuGroupChanges={onSaveMenuGroupChanges}
+                  onDeleteMenuGroup={onDeleteMenuGroup}
+                  onResetMenuForm={onResetMenuForm}
                 />
               </div>
             </div>
@@ -497,6 +523,73 @@ export function CreatePageView({
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+type MenuManagementViewProps = {
+  menuGroups: MenuGroup[];
+  pages: DocPage[];
+  createMenuTitle: string;
+  createMenuDescription: string;
+  createMenuIsActive: boolean;
+  onSetNewMenuTitle: (value: string) => void;
+  onSetNewMenuDescription: (value: string) => void;
+  onSetNewMenuActive: (value: boolean) => void;
+  onCreateMenu: () => Promise<void>;
+  onSaveMenuGroupChanges: (
+    menuGroupId: string,
+    input: {
+      title: string;
+      description: string;
+      isActive: boolean;
+    },
+  ) => Promise<void>;
+  onDeleteMenuGroup: (menuGroupId: string) => Promise<void>;
+  onResetMenuForm: () => void;
+};
+
+function MenuManagementView({
+  menuGroups,
+  pages,
+  createMenuTitle,
+  createMenuDescription,
+  createMenuIsActive,
+  onSetNewMenuTitle,
+  onSetNewMenuDescription,
+  onSetNewMenuActive,
+  onCreateMenu,
+  onSaveMenuGroupChanges,
+  onDeleteMenuGroup,
+  onResetMenuForm,
+}: MenuManagementViewProps) {
+  return (
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mb-6 space-y-2">
+        <p className="text-sm font-medium text-slate-500">مدیریت منوها</p>
+        <h3 className="text-3xl font-semibold tracking-tight text-slate-950">
+          تعریف و ویرایش منوها
+        </h3>
+        <p className="text-sm leading-7 text-slate-600">
+          از این بخش می‌توانی منوی جدید بسازی، وضعیت نمایش آن را فعال یا غیرفعال
+          کنی و منوهای قبلی را هم ویرایش و ذخیره کنی.
+        </p>
+      </div>
+
+      <NewMenuSection
+        menuGroups={menuGroups}
+        pages={pages}
+        createMenuTitle={createMenuTitle}
+        createMenuDescription={createMenuDescription}
+        createMenuIsActive={createMenuIsActive}
+        onSetNewMenuTitle={onSetNewMenuTitle}
+        onSetNewMenuDescription={onSetNewMenuDescription}
+        onSetNewMenuActive={onSetNewMenuActive}
+        onCreateMenu={onCreateMenu}
+        onSaveMenuGroupChanges={onSaveMenuGroupChanges}
+        onDeleteMenuGroup={onDeleteMenuGroup}
+        onResetMenuForm={onResetMenuForm}
+      />
     </section>
   );
 }
@@ -801,6 +894,18 @@ type BuilderCenterPanelProps = {
   isSavingPage: boolean;
   saveMessage: string | null;
   onSaveActivePage: () => void;
+  createMenuIsActive: boolean;
+  onSetNewMenuActive: (value: boolean) => void;
+  onSaveMenuGroupChanges: (
+    menuGroupId: string,
+    input: {
+      title: string;
+      description: string;
+      isActive: boolean;
+    },
+  ) => Promise<void>;
+  onDeleteMenuGroup: (menuGroupId: string) => Promise<void>;
+  onResetMenuForm: () => void;
 };
 
 export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
@@ -809,19 +914,25 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
       {props.activeView === "create-page" ? (
         <CreatePageView
           menuGroups={props.menuGroups}
+          pages={props.pages}
           draftPage={props.createPageDraft}
           selectedComponentId={props.selectedCreateComponentId}
           selectedComponent={props.selectedCreateComponent}
           createMenuTitle={props.createMenuTitle}
           createMenuDescription={props.createMenuDescription}
+          createMenuIsActive={props.createMenuIsActive}
           onSetNewMenuTitle={props.onSetNewMenuTitle}
           onSetNewMenuDescription={props.onSetNewMenuDescription}
+          onSetNewMenuActive={props.onSetNewMenuActive}
           onSetNewPageTitle={props.onSetNewPageTitle}
           onSetNewPageSlug={props.onSetNewPageSlug}
           onSetNewPageMenuTitle={props.onSetNewPageMenuTitle}
           onSetNewPageMenuGroupId={props.onSetNewPageMenuGroupId}
           onSetNewPageDescription={props.onSetNewPageDescription}
           onCreateMenu={props.onCreateMenu}
+          onSaveMenuGroupChanges={props.onSaveMenuGroupChanges}
+          onDeleteMenuGroup={props.onDeleteMenuGroup}
+          onResetMenuForm={props.onResetMenuForm}
           onCreatePage={props.onCreatePage}
           onBackToEditor={props.onBackToEditor}
           onAddBlock={props.onAddBlockToNewPage}
@@ -830,6 +941,23 @@ export function BuilderCenterPanel(props: BuilderCenterPanelProps) {
           onDuplicateComponent={props.onDuplicateCreateComponent}
           onRemoveComponent={props.onRemoveCreateComponent}
           onUpdateSelectedComponent={props.onUpdateSelectedCreateComponent}
+        />
+      ) : null}
+
+      {props.activeView === "menus" ? (
+        <MenuManagementView
+          menuGroups={props.menuGroups}
+          pages={props.pages}
+          createMenuTitle={props.createMenuTitle}
+          createMenuDescription={props.createMenuDescription}
+          createMenuIsActive={props.createMenuIsActive}
+          onSetNewMenuTitle={props.onSetNewMenuTitle}
+          onSetNewMenuDescription={props.onSetNewMenuDescription}
+          onSetNewMenuActive={props.onSetNewMenuActive}
+          onCreateMenu={props.onCreateMenu}
+          onSaveMenuGroupChanges={props.onSaveMenuGroupChanges}
+          onDeleteMenuGroup={props.onDeleteMenuGroup}
+          onResetMenuForm={props.onResetMenuForm}
         />
       ) : null}
 

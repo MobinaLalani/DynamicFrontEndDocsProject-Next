@@ -1,6 +1,13 @@
 import "server-only";
 
-import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  readdir,
+  readFile,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 
 import type { DocPage } from "@/lib/docs/schema";
@@ -60,7 +67,10 @@ export async function writeStoredPage(page: DocPage) {
   const previousPage = existingPages.find((item) => item.id === page.id);
 
   if (previousPage && previousPage.slug !== page.slug) {
-    const previousFilePath = path.join(pagesDirectory, `${previousPage.slug}.json`);
+    const previousFilePath = path.join(
+      pagesDirectory,
+      `${previousPage.slug}.json`,
+    );
     if (await pathExists(previousFilePath)) {
       await rm(previousFilePath, { force: true });
     }
@@ -72,10 +82,22 @@ export async function writeStoredPage(page: DocPage) {
 
 export async function readStoredMenuGroups(): Promise<MenuGroup[]> {
   await ensureDocsDataDirectory();
-  return readJsonFile<MenuGroup[]>(menuGroupsFilePath, []);
+  const storedMenuGroups = await readJsonFile<MenuGroup[]>(
+    menuGroupsFilePath,
+    [],
+  );
+
+  return storedMenuGroups.map((group) => ({
+    ...group,
+    isActive: group.isActive ?? true,
+  }));
 }
 
 export async function writeStoredMenuGroups(menuGroups: MenuGroup[]) {
   await ensureDocsDataDirectory();
-  await writeFile(menuGroupsFilePath, JSON.stringify(menuGroups, null, 2), "utf8");
+  await writeFile(
+    menuGroupsFilePath,
+    JSON.stringify(menuGroups, null, 2),
+    "utf8",
+  );
 }

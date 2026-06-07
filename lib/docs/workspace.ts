@@ -4,6 +4,7 @@ export type MenuGroup = {
   id: string;
   title: string;
   description?: string;
+  isActive: boolean;
 };
 
 export type DocsWorkspace = {
@@ -73,6 +74,7 @@ export function createPageFromDraft(
 export function createMenuGroup(input: {
   title: string;
   description?: string;
+  isActive?: boolean;
 }): MenuGroup {
   const normalizedTitle = input.title.trim() || "منوی جدید";
 
@@ -80,5 +82,6 @@ export function createMenuGroup(input: {
     id: `menu-${Math.random().toString(36).slice(2, 10)}`,
     title: normalizedTitle,
     description: input.description?.trim() || "گروه منوی تازه ایجاد شده",
+    isActive: input.isActive ?? true,
   };
 }

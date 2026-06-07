@@ -31,6 +31,9 @@ export function DocsSitePreview({
   content,
 }: DocsSitePreviewProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const visibleMenuGroups = interactive
+    ? menuGroups
+    : menuGroups.filter((group) => group.isActive);
   const activePage =
     (activePageSlug
       ? pages.find((page) => page.slug === activePageSlug)
@@ -107,7 +110,7 @@ export function DocsSitePreview({
                 </div>
               ) : null}
 
-              {menuGroups.map((group) => {
+              {visibleMenuGroups.map((group) => {
                 const groupPages = pages.filter(
                   (page) => page.menuGroupId === group.id,
                 );
@@ -120,9 +123,7 @@ export function DocsSitePreview({
                     {isSidebarOpen ? (
                       <div>
                         {interactive ? (
-                          <p className="font-semibold ">
-                            {group.title}
-                          </p>
+                          <p className="font-semibold ">{group.title}</p>
                         ) : (
                           <Link
                             href={`/pages/group/${group.id}`}

@@ -9,8 +9,12 @@ export default async function DocsIndexPage() {
   await requireAuth();
 
   const workspace = await getStoredWorkspace();
-  const firstGroup = workspace.menuGroups[0];
-  const firstPage = workspace.pages[0];
+  const activeMenuGroups = workspace.menuGroups.filter((group) => group.isActive);
+  const firstGroup = activeMenuGroups[0];
+  const firstPage =
+    workspace.pages.find((page) =>
+      activeMenuGroups.some((group) => group.id === page.menuGroupId),
+    ) ?? workspace.pages[0];
 
   if (firstGroup) {
     redirect(`/pages/group/${firstGroup.id}`);

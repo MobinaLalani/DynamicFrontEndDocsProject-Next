@@ -91,10 +91,15 @@ export function DocsBuilderDemo({
             }
             createMenuTitle={state.createMenuForm.title}
             createMenuDescription={state.createMenuForm.description}
+            createMenuIsActive={state.createMenuForm.isActive}
             hasUnsavedPageChanges={state.hasUnsavedPageChanges}
             isSavingPage={state.isSavingPage}
             saveMessage={state.saveMessage}
             onSaveActivePage={actions.saveActivePage}
+            onSetNewMenuActive={actions.setNewMenuActive}
+            onSaveMenuGroupChanges={actions.saveMenuGroupChanges}
+            onDeleteMenuGroup={actions.deleteMenuGroup}
+            onResetMenuForm={actions.resetMenuForm}
           />
         )}
       </main>
@@ -270,6 +275,19 @@ function AdminSidebar({
             title="ایجاد صفحه جدید"
           >
             {isOpen ? "ایجاد صفحه جدید" : "+"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onOpenView("menus")}
+            className={
+              isOpen
+                ? expandedNavButtonClass("menus")
+                : "flex h-11 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+            }
+            title="تعریف منو جدید"
+          >
+            {isOpen ? "تعریف منو جدید" : "م"}
           </button>
         </section>
 

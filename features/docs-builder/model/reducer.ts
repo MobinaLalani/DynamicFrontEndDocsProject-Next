@@ -36,6 +36,7 @@ export function getInitialBuilderState(
     createMenuForm: {
       title: "",
       description: "",
+      isActive: true,
     },
     copied: false,
     save: {
@@ -111,6 +112,76 @@ export function docsBuilderReducer(
         },
       };
 
+    case "set-create-menu-active":
+      return {
+        ...state,
+        createMenuForm: {
+          ...state.createMenuForm,
+          isActive: action.value,
+        },
+      };
+
+    case "reset-create-menu-form":
+      return {
+        ...state,
+        createMenuForm: {
+          title: "",
+          description: "",
+          isActive: true,
+        },
+      };
+
+    case "append-menu-group":
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          menuGroups: [...state.workspace.menuGroups, action.menu],
+        },
+        createMenuForm: {
+          title: "",
+          description: "",
+          isActive: true,
+        },
+        createPageDraft: {
+          ...state.createPageDraft,
+          menuGroupId: action.menu.id,
+        },
+      };
+
+    case "replace-menu-groups": {
+      const nextMenuGroupId = action.menuGroups.some(
+        (menuGroup) => menuGroup.id === state.createPageDraft.menuGroupId,
+      )
+        ? state.createPageDraft.menuGroupId
+        : (action.menuGroups[0]?.id ?? "");
+
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          menuGroups: action.menuGroups,
+        },
+        createPageDraft: {
+          ...state.createPageDraft,
+          menuGroupId: nextMenuGroupId,
+        },
+      };
+    }
+
+    case "update-menu-group":
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          menuGroups: state.workspace.menuGroups.map((menuGroup) =>
+            menuGroup.id === action.menuGroupId
+              ? action.updater(menuGroup)
+              : menuGroup,
+          ),
+        },
+      };
+
     case "update-page":
       return updatePageForScope(state, action.scope, action.updater);
 
@@ -165,6 +236,7 @@ export function docsBuilderReducer(
       const menu = createMenuGroup({
         title: state.createMenuForm.title,
         description: state.createMenuForm.description,
+        isActive: state.createMenuForm.isActive,
       });
 
       return {
@@ -176,6 +248,7 @@ export function docsBuilderReducer(
         createMenuForm: {
           title: "",
           description: "",
+          isActive: true,
         },
         createPageDraft: {
           ...state.createPageDraft,

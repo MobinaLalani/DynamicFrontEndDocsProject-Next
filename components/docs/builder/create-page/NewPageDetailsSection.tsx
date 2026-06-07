@@ -52,6 +52,7 @@ export function NewPageDetailsSection({
               {menuGroups.map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.title}
+                  {group.isActive ? "" : " (غیرفعال)"}
                 </option>
               ))}
             </select>
