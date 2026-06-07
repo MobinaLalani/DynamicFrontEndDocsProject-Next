@@ -1,13 +1,18 @@
 import { notFound, redirect } from "next/navigation";
 
 import { requireAuth } from "@/lib/auth/server";
-import { getAllPages } from "@/lib/docs/page-service";
+import { getStoredWorkspace } from "@/lib/docs/workspace-service";
 
 export default async function DocsIndexPage() {
   await requireAuth();
 
-  const pages = await getAllPages();
-  const firstPage = pages[0];
+  const workspace = await getStoredWorkspace();
+  const firstGroup = workspace.menuGroups[0];
+  const firstPage = workspace.pages[0];
+
+  if (firstGroup) {
+    redirect(`/pages/group/${firstGroup.id}`);
+  }
 
   if (!firstPage) {
     notFound();

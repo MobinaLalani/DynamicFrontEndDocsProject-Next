@@ -10,27 +10,35 @@ import type { MenuGroup } from "@/lib/docs/workspace";
 type DocsSitePreviewProps = {
   menuGroups: MenuGroup[];
   pages: DocPage[];
-  activePageSlug: string;
+  activePageSlug?: string;
+  activeGroupId?: string;
   interactive?: boolean;
   onSelectPage?: (slug: string) => void;
   onCreatePage?: () => void;
   showSidebar?: boolean;
+  content?: React.ReactNode;
 };
 
 export function DocsSitePreview({
   menuGroups,
   pages,
   activePageSlug,
+  activeGroupId,
   interactive = false,
   onSelectPage,
   onCreatePage,
   showSidebar = true,
+  content,
 }: DocsSitePreviewProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const activePage =
-    pages.find((page) => page.slug === activePageSlug) ?? pages[0] ?? null;
+    (activePageSlug
+      ? pages.find((page) => page.slug === activePageSlug)
+      : null) ??
+    pages[0] ??
+    null;
 
-  if (!activePage) {
+  if (!activePage && !content) {
     return null;
   }
 
@@ -43,7 +51,7 @@ export function DocsSitePreview({
             showSidebar ? (isSidebarOpen ? "xl:pr-[344px]" : "xl:pr-24") : ""
           }`}
         >
-          <PageRenderer page={activePage} />
+          {content ?? (activePage ? <PageRenderer page={activePage} /> : null)}
         </main>
 
         {showSidebar ? (
@@ -103,14 +111,30 @@ export function DocsSitePreview({
                 const groupPages = pages.filter(
                   (page) => page.menuGroupId === group.id,
                 );
+                const isGroupActive =
+                  group.id === activeGroupId ||
+                  groupPages.some((page) => page.slug === activePageSlug);
 
                 return (
                   <section key={group.id} className="space-y-3">
                     {isSidebarOpen ? (
                       <div>
-                        <p className="font-semibold text-white">
-                          {group.title}
-                        </p>
+                        {interactive ? (
+                          <p className="font-semibold ">
+                            {group.title}
+                          </p>
+                        ) : (
+                          <Link
+                            href={`/pages/group/${group.id}`}
+                            className={`block rounded-2xl text-black!  px-3 py-2 font-semibold transition ${
+                              isGroupActive
+                                ? "bg-white shadow-sm"
+                                : " hover:bg-white/10"
+                            }`}
+                          >
+                            {group.title}
+                          </Link>
+                        )}
                         {group.description ? (
                           <p className="mt-1 text-sm leading-6 text-slate-400">
                             {group.description}
@@ -119,12 +143,26 @@ export function DocsSitePreview({
                       </div>
                     ) : (
                       <div className="flex justify-center">
-                        <span
-                          title={group.title}
-                          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-xs font-semibold text-white"
-                        >
-                          {group.title.slice(0, 1)}
-                        </span>
+                        {interactive ? (
+                          <span
+                            title={group.title}
+                            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-xs font-semibold text-white"
+                          >
+                            {group.title.slice(0, 1)}
+                          </span>
+                        ) : (
+                          <Link
+                            href={`/pages/group/${group.id}`}
+                            title={group.title}
+                            className={`flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-semibold transition ${
+                              isGroupActive
+                                ? "bg-white text-slate-950 shadow-sm"
+                                : "bg-white/10 text-white hover:bg-white/20"
+                            }`}
+                          >
+                            {group.title.slice(0, 1)}
+                          </Link>
+                        )}
                       </div>
                     )}
 
@@ -186,7 +224,9 @@ export function DocsSitePreview({
                           >
                             {isSidebarOpen ? (
                               <>
-                                <span className="block font-medium text-black">
+                                <span
+                                  className={` ${isActive ? "text-black" : "text-white"} block font-medium`}
+                                >
                                   {page.menuTitle}
                                 </span>
                                 <span
@@ -202,7 +242,7 @@ export function DocsSitePreview({
                             ) : (
                               <span
                                 title={page.menuTitle}
-                              className="font-medium text-black"
+                                className="font-medium text-black"
                               >
                                 {page.menuTitle.slice(0, 1)}
                               </span>
