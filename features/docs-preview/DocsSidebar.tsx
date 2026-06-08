@@ -79,6 +79,7 @@ export function DocsSidebar({
           isSidebarOpen ? "" : "px-3"
         }`}
       >
+        
         <div
           className={`mb-4 flex items-center ${
             isSidebarOpen ? "justify-between gap-3" : "flex-col gap-2"
