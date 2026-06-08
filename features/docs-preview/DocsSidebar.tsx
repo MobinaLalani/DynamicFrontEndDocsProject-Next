@@ -79,7 +79,7 @@ export function DocsSidebar({
           isSidebarOpen ? "" : "px-3"
         }`}
       >
-        
+
         <div
           className={`mb-4 flex items-center ${
             isSidebarOpen ? "justify-between gap-3" : "flex-col gap-2"
@@ -157,7 +157,7 @@ export function DocsSidebar({
                       href={`/pages/group/${group.id}`}
                       className={`block rounded-2xl px-3 py-2 font-semibold transition ${
                         isGroupActive
-                          ? "bg-white text-slate-950 shadow-sm"
+                          ? "bg-white text-black! shadow-sm"
                           : "text-white hover:bg-white/10"
                       }`}
                     >
@@ -189,7 +189,7 @@ export function DocsSidebar({
                   const buttonClass = isSidebarOpen
                     ? `block w-full rounded-2xl px-4 py-3 text-right text-sm transition ${
                         isActive
-                          ? "bg-white text-slate-950 shadow-sm"
+                          ? "bg-white text-black! shadow-sm"
                           : "bg-white/5 text-slate-200 hover:bg-white/10"
                       }`
                     : `flex h-11 w-full items-center justify-center rounded-2xl text-sm transition ${
