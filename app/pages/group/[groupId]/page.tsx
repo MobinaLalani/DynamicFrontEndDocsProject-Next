@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 
-import { SessionBar } from "@/components/auth/session-bar";
 import { DocsSitePreview } from "@/features/docs-preview";
 import { requireAuth } from "@/lib/auth/server";
 import { getStoredWorkspace } from "@/lib/docs/workspace-service";
@@ -33,11 +32,11 @@ export default async function GroupLandingPage({
 
   return (
     <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden bg-slate-100">
-      <SessionBar session={session} className="absolute left-1 top-1 z-30 " />
       <DocsSitePreview
         menuGroups={workspace.menuGroups}
         pages={workspace.pages}
         activeGroupId={group.id}
+        session={session}
         content={
           <section className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm sm:p-8">
             <header className="space-y-3">

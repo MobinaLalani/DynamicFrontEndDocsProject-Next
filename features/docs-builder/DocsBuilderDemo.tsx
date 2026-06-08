@@ -118,16 +118,6 @@ export function DocsBuilderDemo({
   );
 }
 
-// function BuilderStats({ workspace, activePageSlug }: BuilderStatsProps) {
-//   return (
-//     <div className="mb-6 grid gap-3 sm:grid-cols-3">
-//       <StatCard label="تعداد صفحه" value={String(workspace.pages.length)} />
-//       <StatCard label="تعداد منو" value={String(workspace.menuGroups.length)} />
-//       <StatCard label="مسیر فعال" value={`/pages/${activePageSlug}`} />
-//     </div>
-//   );
-// }
-
 type AdminSidebarProps = {
   session: AuthSession;
   isOpen: boolean;
@@ -211,59 +201,6 @@ function AdminSidebar({
           {isOpen ? (
             <p className="text-xs font-medium text-slate-400">بخش‌های اصلی</p>
           ) : null}
-
-          {/* <button
-            type="button"
-            onClick={() => onOpenView("editor")}
-            className={
-              isOpen
-                ? expandedNavButtonClass("editor")
-                : collapsedNavButtonClass("editor")
-            }
-            title="ویرایش صفحه"
-          >
-            {isOpen ? "ویرایش صفحه" : "و"}
-          </button> */}
-
-          {/* <button
-            type="button"
-            onClick={() => onOpenView("blocks")}
-            className={
-              isOpen
-                ? expandedNavButtonClass("blocks")
-                : collapsedNavButtonClass("blocks")
-            }
-            title="بلوک‌ها و بازرس"
-          >
-            {isOpen ? "بلوک‌ها و بازرس" : "ب"}
-          </button> */}
-
-          {/* <button
-            type="button"
-            onClick={() => onOpenView("preview")}
-            className={
-              isOpen
-                ? expandedNavButtonClass("preview")
-                : collapsedNavButtonClass("preview")
-            }
-            title="پیش‌نمایش"
-          >
-            {isOpen ? "پیش‌نمایش" : "پ"}
-          </button> */}
-          {/* 
-          <button
-            type="button"
-            onClick={() => onOpenView("json")}
-            className={
-              isOpen
-                ? expandedNavButtonClass("json")
-                : collapsedNavButtonClass("json")
-            }
-            title="JSON ساختار"
-          >
-            {isOpen ? "JSON ساختار" : "J"}
-          </button> */}
-
           <button
             type="button"
             onClick={() => onOpenView("create-page")}

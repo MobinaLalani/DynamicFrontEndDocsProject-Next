@@ -2,7 +2,13 @@
   {
     "id": "menu-2fkwjach",
     "title": "اولین منو",
-    "description": "گروه منوی تازه ایجاد شده"
+    "description": "گروه منوی تازه ایجاد شده",
+    "isActive": true
+  },
+  {
+    "id": "menu-7gpinycw",
+    "title": "تست",
+    "description": "ابلالبا",
+    "isActive": true
   }
-
 ]
