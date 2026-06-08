@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { SessionMenu } from "@/components/auth/SessionMenu";
+import Arrowdown from '@/components/ui/icons/arrow-down.svg'
 import type { AuthSession } from "@/lib/auth/types";
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
@@ -40,30 +41,31 @@ export function DocsSidebar({
         isSidebarOpen ? "w-full sm:w-[320px]" : "w-[72px]"
       }`}
     >
+      {/* Toggle Button (بیرون‌زده از سایدبار) */}
       <button
         type="button"
         onClick={() => setIsSidebarOpen((current) => !current)}
         aria-label={isSidebarOpen ? "بستن سایدبار" : "باز کردن سایدبار"}
-        className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white transition hover:bg-white/20"
+        className="absolute -left-5 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-black bg-white! text-white transition hover:bg-white/20"
       >
         <svg
           viewBox="0 0 12 12"
           className={`h-4 w-4 transition-transform duration-300 ${
-            isSidebarOpen ? "rotate-0" : "rotate-180"
+            isSidebarOpen ? "rotate-270" : "rotate-90"
           }`}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M9 4.50002C9 4.50002 6.79053 7.49999 5.99998 7.5C5.20942 7.50001 3 4.5 3 4.5"
-            stroke="currentColor"
+            stroke="black"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M5.99998 7.5C6.79053 7.49999 9 4.50002 9 4.50002"
-            stroke="currentColor"
+            stroke="black"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -71,6 +73,7 @@ export function DocsSidebar({
         </svg>
       </button>
 
+      {/* Header */}
       <div
         className={`border-b border-white/10 px-5 pb-4 pt-16 ${
           isSidebarOpen ? "" : "px-3"
@@ -111,6 +114,7 @@ export function DocsSidebar({
         )}
       </div>
 
+      {/* Content */}
       <div
         className={`mt-5 flex-1 overflow-y-auto ${
           isSidebarOpen ? "space-y-5 px-5 pb-5" : "space-y-3 px-3 pb-4"
@@ -136,6 +140,7 @@ export function DocsSidebar({
           const groupPages = pages.filter(
             (page) => page.menuGroupId === group.id,
           );
+
           const isGroupActive =
             group.id === activeGroupId ||
             groupPages.some((page) => page.slug === activePageSlug);
@@ -145,19 +150,20 @@ export function DocsSidebar({
               {isSidebarOpen ? (
                 <div>
                   {interactive ? (
-                    <p className="font-semibold ">{group.title}</p>
+                    <p className="font-semibold">{group.title}</p>
                   ) : (
                     <Link
                       href={`/pages/group/${group.id}`}
-                      className={`block rounded-2xl text-black! px-3 py-2 font-semibold transition ${
+                      className={`block rounded-2xl px-3 py-2 font-semibold transition ${
                         isGroupActive
-                          ? "bg-white shadow-sm"
-                          : " hover:bg-white/10"
+                          ? "bg-white text-slate-950 shadow-sm"
+                          : "text-white hover:bg-white/10"
                       }`}
                     >
                       {group.title}
                     </Link>
                   )}
+
                   {group.description ? (
                     <p className="mt-1 text-sm leading-6 text-slate-400">
                       {group.description}
@@ -178,6 +184,7 @@ export function DocsSidebar({
               <div className="space-y-2">
                 {groupPages.map((page) => {
                   const isActive = page.slug === activePageSlug;
+
                   const buttonClass = isSidebarOpen
                     ? `block w-full rounded-2xl px-4 py-3 text-right text-sm transition ${
                         isActive
