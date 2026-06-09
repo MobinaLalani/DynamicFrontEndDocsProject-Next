@@ -71,6 +71,7 @@ export async function clearAuthSession() {
     ...sessionCookieConfig,
     name: AUTH_COOKIE_NAME,
     value: "",
+    
     maxAge: 0,
   });
 }
