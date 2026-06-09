@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import type { PageNavigationItem } from "@/features/docs-preview/model/getPageNavigation";
-import { ArrowBigDown } from "lucide-react";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 
 type PageNavigationProps = {

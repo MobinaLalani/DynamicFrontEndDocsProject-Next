@@ -23,7 +23,7 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
   }
 
   return (
-    <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden bg-slate-100">
+    <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden ">
       <DocsSitePreview
         menuGroups={workspace.menuGroups}
         pages={workspace.pages}
