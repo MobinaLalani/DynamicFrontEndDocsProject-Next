@@ -1,5 +1,7 @@
 import { DocsSidebar } from "./DocsSidebar";
+import { getFooterSections } from "./model/getFooterSections";
 import { getPageNavigation } from "./model/getPageNavigation";
+import { DocsFooter } from "./ui/DocsFooter";
 import { PageNavigation } from "./ui/PageNavigation";
 import { PageRenderer } from "../page-renderer";
 import type { AuthSession } from "@/lib/auth/types";
@@ -34,31 +36,39 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
 
   const activePage = pages.find((p) => p.slug === activePageSlug) ?? pages[0];
   const navigation = getPageNavigation(pages, activePage?.slug);
+  const footerSections = getFooterSections(menuGroups, pages, activeGroupId);
 
   return (
     <div dir="ltr" className="relative h-[99vh]  bg-white">
       <div className="relative h-screen bg-slate-100">
         <main
           dir="rtl"
-          className={`h-[97vh] min-w-0  p-4 pt-24 transition-[padding] duration-300 sm:p-6 sm:pt-28 ${
+          className={`h-[100vh] min-w-0 overflow-y-auto p-4 pt-24 transition-[padding] duration-300 sm:p-6 sm:pt-28 ${
             showSidebar ? "xl:pr-[344px]" : ""
           }`}
         >
-          {content ??
-            (activePage ? (
-              <div className="flex min-h-[80vh] flex-col gap-4">
-                <PageRenderer
-                  page={activePage}
-                  className="flex-1 min-h-[calc(80vh-12rem)]"
-                />
-                <PageNavigation
-                  previousPage={navigation.previousPage}
-                  nextPage={navigation.nextPage}
-                  interactive={interactive}
-                  onSelectPage={onSelectPage}
-                />
-              </div>
-            ) : null)}
+          <div className="space-y-6">
+            {content ??
+              (activePage ? (
+                <div className="flex min-h-[80vh] flex-col gap-4">
+                  <PageRenderer
+                    page={activePage}
+                    className="flex-1 min-h-[calc(80vh-12rem)]"
+                  />
+                  <PageNavigation
+                    previousPage={navigation.previousPage}
+                    nextPage={navigation.nextPage}
+                    interactive={interactive}
+                    onSelectPage={onSelectPage}
+                  />
+                </div>
+              ) : null)}
+
+            <DocsFooter
+              serviceLinks={footerSections.serviceLinks}
+              webServiceLinks={footerSections.webServiceLinks}
+            />
+          </div>
         </main>
 
         {showSidebar && (
