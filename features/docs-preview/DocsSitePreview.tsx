@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   DocsSitePreviewFooter,
   DocsSitePreviewNavbar,
@@ -36,11 +39,17 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     showSidebar = true,
     content,
   } = props;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const activePage = pages.find((p) => p.slug === activePageSlug) ?? pages[0];
   const navigation = getPageNavigation(pages, activePage?.slug);
   const footerSections = getFooterSections(menuGroups, pages, activeGroupId);
   const activeGroup = menuGroups.find((group) => group.id === activeGroupId);
+  const sidebarPaddingClass = showSidebar
+    ? isSidebarOpen
+      ? "xl:pr-[344px]"
+      : "xl:pr-24"
+    : "";
   const navTitle = activePage?.title ?? activeGroup?.title ?? "مستندات API";
   const navSubtitle =
     activePage?.menuTitle ??
@@ -51,9 +60,7 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     <div dir="ltr" className="relative h-screen bg-white">
       <div className="relative h-screen bg-slate-100">
         <div
-          className={`absolute inset-x-0 top-0 z-30 ${
-            showSidebar ? "xl:pr-[344px]" : ""
-          }`}
+          className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${sidebarPaddingClass}`}
         >
           <DocsSitePreviewNavbar
             session={session}
@@ -64,26 +71,26 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
 
         <main
           dir="rtl"
-          className={`h-screen min-w-0 overflow-y-auto p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${
-            showSidebar ? "xl:pr-[344px]" : ""
-          }`}
+          className={`h-screen min-w-0 overflow-y-auto p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${sidebarPaddingClass}`}
         >
-          <div className="space-y-6">
-            {content ??
-              (activePage ? (
-                <div className="flex min-h-[80vh] flex-col gap-4">
-                  <PageRenderer
-                    page={activePage}
-                    className="flex-1 min-h-[calc(80vh-12rem)]"
-                  />
-                  <PageNavigation
-                    previousPage={navigation.previousPage}
-                    nextPage={navigation.nextPage}
-                    interactive={interactive}
-                    onSelectPage={onSelectPage}
-                  />
-                </div>
-              ) : null)}
+          <div className="flex min-h-full flex-col gap-6">
+            <div className="flex-1">
+              {content ??
+                (activePage ? (
+                  <div className="flex min-h-[80vh] flex-col gap-4">
+                    <PageRenderer
+                      page={activePage}
+                      className="flex-1 min-h-[calc(80vh-12rem)]"
+                    />
+                    <PageNavigation
+                      previousPage={navigation.previousPage}
+                      nextPage={navigation.nextPage}
+                      interactive={interactive}
+                      onSelectPage={onSelectPage}
+                    />
+                  </div>
+                ) : null)}
+            </div>
 
             <DocsSitePreviewFooter
               serviceLinks={footerSections.serviceLinks}
@@ -94,11 +101,13 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
 
         {showSidebar && (
           <DocsSitePreviewSidebar
+            isOpen={isSidebarOpen}
             menuGroups={menuGroups}
             pages={pages}
             activePageSlug={activePageSlug}
             activeGroupId={activeGroupId}
             interactive={interactive}
+            onToggle={() => setIsSidebarOpen((current) => !current)}
             onSelectPage={onSelectPage}
             onCreatePage={onCreatePage}
           />
