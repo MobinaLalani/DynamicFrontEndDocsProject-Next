@@ -68,10 +68,11 @@ export async function redirectIfAuthenticated() {
 export async function clearAuthSession() {
   const cookieStore = await cookies();
   cookieStore.set({
+    
     ...sessionCookieConfig,
     name: AUTH_COOKIE_NAME,
     value: "",
-    
+
     maxAge: 0,
   });
 }
