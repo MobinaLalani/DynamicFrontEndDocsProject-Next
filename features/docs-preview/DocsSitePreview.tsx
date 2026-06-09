@@ -36,18 +36,21 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
   const navigation = getPageNavigation(pages, activePage?.slug);
 
   return (
-    <div dir="ltr" className="relative min-h-screen overflow-hidden bg-white">
-      <div className="relative min-h-screen bg-slate-100">
+    <div dir="ltr" className="relative h-[99vh]  bg-white">
+      <div className="relative h-screen bg-slate-100">
         <main
           dir="rtl"
-          className={`min-w-0 p-4 pt-24 transition-[padding] duration-300 sm:p-6 sm:pt-28 ${
+          className={`h-[97vh] min-w-0  p-4 pt-24 transition-[padding] duration-300 sm:p-6 sm:pt-28 ${
             showSidebar ? "xl:pr-[344px]" : ""
           }`}
         >
           {content ??
             (activePage ? (
-              <div className="space-y-4">
-                <PageRenderer page={activePage} />
+              <div className="flex min-h-[80vh] flex-col gap-4">
+                <PageRenderer
+                  page={activePage}
+                  className="flex-1 min-h-[calc(80vh-12rem)]"
+                />
                 <PageNavigation
                   previousPage={navigation.previousPage}
                   nextPage={navigation.nextPage}

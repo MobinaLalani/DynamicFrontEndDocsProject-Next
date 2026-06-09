@@ -3,11 +3,16 @@ import { renderComponent } from "@/components/page-renderer/renderComponent";
 
 type PageRendererProps = {
   page: DocPage;
+  className?: string;
 };
 
-export function PageRenderer({ page }: PageRendererProps) {
+export function PageRenderer({ page, className }: PageRendererProps) {
   return (
-    <article className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 text-right shadow-sm sm:p-8">
+    <article
+      className={`space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 text-right shadow-sm sm:p-8 ${
+        className ?? ""
+      }`}
+    >
       <header className="space-y-3">
         <p className="text-sm font-medium tracking-[0.2em] text-slate-500">
           /pages/{page.slug}
@@ -22,7 +27,9 @@ export function PageRenderer({ page }: PageRendererProps) {
         ) : null}
       </header>
 
-      <section className="space-y-5">{page.components.map(renderComponent)}</section>
+      <section className="space-y-5">
+        {page.components.map(renderComponent)}
+      </section>
     </article>
   );
 }
