@@ -23,7 +23,7 @@ export function AdminDocsSidebar({
   onSelectPage,
 }: AdminDocsSidebarProps) {
   const expandedNavButtonClass = (view: BuilderView) =>
-    `w-full rounded-2xl bg-white px-4 py-3 text-right text-lg font-bold text-black transition ${
+    `w-full rounded-2xl bg-white px-4 py-2 text-right  font-semibold text-black transition ${
       activeView === view ? "shadow-sm" : ""
     }`;
 
@@ -54,7 +54,7 @@ export function AdminDocsSidebar({
       </div>
 
       <div
-        className={`border-b border-white/10 px-5 pb-5 pt-6 ${isOpen ? "" : "px-3"}`}
+        className={`border-b border-white/10 px-5 pb-5  ${isOpen ? "" : "px-3"}`}
       >
         {isOpen ? (
           <div className="space-y-3">
@@ -66,10 +66,6 @@ export function AdminDocsSidebar({
                 پنل مدیریت داکیومنت
               </h2>
             </div>
-            <p className="text-sm leading-6 text-slate-400">
-              سایدبار پایه از `components/layout/Sidebar` آمده و محتوای مختص
-              ادمین از `docsSiteBuilderLayout` تامین می‌شود.
-            </p>
           </div>
         ) : (
           <div className="flex justify-center">
@@ -85,7 +81,7 @@ export function AdminDocsSidebar({
       >
         <section className="space-y-2">
           {isOpen ? (
-            <p className="text-xs font-medium text-slate-400">بخش‌های اصلی</p>
+            <p className="text-xl font-bold text-white">بخش‌های اصلی</p>
           ) : null}
 
           <button
@@ -94,7 +90,7 @@ export function AdminDocsSidebar({
             className={
               isOpen
                 ? expandedNavButtonClass("create-page")
-                : "flex h-11 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
             }
             title="ایجاد صفحه جدید"
           >
@@ -107,7 +103,7 @@ export function AdminDocsSidebar({
             className={
               isOpen
                 ? expandedNavButtonClass("menus")
-                : "flex h-11 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
             }
             title="تعریف منو جدید"
           >

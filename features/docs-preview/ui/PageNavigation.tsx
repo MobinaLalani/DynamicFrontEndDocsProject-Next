@@ -19,13 +19,14 @@ type NavigationButtonProps = {
 };
 
 const baseButtonClass =
-  "flex min-h-12  items-center justify-between rounded-2xl border px-3 py-2 text-right transition";
+  "group flex min-h-[64px] w-full items-center justify-between rounded-2xl border px-4 py-3 text-right transition-all duration-200";
 
 const enabledButtonClass =
-  "border-slate-200 bg-white text-slate-950 shadow-sm hover:border-slate-300 hover:bg-slate-50";
+  "border-slate-200 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:shadow-md";
 
 const disabledButtonClass =
-  "cursor-not-allowed border-slate-200  text-slate-400";
+  "cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400";
+
 function NavigationButton({
   label,
   page,
@@ -37,23 +38,35 @@ function NavigationButton({
 
   const content = (
     <>
-      <div className="space-y-1">
-        <p className="text-[10px] font-medium text-slate-500">{label}</p>
-        <p className="text-sm font-semibold leading-5">
-          {page ? page.title : "غیرفعال"}
+      <div className="min-w-0">
+        <p className="mb-1 text-[11px] font-medium text-slate-500">{label}</p>
+
+        <p
+          className={`truncate text-sm font-medium ${
+            page ? "text-slate-900" : "text-slate-400"
+          }`}
+        >
+          {page?.title ?? "غیرفعال"}
         </p>
       </div>
-      <span aria-hidden="true" className={`text-base font-semibold`}>
-        <ArrowIcon className={`${arrowRotation} inline-block`} />
-      </span>
+
+      <div
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all ${
+          page ? "bg-slate-100 group-hover:bg-slate-200" : "bg-slate-100"
+        }`}
+      >
+        <ArrowIcon className={`${arrowRotation} h-4 w-4`} />
+      </div>
     </>
   );
 
-  const buttonClasses = `${baseButtonClass} ${page ? enabledButtonClass : disabledButtonClass}`;
+  const buttonClasses = `${baseButtonClass} ${
+    page ? enabledButtonClass : disabledButtonClass
+  }`;
 
   if (!page) {
     return (
-      <div aria-disabled="true" className={`${buttonClasses}`}>
+      <div aria-disabled="true" className={buttonClasses}>
         {content}
       </div>
     );
@@ -86,26 +99,29 @@ export function PageNavigation({
 }: PageNavigationProps) {
   return (
     <nav
-      aria-label="ناوبری بین صفحات زیرمنو"
-      className="flex justify-between border-t border-slate-200 pt-4"
+      aria-label="ناوبری بین صفحات"
+      className="mt-6 border-t border-slate-200 pt-4"
     >
-      <div className="w-1/2 max-w-xs">
-        <NavigationButton
-          label="صفحه قبل"
-          page={previousPage}
-          direction="previous"
-          interactive={interactive}
-          onSelectPage={onSelectPage}
-        />
-      </div>
-      <div className="w-1/2 max-w-xs text-right">
-        <NavigationButton
-          label="صفحه بعد"
-          page={nextPage}
-          direction="next"
-          interactive={interactive}
-          onSelectPage={onSelectPage}
-        />
+      <div className="flex gap-3 sm:gap-4">
+        <div className="flex-1">
+          <NavigationButton
+            label="صفحه قبل"
+            page={previousPage}
+            direction="previous"
+            interactive={interactive}
+            onSelectPage={onSelectPage}
+          />
+        </div>
+
+        <div className="flex-1">
+          <NavigationButton
+            label="صفحه بعد"
+            page={nextPage}
+            direction="next"
+            interactive={interactive}
+            onSelectPage={onSelectPage}
+          />
+        </div>
       </div>
     </nav>
   );

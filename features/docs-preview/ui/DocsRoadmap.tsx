@@ -41,7 +41,7 @@ export function DocsRoadmap({ items }: DocsRoadmapProps) {
       <ol className="flex flex-wrap items-center justify-start gap-2 text-sm text-slate-500">
         {items.map((item, index) => {
           const content = item.isHome ? (
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 ">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-(--darkblue) text-white transition hover:border-slate-300 ">
               <HomeIcon />
             </span>
           ) : (
@@ -49,7 +49,7 @@ export function DocsRoadmap({ items }: DocsRoadmapProps) {
               className={`rounded-full px-3 py-2 transition ${
                 item.href
                   ? "bg-slate-50 text-slate-700  hover:text-slate-950"
-                  : "bg-sky-50 font-medium text-sky-700"
+                  : "bg-sky-50 font-medium text-(--darkblue)"
               }`}
             >
               {item.label}
