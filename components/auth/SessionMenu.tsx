@@ -30,7 +30,7 @@ export function SessionMenu({
           aria-label="باز کردن منوی کاربر"
           className={
             triggerClassName ??
-            "flex h-10 w-10 items-center justify-center rounded-full border border-sky-400 bg-red-500 text-white shadow-sm transition hover:border-sky-500 hover:bg-sky-600"
+            "flex h-10 w-10 items-center justify-center rounded-full border border-sky-400 bg-sky-500 text-white shadow-sm transition hover:border-sky-500 hover:bg-sky-600"
           }
         >
           <User className="h-5 w-5" />

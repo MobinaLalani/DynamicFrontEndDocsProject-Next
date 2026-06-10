@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/layout/Sidebar";
+import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import type { BuilderView } from "@/features/docs-builder/model";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
 
@@ -40,9 +41,15 @@ export function AdminDocsSidebar({
         <button
           type="button"
           onClick={onToggle}
-          className="rounded-full border border-white bg-white/10 px-3 py-2 text-xs font-bold text-white transition hover:bg-white/20"
+          aria-label={isOpen ? "بستن سایدبار" : "باز کردن سایدبار"}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900 transition hover:bg-slate-100"
         >
-          {isOpen ? "بستن" : "باز"}
+          <ArrowIcon
+            strokeColor="#0f172a"
+            className={`h-4 w-4 transition-transform duration-300 ${
+              isOpen ? "rotate-270" : "rotate-90"
+            }`}
+          />
         </button>
       </div>
 
