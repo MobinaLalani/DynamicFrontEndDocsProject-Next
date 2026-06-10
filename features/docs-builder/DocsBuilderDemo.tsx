@@ -45,8 +45,8 @@ export function DocsBuilderDemo({
           workspace={state.workspace}
           activePageSlug={displayPage.slug}
         /> */}
-
-        <div className="flex-1">
+        <p className="font-bold text-2xl mr-6">پیش نمایش صفحه</p>
+        <div className="flex-1 border border-(--darkBlue)  p-3 rounded-3xl m-6 bg-white">
           {state.activeView === "blocks" ? (
             <div dir="rtl" className="space-y-6">
               <ToolsPanelContent
@@ -113,12 +113,12 @@ export function DocsBuilderDemo({
           )}
         </div>
 
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <AdminDocsFooter
             workspace={state.workspace}
             activePage={displayPage}
           />
-        </div>
+        </div> */}
       </main>
 
       <AdminDocsSidebar
