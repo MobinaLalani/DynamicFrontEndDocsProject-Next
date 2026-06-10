@@ -29,7 +29,7 @@ export function AdminDocsSidebar({
   return (
     <Sidebar
       isOpen={isOpen}
-      className="border-l border-white/10 bg-slate-950 text-white"
+      className="border-l border-white/10 bg-(--darkBlue) text-white"
       expandedWidthClassName="w-full sm:w-[360px]"
     >
       <div

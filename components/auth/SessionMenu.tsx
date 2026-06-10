@@ -47,7 +47,7 @@ export function SessionMenu({
               </p>
               <p className="text-sm text-slate-600">{session.username}</p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+            <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium text-slate-700">
               <Shield className="h-3.5 w-3.5" />
               {roleLabel}
             </span>

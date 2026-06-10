@@ -42,7 +42,7 @@ export function DocsSitePreviewSidebar({
         type="button"
         onClick={onToggle}
         aria-label={isOpen ? "بستن سایدبار" : "باز کردن سایدبار"}
-        className="absolute -left-5 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900 transition hover:bg-slate-100"
+        className="absolute -left-5 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900 transition "
       >
         <ArrowIcon
           strokeColor="#0f172a"

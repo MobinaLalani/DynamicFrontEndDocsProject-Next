@@ -25,7 +25,7 @@ const enabledButtonClass =
   "border-slate-200 bg-white text-slate-950 shadow-sm hover:border-slate-300 hover:bg-slate-50";
 
 const disabledButtonClass =
-  "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400";
+  "cursor-not-allowed border-slate-200  text-slate-400";
 function NavigationButton({
   label,
   page,

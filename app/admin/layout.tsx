@@ -10,5 +10,5 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   await connection();
   await requireRole("admin");
 
-  return <section className="min-h-screen bg-slate-100">{children}</section>;
+  return <section className="min-h-screen bg-(--color-background)">{children}</section>;
 }

@@ -26,13 +26,10 @@ export function DocsBuilderDemo({
   const displayPage = state.activePage ?? state.createPageDraft;
 
   return (
-    <section
-      dir="ltr"
-      className="relative min-h-screen overflow-hidden bg-slate-100"
-    >
+    <section dir="ltr" className="relative min-h-screen overflow-hidden ">
       <div
         className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${
-          isSidebarOpen ? "xl:pr-[384px]" : "xl:pr-24"
+          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
         }`}
       >
         <AdminDocsNavbar session={session} />
@@ -41,7 +38,7 @@ export function DocsBuilderDemo({
       <main
         dir="rtl"
         className={`flex min-h-screen flex-col p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${
-          isSidebarOpen ? "xl:pr-[384px]" : "xl:pr-24"
+          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
         }`}
       >
         {/* <BuilderStats

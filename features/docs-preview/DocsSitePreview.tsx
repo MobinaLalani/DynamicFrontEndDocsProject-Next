@@ -72,8 +72,8 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     "مرور مستندات سرویس‌ها و وب‌سرویس‌ها";
 
   return (
-    <div dir="ltr" className="relative h-screen bg-white">
-      <div className="relative h-screen bg-slate-100">
+    <div dir="ltr" className="relative h-screen ">
+      <div className="relative h-screen ">
         <div
           className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${sidebarPaddingClass}`}
         >

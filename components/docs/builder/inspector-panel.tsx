@@ -71,7 +71,7 @@ function SelectedInspectorPanel({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 rounded-2xl bg-slate-100 p-1">
+      <div className="grid grid-cols-2 rounded-2xl  p-1">
         <InspectorTabButton
           label="Properties"
           isActive={activeTab === "properties"}
@@ -120,9 +120,9 @@ function renderInspector<T extends PageComponent>(
   ) => void,
   activeTab: InspectorTab,
 ) {
-  const Inspector = inspectorRegistry[
-    selectedComponent.type
-  ] as React.ComponentType<InspectorProps<T>>;
+const Inspector = inspectorRegistry[
+  selectedComponent.type
+] as unknown as React.ComponentType<InspectorProps<T>>;
 
   return (
     <Inspector

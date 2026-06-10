@@ -12,7 +12,6 @@ type AdminDocsNavbarProps = {
 export function AdminDocsNavbar({
   session,
   title = "پنل مدیریت داکیومنت",
-  subtitle = "مدیریت صفحات، منوها و ساختار مستندات API",
   className,
 }: AdminDocsNavbarProps) {
   return (
@@ -36,7 +35,6 @@ export function AdminDocsNavbar({
           <h2 className="truncate text-lg font-semibold text-slate-950 sm:text-xl">
             {title}
           </h2>
-          <p className="mt-1 truncate text-sm text-slate-500">{subtitle}</p>
         </>
       }
     />

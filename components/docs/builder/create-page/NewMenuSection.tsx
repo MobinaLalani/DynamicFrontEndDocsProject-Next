@@ -209,7 +209,7 @@ export function NewMenuSection({
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-slate-200 text-sm">
-                  <thead className="bg-slate-100 text-slate-700">
+                  <thead className=" text-slate-700">
                     <tr>
                       <th className="px-4 py-3 text-right font-semibold">
                         عنوان منو

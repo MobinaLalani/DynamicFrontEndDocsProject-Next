@@ -18,7 +18,7 @@ export function Sidebar({
   return (
     <aside
       dir="rtl"
-      className={`absolute inset-y-0 right-0 z-40 flex h-full flex-col transition-all duration-300 ${
+      className={`absolute inset-y-0 right-0 z-40 flex h-full flex-col transition-all rounded-l-4xl duration-300 ${
         isOpen ? expandedWidthClassName : collapsedWidthClassName
       } ${className ?? ""}`}
     >
