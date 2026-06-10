@@ -5,6 +5,7 @@
   --foreground: #0f172a;
   --darkblue:#1A3F76;
   --lightblue:#1078F9;
+  --darkgray:#42648A;
 }
 
 @theme inline {
@@ -14,6 +15,7 @@
   --font-mono: var(--font-geist-mono);
   --darkBlue:var(--darkblue);
   --lightBlue:var(--lightblue);
+  --darkGray:var(--darkgray);
 }
 
 ::-webkit-scrollbar {

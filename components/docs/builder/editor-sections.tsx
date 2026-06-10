@@ -617,34 +617,23 @@ export function PreviewSection({
 
   return (
     <section className="space-y-4">
-      <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">
-              پیش نمایش واقعی
-            </p>
-            <p className="mt-1 text-sm text-slate-600">
-              ابتدا نمای واقعی صفحه را می‌بینی و از همین بالا می‌توانی وارد
-              ویرایش شوی.
-            </p>
-          </div>
+      <div className="rounded-3xl bg-white p-4">
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPickerOpen((current) => !current)}
+            className="rounded-2xl border border-slate-300 bg-(--darkGray) px-4 py-2 text-sm  text-white font-bold transition hover:border-slate-400"
+          >
+            افزودن کامپوننت
+          </button>
 
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setIsPickerOpen((current) => !current)}
-              className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400"
-            >
-              افزودن کامپوننت
-            </button>
-            <button
-              type="button"
-              onClick={onEditPage}
-              className="rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
-            >
-              ویرایش صفحه
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onEditPage}
+            className="rounded-2xl bg-slate-950 px-4 py-2 text-sm  font-bold text-white transition hover:bg-slate-800"
+          >
+            ویرایش صفحه
+          </button>
         </div>
 
         {isPickerOpen ? (
