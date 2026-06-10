@@ -16,7 +16,7 @@ export function AdminDocsNavbar({
 }: AdminDocsNavbarProps) {
   return (
     <Navbar
-      className={`border-b border-slate-200 bg-white/95 px-5 py-4 shadow-sm backdrop-blur sm:px-6 ${
+      className={`sticky top-0 z-50 border-b border-white/20   bg-white/70 px-5 py-4 rounded-3xl m-3 shadow-lg  sm:px-6 ${
         className ?? ""
       }`}
       leftSlot={
