@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
 import {
-  AdminDocsFooter,
   AdminDocsNavbar,
   AdminDocsSidebar,
 } from "@/components/layout/docsSiteBuilderLayout";

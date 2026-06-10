@@ -23,7 +23,7 @@ export function AdminDocsNavbar({
         <SessionMenu
           session={session}
           position="bottom-left"
-          triggerClassName="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+          triggerClassName="flex h-10 w-10 items-center justify-center rounded-full border border-(--lightBlue) bg-(--lightBlue) text-white shadow-sm transition hover:border-sky-500 hover:bg-sky-600"
           panelClassName="w-[260px] p-4"
         />
       }
