@@ -318,7 +318,7 @@ type CreatePageViewProps = {
   onSetNewPageMenuTitle: (value: string) => void;
   onSetNewPageMenuGroupId: (value: string) => void;
   onSetNewPageDescription: (value: string) => void;
-  onCreateMenu: () => Promise<void>;
+  onCreateMenu: () => void | Promise<void>;
   onSaveMenuGroupChanges: (
     menuGroupId: string,
     input: {
@@ -536,7 +536,7 @@ type MenuManagementViewProps = {
   onSetNewMenuTitle: (value: string) => void;
   onSetNewMenuDescription: (value: string) => void;
   onSetNewMenuActive: (value: boolean) => void;
-  onCreateMenu: () => Promise<void>;
+  onCreateMenu: () => void | Promise<void>;
   onSaveMenuGroupChanges: (
     menuGroupId: string,
     input: {
@@ -571,8 +571,8 @@ function MenuManagementView({
           تعریف و ویرایش منوها
         </h3>
         <p className="text-sm leading-7 text-slate-600">
-          از این بخش می‌توانی منوی جدید بسازی، وضعیت نمایش آن را فعال یا
-          غیرفعال کنی و منوهای قبلی را هم ویرایش و ذخیره کنی.
+          از این بخش می‌توانی منوی جدید بسازی، وضعیت نمایش آن را فعال یا غیرفعال
+          کنی و منوهای قبلی را هم ویرایش و ذخیره کنی.
         </p>
       </div>
 

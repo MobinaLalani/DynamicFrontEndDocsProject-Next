@@ -15,7 +15,7 @@ type NewMenuSectionProps = {
   onSetNewMenuTitle: (value: string) => void;
   onSetNewMenuDescription: (value: string) => void;
   onSetNewMenuActive: (value: boolean) => void;
-  onCreateMenu: () => Promise<void>;
+  onCreateMenu: () => void | Promise<void>;
   onSaveMenuGroupChanges: (
     menuGroupId: string,
     input: {
