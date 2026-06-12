@@ -25,7 +25,7 @@ export function DocsSitePreviewNavbar({
           <SessionMenu
             session={session}
             position="bottom-left"
-            triggerClassName="flex h-10 w-10 items-center justify-center rounded-full border border-sky-400 bg-red-500 text-white shadow-sm transition hover:border-sky-500 hover:bg-sky-600"
+            triggerClassName="flex h-10 w-10 items-center justify-center rounded-full border border-sky-400 bg-sky-500! text-white shadow-sm transition hover:border-sky-500 hover:bg-sky-600"
             panelClassName="w-[240px] p-4"
           />
         ) : null
