@@ -62,8 +62,8 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
   });
   const sidebarPaddingClass = showSidebar
     ? isSidebarOpen
-      ? "xl:pr-[344px]"
-      : "xl:pr-24"
+      ? "xl:pr-[320px]"
+      : "xl:pr-18"
     : "";
   const navTitle = activePage?.title ?? activeGroup?.title ?? "مستندات API";
   const navSubtitle =

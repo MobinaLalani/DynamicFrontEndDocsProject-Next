@@ -113,7 +113,7 @@ export function DocsSitePreviewSidebar({
                       href={`/pages/group/${group.id}`}
                       className={`block rounded-2xl px-3 py-2 font-semibold transition ${
                         isGroupActive
-                          ? "bg-white text-black shadow-sm"
+                          ? "bg-white text-black! shadow-sm"
                           : "text-white hover:bg-white/10"
                       }`}
                     >
