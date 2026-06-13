@@ -7,6 +7,7 @@ import type {
   EndpointComponent,
   FieldGroupComponent,
   HeadingComponent,
+  NoteComponent,
   ParagraphComponent,
   TableComponent,
 } from "@/lib/docs/schema";
@@ -15,6 +16,7 @@ import type {
   EndpointInspectorProps,
   FieldGroupInspectorProps,
   HeadingInspectorProps,
+  NoteInspectorProps,
   ParagraphInspectorProps,
   TableInspectorProps,
 } from "@/components/docs/builder/inspector/types";
@@ -30,6 +32,10 @@ function InspectorLoading() {
 export const inspectorRegistry = {
   heading: dynamic<HeadingInspectorProps>(
     () => import("@/components/docs/builder/inspector/HeadingInspector"),
+    { loading: InspectorLoading },
+  ),
+  note: dynamic<NoteInspectorProps>(
+    () => import("@/components/docs/builder/inspector/NoteInspector"),
     { loading: InspectorLoading },
   ),
   paragraph: dynamic<ParagraphInspectorProps>(
@@ -56,6 +62,7 @@ export const inspectorRegistry = {
 
 export type InspectorRegistry = {
   heading: React.ComponentType<HeadingInspectorProps>;
+  note: React.ComponentType<NoteInspectorProps>;
   paragraph: React.ComponentType<ParagraphInspectorProps>;
   endpoint: React.ComponentType<EndpointInspectorProps>;
   "field-group": React.ComponentType<FieldGroupInspectorProps>;
@@ -65,6 +72,7 @@ export type InspectorRegistry = {
 
 export type InspectorComponentMap = {
   heading: HeadingComponent;
+  note: NoteComponent;
   paragraph: ParagraphComponent;
   endpoint: EndpointComponent;
   "field-group": FieldGroupComponent;

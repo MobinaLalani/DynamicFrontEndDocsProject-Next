@@ -56,6 +56,16 @@
       "type": "heading",
       "text": "ببزرلالبرت",
       "level": 2
+    },
+    {
+      "id": "code-laoij3jo",
+      "type": "code",
+      "title": "Response Example",
+      "language": "json",
+      "code": "{\n  \"success\": true\n}",
+      "style": {
+        "backgroundColor": "#0c0c0d"
+      }
     }
   ]
 }

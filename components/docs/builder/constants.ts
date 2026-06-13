@@ -6,6 +6,7 @@ import {
   Heading1,
   Network,
   Rows3,
+  StickyNote,
   Table,
 } from "lucide-react";
 
@@ -14,6 +15,7 @@ export const componentTransferKey = "application/x-docs-component-id";
 
 const blockTypeLabels: Record<PageComponentType, string> = {
   heading: "هدینگ",
+  note: "نوت",
   paragraph: "پاراگراف",
   endpoint: "اندپوینت",
   "field-group": "گروه فیلد",
@@ -23,6 +25,7 @@ const blockTypeLabels: Record<PageComponentType, string> = {
 
 const blockTypeIcons: Record<PageComponentType, LucideIcon> = {
   heading: Heading1,
+  note: StickyNote,
   paragraph: AlignLeft,
   endpoint: Network,
   "field-group": Rows3,
@@ -41,6 +44,10 @@ export function getBlockTypeIcon(type: PageComponentType) {
 export function getBlockLabel(component: PageComponent) {
   if (component.type === "heading") {
     return component.text;
+  }
+
+  if (component.type === "note") {
+    return component.title;
   }
 
   if (component.type === "paragraph") {
@@ -67,6 +74,10 @@ export function getBlockMeta(component: PageComponent) {
     return `هدینگ سطح ${component.level ?? 1}`;
   }
 
+  if (component.type === "note") {
+    return "یادداشت برجسته";
+  }
+
   if (component.type === "paragraph") {
     return "متن توضیحی";
   }
@@ -89,6 +100,7 @@ export function getBlockMeta(component: PageComponent) {
 export function translateBlockLabel(label: string) {
   const labels: Record<string, string> = {
     Heading: blockTypeLabels.heading,
+    Note: blockTypeLabels.note,
     Paragraph: blockTypeLabels.paragraph,
     Endpoint: blockTypeLabels.endpoint,
     "Field Group": blockTypeLabels["field-group"],
@@ -102,6 +114,7 @@ export function translateBlockLabel(label: string) {
 export function translateBlockDescription(type: PageComponentType) {
   const descriptions: Record<PageComponentType, string> = {
     heading: "برای عنوان بخش ها و تیترهای اصلی",
+    note: "برای نکته مهم، هشدار، راهنما و پیام برجسته",
     paragraph: "برای متن توضیحی، راهنما و نکات",
     endpoint: "برای نمایش method، path و اطلاعات endpoint",
     "field-group": "برای query، headers، body و response fields",

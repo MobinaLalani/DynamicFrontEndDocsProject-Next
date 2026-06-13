@@ -3,6 +3,7 @@ import type {
   EndpointComponent,
   FieldGroupComponent,
   HeadingComponent,
+  NoteComponent,
   PageComponent,
   ParagraphComponent,
   TableComponent,
@@ -17,6 +18,7 @@ export type InspectorProps<T extends PageComponent> = {
 };
 
 export type HeadingInspectorProps = InspectorProps<HeadingComponent>;
+export type NoteInspectorProps = InspectorProps<NoteComponent>;
 export type ParagraphInspectorProps = InspectorProps<ParagraphComponent>;
 export type EndpointInspectorProps = InspectorProps<EndpointComponent>;
 export type FieldGroupInspectorProps = InspectorProps<FieldGroupComponent>;

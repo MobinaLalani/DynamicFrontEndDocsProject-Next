@@ -1,5 +1,6 @@
 export type PageComponentType =
   | "heading"
+  | "note"
   | "paragraph"
   | "endpoint"
   | "field-group"
@@ -51,6 +52,8 @@ export type CodeStyle = {
   fontSize?: FontSizeToken;
 };
 
+export type NoteTone = "info" | "success" | "warning" | "danger";
+
 export type BaseComponent = {
   id: string;
   type: PageComponentType;
@@ -66,6 +69,14 @@ export type HeadingComponent = BaseComponent & {
 export type ParagraphComponent = BaseComponent & {
   type: "paragraph";
   text: string;
+  style?: TextStyle;
+};
+
+export type NoteComponent = BaseComponent & {
+  type: "note";
+  title: string;
+  text: string;
+  tone?: NoteTone;
   style?: TextStyle;
 };
 
@@ -122,6 +133,7 @@ export type CodeComponent = BaseComponent & {
 
 export type PageComponent =
   | HeadingComponent
+  | NoteComponent
   | ParagraphComponent
   | EndpointComponent
   | FieldGroupComponent

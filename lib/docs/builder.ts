@@ -20,6 +20,11 @@ export const paletteBlocks: PaletteBlock[] = [
     description: "Section titles for endpoint groups and response areas.",
   },
   {
+    type: "note",
+    label: "Note",
+    description: "Highlighted notes, warnings, tips, and important reminders.",
+  },
+  {
     type: "paragraph",
     label: "Paragraph",
     description: "Human-readable descriptions, notes, and instructions.",
@@ -45,7 +50,6 @@ export const paletteBlocks: PaletteBlock[] = [
     label: "Code Example",
     description: "Request samples, response payloads, and SDK snippets.",
   },
-
 ];
 
 function buildId(type: PageComponentType) {
@@ -90,6 +94,16 @@ export function createComponent(type: PageComponentType): PageComponent {
       type,
       text: "New Section",
       level: 2,
+    };
+  }
+
+  if (type === "note") {
+    return {
+      id: buildId(type),
+      type,
+      title: "نکته مهم",
+      text: "اینجا می‌توانی یک توضیح مهم، هشدار یا راهنمای کوتاه بنویسی.",
+      tone: "info",
     };
   }
 
@@ -166,7 +180,7 @@ export const methodOptions: HttpMethod[] = [
   "DELETE",
 ];
 
-export const codeLanguageOptions: CodeLanguage[] = [ 
+export const codeLanguageOptions: CodeLanguage[] = [
   "json",
   "bash",
   "javascript",
@@ -174,7 +188,6 @@ export const codeLanguageOptions: CodeLanguage[] = [
 ];
 
 export const fieldGroupKinds: ApiFieldKind[] = [
-  
   "headers",
   "query",
   "path",
