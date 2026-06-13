@@ -76,7 +76,11 @@ export function createMenuGroup(input: {
   description?: string;
   isActive?: boolean;
 }): MenuGroup {
-  const normalizedTitle = input.title.trim() || "منوی جدید";
+  const normalizedTitle = input.title.trim();
+
+  if (!normalizedTitle) {
+    throw new Error("عنوان منو را وارد کن.");
+  }
 
   return {
     id: `menu-${Math.random().toString(36).slice(2, 10)}`,

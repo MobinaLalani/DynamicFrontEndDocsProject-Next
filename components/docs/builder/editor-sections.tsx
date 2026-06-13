@@ -387,7 +387,7 @@ export function CreatePageView({
         <button
           type="button"
           onClick={onBackToEditor}
-          className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400"
+          className="rounded-full border border-slate-300 bg-black px-5 py-3 text-sm font-bold text-white transition hover:border-slate-400 hover:bg-(--darkBlue)"
         >
           بازگشت به ویرایش صفحه
         </button>
@@ -395,58 +395,55 @@ export function CreatePageView({
 
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-7">
-          <CollapsiblePanel subtitle="مدیریت محتوا" title="تعریف صفحه و منو">
-            <div className="flex w-full items-stretch gap-5 min-h-[400px]">
-              {/* Left: Page Details */}
-              <div className="flex flex-1 min-w-0 flex-col">
-                <div className="border-b border-slate-100 pb-4 mb-4">
-                  <p className="text-sm font-medium text-slate-500">
-                    تعریف صفحه
-                  </p>
-                  <h4 className="text-xl font-semibold text-slate-950">
-                    مشخصات صفحه جدید
-                  </h4>
-                </div>
-
-                <NewPageDetailsSection
-                  menuGroups={menuGroups}
-                  draftPage={draftPage}
-                  onSetNewPageTitle={onSetNewPageTitle}
-                  onSetNewPageSlug={onSetNewPageSlug}
-                  onSetNewPageMenuTitle={onSetNewPageMenuTitle}
-                  onSetNewPageMenuGroupId={onSetNewPageMenuGroupId}
-                  onSetNewPageDescription={onSetNewPageDescription}
-                />
-              </div>
-
-              {/* Right: Menu */}
-              <div className="flex flex-1 min-w-0 flex-col">
-                <div className="border-b border-slate-100 pb-4 mb-4">
-                  <p className="text-sm font-medium text-slate-500">
-                    در صورت نیاز
-                  </p>
-                  <h4 className="text-xl font-semibold text-slate-950">
-                    تعریف منوی جدید
-                  </h4>
-                </div>
-
-                <NewMenuSection
-                  menuGroups={menuGroups}
-                  pages={pages}
-                  createMenuTitle={createMenuTitle}
-                  createMenuDescription={createMenuDescription}
-                  createMenuIsActive={createMenuIsActive}
-                  onSetNewMenuTitle={onSetNewMenuTitle}
-                  onSetNewMenuDescription={onSetNewMenuDescription}
-                  onSetNewMenuActive={onSetNewMenuActive}
-                  onCreateMenu={onCreateMenu}
-                  onSaveMenuGroupChanges={onSaveMenuGroupChanges}
-                  onDeleteMenuGroup={onDeleteMenuGroup}
-                  onResetMenuForm={onResetMenuForm}
-                />
-              </div>
+          <div className="space-y-4">
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4">
+              <p className="text-sm font-medium text-slate-500">مدیریت محتوا</p>
+              <h4 className="mt-1 text-xl font-semibold text-slate-950">
+                تعریف صفحه و منو
+              </h4>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                مشخصات صفحه جدید و تعریف منوی جدید به‌صورت بخش‌های جدا و
+                بازشونده نمایش داده می‌شوند.
+              </p>
             </div>
-          </CollapsiblePanel>
+
+            <CollapsiblePanel
+              subtitle="تعریف صفحه"
+              title="مشخصات صفحه جدید"
+              defaultOpen={false}
+            >
+              <NewPageDetailsSection
+                menuGroups={menuGroups}
+                draftPage={draftPage}
+                onSetNewPageTitle={onSetNewPageTitle}
+                onSetNewPageSlug={onSetNewPageSlug}
+                onSetNewPageMenuTitle={onSetNewPageMenuTitle}
+                onSetNewPageMenuGroupId={onSetNewPageMenuGroupId}
+                onSetNewPageDescription={onSetNewPageDescription}
+              />
+            </CollapsiblePanel>
+
+            <CollapsiblePanel
+              subtitle="در صورت نیاز"
+              title="تعریف منوی جدید"
+              defaultOpen={false}
+            >
+              <NewMenuSection
+                menuGroups={menuGroups}
+                pages={pages}
+                createMenuTitle={createMenuTitle}
+                createMenuDescription={createMenuDescription}
+                createMenuIsActive={createMenuIsActive}
+                onSetNewMenuTitle={onSetNewMenuTitle}
+                onSetNewMenuDescription={onSetNewMenuDescription}
+                onSetNewMenuActive={onSetNewMenuActive}
+                onCreateMenu={onCreateMenu}
+                onSaveMenuGroupChanges={onSaveMenuGroupChanges}
+                onDeleteMenuGroup={onDeleteMenuGroup}
+                onResetMenuForm={onResetMenuForm}
+              />
+            </CollapsiblePanel>
+          </div>
         </div>
         <div className="flex gap-6">
           <div className="flex w-87.5 flex-col gap-6">
@@ -619,14 +616,7 @@ export function PreviewSection({
     <section className="space-y-4">
       <div className="rounded-3xl bg-white p-4">
         <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => setIsPickerOpen((current) => !current)}
-            className="rounded-2xl border border-slate-300 bg-(--darkGray) px-4 py-2 text-sm  text-white font-bold transition hover:border-slate-400"
-          >
-            افزودن کامپوننت
-          </button>
-
+  
           <button
             type="button"
             onClick={onEditPage}

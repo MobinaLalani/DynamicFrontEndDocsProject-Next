@@ -48,6 +48,7 @@ export function NewMenuSection({
   const [blockedDeleteMenu, setBlockedDeleteMenu] = useState<MenuGroup | null>(
     null,
   );
+  const isMenuTitleEmpty = createMenuTitle.trim().length === 0;
 
   const resetForm = () => {
     setEditingMenuId(null);
@@ -56,6 +57,11 @@ export function NewMenuSection({
   };
 
   const handleSubmit = async () => {
+    if (isMenuTitleEmpty) {
+      setSaveMessage("عنوان منو را وارد کن.");
+      return;
+    }
+
     setIsSaving(true);
     setSaveMessage(null);
 
@@ -122,11 +128,18 @@ export function NewMenuSection({
         <div className="space-y-4">
           <Field label="عنوان منو">
             <input
-              className={`${inputClass} w-full min-w-0`}
+              className={`${inputClass} w-full min-w-0 ${
+                isMenuTitleEmpty ? "border-rose-300 focus:border-rose-400" : ""
+              }`}
               value={createMenuTitle}
               onChange={(event) => onSetNewMenuTitle(event.target.value)}
               placeholder="مثلا احراز هویت"
             />
+            {isMenuTitleEmpty ? (
+              <p className="mt-2 text-sm text-rose-600">
+                عنوان منو نمی‌تواند خالی باشد.
+              </p>
+            ) : null}
           </Field>
 
           <Field label="توضیح منو">
@@ -172,7 +185,7 @@ export function NewMenuSection({
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={isSaving}
+                disabled={isSaving || isMenuTitleEmpty}
                 className="rounded-2xl bg-sky-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
               >
                 {isSaving

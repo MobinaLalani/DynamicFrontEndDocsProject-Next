@@ -129,6 +129,10 @@ export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
   };
 
   const createMenuAndSave = async () => {
+    if (!state.createMenuForm.title.trim()) {
+      throw new Error("عنوان منو را وارد کن.");
+    }
+
     const nextMenu = createMenuGroup({
       title: state.createMenuForm.title,
       description: state.createMenuForm.description,
@@ -148,13 +152,16 @@ export function useDocsBuilder(initialWorkspace?: DocsWorkspace) {
       isActive: boolean;
     },
   ) => {
+    if (!input.title.trim()) {
+      throw new Error("عنوان منو را وارد کن.");
+    }
+
     const nextMenuGroups = state.workspace.menuGroups.map((menuGroup) =>
       menuGroup.id === menuGroupId
         ? {
             ...menuGroup,
-            title: input.title.trim() || "منوی جدید",
-            description:
-              input.description.trim() || "گروه منوی تازه ایجاد شده",
+            title: input.title.trim(),
+            description: input.description.trim() || "گروه منوی تازه ایجاد شده",
             isActive: input.isActive,
           }
         : menuGroup,

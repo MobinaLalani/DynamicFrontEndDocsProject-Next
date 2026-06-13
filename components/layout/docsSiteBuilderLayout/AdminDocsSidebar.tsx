@@ -103,7 +103,7 @@ export function AdminDocsSidebar({
             className={
               isOpen
                 ? expandedNavButtonClass("menus")
-                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/5 text-white transition hover:bg-white/20"
             }
             title="تعریف منو جدید"
           >
@@ -113,7 +113,7 @@ export function AdminDocsSidebar({
 
         <section className="space-y-4 border-t border-white/10 pt-4">
           {isOpen ? (
-            <p className="text-xs font-medium text-slate-400">صفحه‌ها</p>
+            <p className="text-bold font-medium text-slate-400">صفحه‌ها</p>
           ) : null}
 
           {workspace.menuGroups.map((group) => {
@@ -142,7 +142,6 @@ export function AdminDocsSidebar({
                     </span>
                   </div>
                 )}
-
                 <div className="space-y-2">
                   {groupPages.map((page) => {
                     const isActive =
@@ -153,12 +152,12 @@ export function AdminDocsSidebar({
                       ? `block w-full rounded-2xl px-4 py-3 text-right text-sm transition ${
                           isActive
                             ? "bg-white text-slate-950 shadow-sm"
-                            : "bg-white/5 text-slate-200 hover:bg-white/10"
+                            : "bg-white/5 text-white hover:bg-white/10"
                         }`
                       : `flex h-11 w-full items-center justify-center rounded-2xl text-sm transition ${
                           isActive
                             ? "bg-white text-slate-950 shadow-sm"
-                            : "bg-white/5 text-slate-200 hover:bg-white/10"
+                            : "bg-white/5 text-white hover:bg-white/10"
                         }`;
 
                     return (
@@ -170,17 +169,28 @@ export function AdminDocsSidebar({
                       >
                         {isOpen ? (
                           <>
-                            <span className="block font-medium text-black">
+                            <span
+                              className={`block font-medium ${
+                                isActive ? "text-slate-950" : "text-white"
+                              }`}
+                            >
                               {page.menuTitle}
                             </span>
-                            <span className="mt-1 block text-xs text-black">
+
+                            <span
+                              className={`mt-1 block text-xs ${
+                                isActive ? "text-slate-600" : "text-slate-300"
+                              }`}
+                            >
                               /pages/{page.slug}
                             </span>
                           </>
                         ) : (
                           <span
                             title={page.menuTitle}
-                            className="font-medium text-black"
+                            className={`font-medium ${
+                              isActive ? "text-slate-950" : "text-white"
+                            }`}
                           >
                             {page.menuTitle.slice(0, 1)}
                           </span>
