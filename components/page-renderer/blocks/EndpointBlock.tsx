@@ -2,11 +2,11 @@ import type { EndpointComponent } from "@/lib/docs/schema";
 import type { PageBlockProps } from "@/components/page-renderer/types";
 
 const methodColors: Record<EndpointComponent["method"], string> = {
-  GET: "bg-emerald-100 text-emerald-700",
-  POST: "bg-sky-100 text-sky-700",
-  PUT: "bg-amber-100 text-amber-700",
-  PATCH: "bg-violet-100 text-violet-700",
-  DELETE: "bg-rose-100 text-rose-700",
+  GET: "bg-emerald-500/10 text-emerald-600 border-emerald-200",
+  POST: "bg-sky-500/10 text-sky-600 border-sky-200",
+  PUT: "bg-amber-500/10 text-amber-600 border-amber-200",
+  PATCH: "bg-violet-500/10 text-violet-600 border-violet-200",
+  DELETE: "bg-rose-500/10 text-rose-600 border-rose-200",
 };
 
 export function EndpointBlock({
@@ -15,63 +15,76 @@ export function EndpointBlock({
   const endpointStyle = component.style;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-wrap items-center gap-3">
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${methodColors[component.method]}`}
-        >
-          {component.method}
-        </span>
-        <code
-          className="rounded-xl bg-slate-950 px-3 py-2 text-sm text-slate-100"
-          style={{
-            backgroundColor: endpointStyle?.pathBackgroundColor,
-            color: endpointStyle?.pathTextColor,
-          }}
-        >
-          {component.path}
-        </code>
-      </div>
-      <div className="mt-4 space-y-2">
+    <div
+      dir="ltr"
+      className="overflow-hidden rounded-3xl border border-slate-200 bg-white text-left shadow-[0_10px_40px_rgba(15,23,42,0.08)]"
+    >
+      {/* HEADER */}
+      <div className="border-b border-slate-100 bg-slate-50 px-6 py-5">
+        <div className="flex items-center gap-3">
+          <span
+            className={`rounded-full border px-3 py-1 text-xs font-semibold ${methodColors[component.method]}`}
+          >
+            {component.method}
+          </span>
+
+          <code
+            className="rounded-xl bg-slate-900 px-3 py-2 font-mono text-sm text-slate-100"
+            style={{
+              backgroundColor: endpointStyle?.pathBackgroundColor,
+              color: endpointStyle?.pathTextColor,
+            }}
+          >
+            {component.path}
+          </code>
+
+          <span className="ml-auto text-xs text-slate-500">API Endpoint</span>
+        </div>
+
         <h3
-          className="text-xl font-semibold tracking-tight text-slate-950"
+          className="mt-4 text-lg font-semibold text-slate-900"
           style={{ color: endpointStyle?.titleColor }}
         >
           {component.title}
         </h3>
+
         <p
-          className="text-sm leading-6 text-slate-600"
+          className="mt-1 text-sm text-slate-600"
           style={{ color: endpointStyle?.summaryColor }}
         >
           {component.summary}
         </p>
       </div>
-      <dl className="mt-5 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl bg-slate-50 p-4">
-          <dt className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+
+      {/* META */}
+      <div className="grid grid-cols-1 sm:grid-cols-3">
+        <div className="border-b border-slate-100 p-5 sm:border-b-0 sm:border-r">
+          <div className="text-xs font-medium uppercase tracking-widest text-slate-500">
             Auth
-          </dt>
-          <dd className="mt-2 text-sm text-slate-700">
-            {component.auth ?? "Not specified"}
-          </dd>
+          </div>
+          <div className="mt-2 text-sm font-medium text-slate-800">
+            {component.auth ?? "None"}
+          </div>
         </div>
-        <div className="rounded-2xl bg-slate-50 p-4">
-          <dt className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+
+        <div className="border-b border-slate-100 p-5 sm:border-b-0 sm:border-r">
+          <div className="text-xs font-medium uppercase tracking-widest text-slate-500">
             Request
-          </dt>
-          <dd className="mt-2 text-sm text-slate-700">
-            {component.requestContentType ?? "Not specified"}
-          </dd>
+          </div>
+          <div className="mt-2 text-sm font-medium text-slate-800">
+            {component.requestContentType ?? "application/json"}
+          </div>
         </div>
-        <div className="rounded-2xl bg-slate-50 p-4">
-          <dt className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+
+        <div className="p-5">
+          <div className="text-xs font-medium uppercase tracking-widest text-slate-500">
             Response
-          </dt>
-          <dd className="mt-2 text-sm text-slate-700">
-            {component.responseContentType ?? "Not specified"}
-          </dd>
+          </div>
+          <div className="mt-2 text-sm font-medium text-slate-800">
+            {component.responseContentType ?? "application/json"}
+          </div>
         </div>
-      </dl>
+      </div>
     </div>
   );
 }
