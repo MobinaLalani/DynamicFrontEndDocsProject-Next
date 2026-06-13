@@ -2,6 +2,9 @@ import type { CodeComponent } from "@/lib/docs/schema";
 import type { PageBlockProps } from "@/components/page-renderer/types";
 import { getFontSizeValue } from "@/components/page-renderer/style-utils";
 
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 export function CodeBlock({ component }: PageBlockProps<CodeComponent>) {
   const codeStyle = component.style;
 
@@ -24,20 +27,25 @@ export function CodeBlock({ component }: PageBlockProps<CodeComponent>) {
           >
             {component.title ?? "Code Example"}
           </p>
+
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
             {component.language}
           </p>
         </div>
       </div>
-      <pre
-        className="overflow-x-auto p-4 text-sm leading-7 text-slate-100"
-        style={{
-          color: codeStyle?.textColor,
+
+      <SyntaxHighlighter
+        language={component.language || "javascript"}
+        style={oneDark}
+        customStyle={{
+          margin: 0,
+          padding: "1rem",
+          background: "transparent",
           fontSize: getFontSizeValue(codeStyle?.fontSize),
         }}
       >
-        <code>{component.code}</code>
-      </pre>
+        {component.code}
+      </SyntaxHighlighter>
     </div>
   );
 }
