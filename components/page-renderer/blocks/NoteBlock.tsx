@@ -1,26 +1,30 @@
 import type { NoteComponent } from "@/lib/docs/schema";
 import type { PageBlockProps } from "@/components/page-renderer/types";
 import { buildTextStyle } from "@/components/page-renderer/style-utils";
+import { Info } from "lucide-react";
 
 const toneClasses: Record<
   NonNullable<NoteComponent["tone"]>,
-  { wrapper: string; badge: string }
+  {
+    wrapper: string;
+    icon: string;
+  }
 > = {
   info: {
-    wrapper: "border-sky-200 bg-sky-50 text-sky-950",
-    badge: "bg-sky-100 text-sky-700",
+    wrapper: "border-r-4 border-r-sky-400 bg-sky-50 text-slate-700",
+    icon: "text-slate-600",
   },
   success: {
-    wrapper: "border-emerald-200 bg-emerald-50 text-emerald-950",
-    badge: "bg-emerald-100 text-emerald-700",
+    wrapper: "border-r-4 border-r-emerald-400 bg-emerald-50 text-slate-700",
+    icon: "text-slate-600",
   },
   warning: {
-    wrapper: "border-amber-200 bg-amber-50 text-amber-950",
-    badge: "bg-amber-100 text-amber-700",
+    wrapper: "border-r-4 border-r-amber-400 bg-amber-50 text-slate-700",
+    icon: "text-slate-600",
   },
   danger: {
-    wrapper: "border-rose-200 bg-rose-50 text-rose-950",
-    badge: "bg-rose-100 text-rose-700",
+    wrapper: "border-r-4 border-r-rose-400 bg-rose-50 text-slate-700",
+    icon: "text-slate-600",
   },
 };
 
@@ -30,18 +34,21 @@ export function NoteBlock({ component }: PageBlockProps<NoteComponent>) {
 
   return (
     <section
-      className={`rounded-3xl border p-5 shadow-sm ${toneStyle.wrapper}`}
+      dir="rtl"
+      className={`rounded-xl p-5 ${toneStyle.wrapper}`}
       style={buildTextStyle(component.style)}
     >
-      <div className="space-y-3">
-        <span
-          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${toneStyle.badge}`}
-        >
-          NOTE
-        </span>
-        <h3 className="text-lg font-semibold">{component.title}</h3>
-        <p className="text-sm leading-7 opacity-90">{component.text}</p>
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-bold text-slate-800">
+            {component.title || "اطلاع"}
+          </span>
+
+          <Info size={18} className={toneStyle.icon} />
+        </div>
       </div>
+
+      <p className="text-sm leading-8 text-slate-700">{component.text}</p>
     </section>
   );
 }
