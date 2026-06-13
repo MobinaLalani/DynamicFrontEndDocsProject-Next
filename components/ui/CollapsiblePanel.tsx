@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 type CollapsiblePanelProps = {
   title: string;
@@ -33,7 +33,7 @@ export function CollapsiblePanel({
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.25 }}
         >
-          <ChevronUp />
+          <ChevronDown />
         </motion.div>
       </div>
 

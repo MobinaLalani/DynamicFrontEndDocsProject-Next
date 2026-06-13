@@ -375,7 +375,7 @@ export function CreatePageView({
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-medium text-emerald-600">صفحه جدید</p>
+
           <h3 className="text-3xl font-semibold tracking-tight text-slate-950">
             ایجاد صفحه جدید
           </h3>
@@ -396,7 +396,7 @@ export function CreatePageView({
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-7">
           <div className="space-y-4">
-            <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4">
+            {/* <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4">
               <p className="text-sm font-medium text-slate-500">مدیریت محتوا</p>
               <h4 className="mt-1 text-xl font-semibold text-slate-950">
                 تعریف صفحه و منو
@@ -405,7 +405,7 @@ export function CreatePageView({
                 مشخصات صفحه جدید و تعریف منوی جدید به‌صورت بخش‌های جدا و
                 بازشونده نمایش داده می‌شوند.
               </p>
-            </div>
+            </div> */}
 
             <CollapsiblePanel
               subtitle="تعریف صفحه"
