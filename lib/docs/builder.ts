@@ -50,6 +50,7 @@ export const paletteBlocks: PaletteBlock[] = [
     label: "Code Example",
     description: "Request samples, response payloads, and SDK snippets.",
   },
+
 ];
 
 function buildId(type: PageComponentType) {
@@ -180,7 +181,7 @@ export const methodOptions: HttpMethod[] = [
   "DELETE",
 ];
 
-export const codeLanguageOptions: CodeLanguage[] = [
+export const codeLanguageOptions: CodeLanguage[] = [ 
   "json",
   "bash",
   "javascript",
@@ -188,6 +189,7 @@ export const codeLanguageOptions: CodeLanguage[] = [
 ];
 
 export const fieldGroupKinds: ApiFieldKind[] = [
+  
   "headers",
   "query",
   "path",
