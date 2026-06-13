@@ -34,6 +34,7 @@ export function CollapsiblePanel({
           transition={{ duration: 0.25 }}
         >
           <ChevronDown />
+          
         </motion.div>
       </div>
 
