@@ -86,6 +86,18 @@ export function AdminDocsSidebar({
 
           <button
             type="button"
+            className={
+              isOpen
+                ? expandedNavButtonClass("create-page")
+                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+            }
+            title="مدیریت کامپونتت ها"
+          >
+
+            مدیریت کامپوننت ها
+          </button>
+          <button
+            type="button"
             onClick={() => onOpenView("create-page")}
             className={
               isOpen
