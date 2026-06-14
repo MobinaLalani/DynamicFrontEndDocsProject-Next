@@ -72,8 +72,12 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     "مرور مستندات سرویس‌ها و وب‌سرویس‌ها";
 
   return (
-    <div dir="ltr" className="relative h-screen ">
-      <div className="relative h-screen ">
+    <div dir="ltr" className="relative h-screen  mx-10">
+      <div 
+            className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${
+          isSidebarOpen ? "xl:pr-[50px]" : "xl:pr-5"
+        }`}
+      >
         <div
           className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${sidebarPaddingClass}`}
         >
@@ -83,7 +87,6 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
             subtitle={navSubtitle}
           />
         </div>
-
         <main
           dir="rtl"
           className={`h-screen min-w-0 overflow-y-auto p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${sidebarPaddingClass}`}
