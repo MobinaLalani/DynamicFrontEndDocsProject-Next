@@ -87,7 +87,7 @@ export function AdminDocsSidebar({
 
           <button
             type="button"
-            onClick={() => redirect("/componentSetting")}
+            onClick={() => redirect("/componentsSetting")}
             className={
               isOpen
                 ? expandedNavButtonClass("create-page")
