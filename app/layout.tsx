@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
+
     <html
       lang="fa"
       dir="rtl"
@@ -32,6 +32,7 @@ export default function RootLayout({
 
     >
       <body className="min-h-full  text-slate-950 flex flex-col">
+        
         {children}
       </body>
     </html>
