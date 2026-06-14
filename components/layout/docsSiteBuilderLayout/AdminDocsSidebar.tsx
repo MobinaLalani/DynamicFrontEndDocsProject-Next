@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
+import { redirect } from "next/navigation";
 import type { BuilderView } from "@/features/docs-builder/model";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
 
@@ -86,6 +87,7 @@ export function AdminDocsSidebar({
 
           <button
             type="button"
+            onClick={() => redirect("/componentSetting")}
             className={
               isOpen
                 ? expandedNavButtonClass("create-page")
@@ -93,7 +95,6 @@ export function AdminDocsSidebar({
             }
             title="مدیریت کامپونتت ها"
           >
-
             مدیریت کامپوننت ها
           </button>
           <button
