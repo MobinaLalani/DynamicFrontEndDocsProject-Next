@@ -26,6 +26,7 @@ export function AdminDocsSidebar({
 
   const expandedNavButtonClass = (view: BuilderView) =>
     `w-full rounded-2xl bg-white px-4 py-2 text-right font-semibold text-black transition ${
+      
       activeView === view ? "shadow-sm" : ""
     }`;
 
