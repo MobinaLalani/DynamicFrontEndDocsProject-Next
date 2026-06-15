@@ -1,2 +1,2 @@
-import ComponentsSetting from "./componentsSetting";
+export { ComponentsSetting } from "./ComponentsSetting";
 

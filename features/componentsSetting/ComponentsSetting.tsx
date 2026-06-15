@@ -6,7 +6,7 @@ import {
 } from "./layout/index";
 import { ComponentsSettingProps } from "./types/componentsSettingType";
 
-function ComponentsSetting(props: ComponentsSettingProps) {
+export function ComponentsSetting(props: ComponentsSettingProps) {
     
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const {
@@ -40,4 +40,4 @@ function ComponentsSetting(props: ComponentsSettingProps) {
   );
 }
 
-export default ComponentsSetting;
+

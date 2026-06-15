@@ -5,12 +5,12 @@ import type { MenuGroup } from "@/lib/docs/workspace";
 
 export type  componentsSettingSidebarType ={
     isOpen : boolean;
-    menuGroups: MenuGroup[];
-    pages: DocPage[];
+    menuGroups?: MenuGroup[];
+    pages?: DocPage[];
     activePageSlug?: string;
     activeGroupId?: string;
     interactive?: boolean;
-    onToggle: () => void;
+    onToggle?: () => void;
     onSelectPage?: (slug: string) => void;
     onCreatePage?: () => void;
 }
@@ -27,8 +27,8 @@ export type componentsSettingNavbarType = {
 };
 
  export type ComponentsSettingProps = {
-  menuGroups: MenuGroup[];
-  pages: DocPage[];
+  menuGroups?: MenuGroup[];
+  pages?: DocPage[];
   activePageSlug?: string;
   activeGroupId?: string;
   session?: AuthSession;
