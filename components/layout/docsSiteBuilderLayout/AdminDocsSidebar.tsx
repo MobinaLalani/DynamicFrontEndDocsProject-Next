@@ -20,6 +20,7 @@ export function AdminDocsSidebar({
   selectedPageSlug,
   onOpenView,
   onSelectPage,
+  
 }: AdminDocsSidebarProps) {
   const { isOpen, toggle } = useSidebar();
 
