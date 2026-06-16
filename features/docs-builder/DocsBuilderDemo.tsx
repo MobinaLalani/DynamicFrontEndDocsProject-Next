@@ -27,13 +27,12 @@ export function DocsBuilderDemo({
   return (
     <section dir="ltr" className="relative min-h-screen overflow-hidden ">
       <div
-        className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${
+        className={`transition-[padding] duration-300 ${
           isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
         }`}
       >
         <AdminDocsNavbar session={session} />
       </div>
-
       <main
         dir="rtl"
         className={`flex min-h-screen flex-col p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${
@@ -121,11 +120,9 @@ export function DocsBuilderDemo({
       </main>
 
       <AdminDocsSidebar
-        isOpen={isSidebarOpen}
         activeView={state.activeView}
         workspace={state.workspace}
         selectedPageSlug={state.selectedPageSlug}
-        onToggle={() => setIsSidebarOpen((current) => !current)}
         onOpenView={actions.setActiveView}
         onSelectPage={actions.selectPage}
       />

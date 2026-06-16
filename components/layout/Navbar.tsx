@@ -14,7 +14,7 @@ export function Navbar({
   innerClassName,
 }: NavbarProps) {
   return (
-    <header className={className ?? ""}>
+    <header className={`sticky top-0 z-50 ${className ?? ""}`}>
       <div
         dir="ltr"
         className={`flex items-center justify-between gap-4 ${innerClassName ?? ""}`}
