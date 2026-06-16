@@ -1,7 +1,6 @@
 "use client";
 
 import { Sidebar } from "@/components/layout/Sidebar";
-import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 import { useSidebar } from "@/context/SidebarContext";
 import type { BuilderView } from "@/features/docs-builder/model";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
@@ -20,126 +19,108 @@ export function AdminDocsSidebar({
   selectedPageSlug,
   onOpenView,
   onSelectPage,
-  
 }: AdminDocsSidebarProps) {
-  const { isOpen, toggle } = useSidebar();
+  const { isOpen } = useSidebar();
 
-  const expandedNavButtonClass = (view: BuilderView) =>
-    `w-full rounded-2xl bg-white px-4 py-2 text-right font-semibold text-black transition ${
-      
-      activeView === view ? "shadow-sm" : ""
-    }`;
+  const baseButton = "transition overflow-hidden";
+
+  const expandedNavButtonClass = (active: boolean) =>
+    `w-full rounded-2xl px-4 py-3 text-right font-semibold text-black ${
+      active ? "bg-white shadow-sm" : "bg-white"
+    } ${baseButton}`;
+
+  const collapsedNavButtonClass =
+    "flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-white/10 text-white";
 
   return (
     <Sidebar
-      className="border-l border-white/10 bg-(--darkBlue) text-white"
+      className="border-l border-white/10 bg-(--darkBlue) text-white overflow-hidden"
       expandedWidthClassName="w-full sm:w-[360px]"
     >
-      {/* toggle */}
-      {/* <div
-        className={`flex items-center justify-end p-4 ${
-          isOpen ? "flex-row" : "flex-col gap-2"
+      {/* HEADER */}
+      <div
+        className={`border-b border-white/10 pb-5 overflow-hidden ${
+          isOpen ? "px-5" : "px-3"
         }`}
       >
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={isOpen ? "بستن سایدبار" : "باز کردن سایدبار"}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900 transition hover:bg-slate-100"
-        >
-          <ArrowIcon
-            strokeColor="#0f172a"
-            className={`h-4 w-4 transition-transform duration-300 ${
-              isOpen ? "rotate-270" : "rotate-90"
-            }`}
-          />
-        </button>
-      </div> */}
-
-      {/* header */}
-      <div
-        className={`border-b border-white/10 px-5 pb-5 ${isOpen ? "" : "px-3"}`}
-      >
         {isOpen ? (
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
-                API DOCS CMS
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold">
-                پنل مدیریت داکیومنت
-              </h2>
-            </div>
+          <div className="overflow-hidden">
+            <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400 truncate">
+              API DOCS CMS
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold truncate">
+              پنل مدیریت داکیومنت
+            </h2>
           </div>
         ) : (
           <div className="flex justify-center">
             <span className="rounded-2xl bg-white/10 px-3 py-2 text-xs text-slate-300">
-              پنل
+              P
             </span>
           </div>
         )}
       </div>
 
-      {/* content */}
+      {/* CONTENT */}
       <div
-        className={`flex-1 overflow-y-auto ${
-          isOpen ? "space-y-6 px-5 py-5" : "space-y-3 px-3 py-4"
+        className={`flex-1 overflow-y-auto overflow-x-hidden ${
+          isOpen ? "space-y-6 px-5 py-5" : "space-y-3 px-2 py-4"
         }`}
       >
-        {/* main section */}
-        <section className="space-y-2">
-          {isOpen ? (
-            <p className="text-xl font-bold text-white">بخش‌های اصلی</p>
-          ) : null}
+        {/* MAIN ACTIONS */}
+        <section className="space-y-2 overflow-hidden">
+          {isOpen && (
+            <p className="text-xl font-bold text-white truncate">
+              بخش‌های اصلی
+            </p>
+          )}
 
-          {/* مدیریت کامپوننت ها */}
+          {/* COMPONENTS */}
           <button
             type="button"
             onClick={() => (window.location.href = "/componentsSetting")}
             className={
-              isOpen
-                ? expandedNavButtonClass("create-page")
-                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+              isOpen ? expandedNavButtonClass(false) : collapsedNavButtonClass
             }
             title="مدیریت کامپوننت ها"
           >
-            {isOpen? 'مدیریت کامپوننت ها' : 'icon'}
-                    </button>
+            {isOpen ? "مدیریت کامپوننت ها" : "C"}
+          </button>
 
-          {/* ایجاد صفحه */}
+          {/* CREATE PAGE */}
           <button
             type="button"
             onClick={() => onOpenView("create-page")}
             className={
               isOpen
-                ? expandedNavButtonClass("create-page")
-                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/20"
+                ? expandedNavButtonClass(activeView === "create-page")
+                : collapsedNavButtonClass
             }
             title="ایجاد صفحه جدید"
           >
             {isOpen ? "ایجاد صفحه جدید" : "+"}
           </button>
 
-          {/* منو */}
+          {/* MENUS */}
           <button
             type="button"
             onClick={() => onOpenView("menus")}
             className={
               isOpen
-                ? expandedNavButtonClass("menus")
-                : "flex h-8 w-full items-center justify-center rounded-2xl bg-white/5 text-white transition hover:bg-white/20"
+                ? expandedNavButtonClass(activeView === "menus")
+                : collapsedNavButtonClass
             }
             title="تعریف منو جدید"
           >
-            {isOpen ? "تعریف منو جدید" : "م"}
+            {isOpen ? "تعریف منو جدید" : "M"}
           </button>
         </section>
 
-        {/* pages section */}
-        <section className="space-y-4 border-t border-white/10 pt-4">
-          {isOpen ? (
-            <p className="font-medium text-slate-400">صفحه‌ها</p>
-          ) : null}
+        {/* PAGES */}
+        <section className="space-y-4 border-t border-white/10 pt-4 overflow-hidden">
+          {isOpen && (
+            <p className="font-medium text-slate-400 truncate">صفحه‌ها</p>
+          )}
 
           {workspace.menuGroups.map((group) => {
             const groupPages = workspace.pages.filter(
@@ -147,16 +128,19 @@ export function AdminDocsSidebar({
             );
 
             return (
-              <div key={group.id} className="space-y-3">
-                {/* group title */}
+              <div key={group.id} className="space-y-3 overflow-hidden">
+                {/* GROUP HEADER */}
                 {isOpen ? (
-                  <div>
-                    <p className="font-semibold text-white">{group.title}</p>
-                    {group.description ? (
-                      <p className="mt-1 text-sm leading-6 text-slate-400">
+                  <div className="overflow-hidden">
+                    <p className="font-semibold text-white truncate">
+                      {group.title}
+                    </p>
+
+                    {group.description && (
+                      <p className="mt-1 text-sm text-slate-400 truncate">
                         {group.description}
                       </p>
-                    ) : null}
+                    )}
                   </div>
                 ) : (
                   <div className="flex justify-center">
@@ -169,20 +153,18 @@ export function AdminDocsSidebar({
                   </div>
                 )}
 
-                {/* pages */}
-                <div className="space-y-2">
+                {/* PAGE LIST */}
+                <div className="space-y-2 overflow-hidden">
                   {groupPages.map((page) => {
-                    const isActive =
-                      activeView !== "create-page" &&
-                      selectedPageSlug === page.slug;
+                    const isActive = selectedPageSlug === page.slug;
 
-                    const pageButtonClass = isOpen
-                      ? `block w-full rounded-2xl px-4 py-3 text-right text-sm transition ${
+                    const className = isOpen
+                      ? `w-full rounded-2xl px-4 py-3 text-right text-sm transition overflow-hidden ${
                           isActive
                             ? "bg-white text-slate-950 shadow-sm"
                             : "bg-white/5 text-white hover:bg-white/10"
                         }`
-                      : `flex h-11 w-full items-center justify-center rounded-2xl text-sm transition ${
+                      : `flex h-11 w-11 mx-auto items-center justify-center rounded-2xl transition overflow-hidden ${
                           isActive
                             ? "bg-white text-slate-950 shadow-sm"
                             : "bg-white/5 text-white hover:bg-white/10"
@@ -193,12 +175,12 @@ export function AdminDocsSidebar({
                         key={page.slug}
                         type="button"
                         onClick={() => onSelectPage(page.slug)}
-                        className={pageButtonClass}
+                        className={className}
                       >
                         {isOpen ? (
-                          <div>
+                          <div className="min-w-0 overflow-hidden">
                             <span
-                              className={`block font-medium ${
+                              className={`block truncate font-medium ${
                                 isActive ? "text-slate-950" : "text-white"
                               }`}
                             >
@@ -206,7 +188,7 @@ export function AdminDocsSidebar({
                             </span>
 
                             <span
-                              className={`mt-1 block text-xs ${
+                              className={`mt-1 block truncate text-xs ${
                                 isActive ? "text-slate-600" : "text-slate-300"
                               }`}
                             >
@@ -214,12 +196,7 @@ export function AdminDocsSidebar({
                             </span>
                           </div>
                         ) : (
-                          <span
-                            title={page.menuTitle}
-                            className={`font-medium ${
-                              isActive ? "text-slate-950" : "text-white"
-                            }`}
-                          >
+                          <span className="font-medium">
                             {page.menuTitle.slice(0, 1)}
                           </span>
                         )}
