@@ -35,7 +35,7 @@ export function DocsBuilderDemo({
       </div>
       <main
         dir="rtl"
-        className={`flex min-h-screen flex-col p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${
+        className={`flex min-h-screen flex-col p-4  transition-[padding] duration-300 sm:p-6 ${
           isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
         }`}
       >
