@@ -48,7 +48,6 @@ export function DocsSitePreviewSidebar({
 
   return (
     <Sidebar
-      isOpen={isOpen}
       className="border-l border-white/10 bg-(--darkBlue) text-white"
       expandedWidthClassName="w-full sm:w-[360px]"
     >

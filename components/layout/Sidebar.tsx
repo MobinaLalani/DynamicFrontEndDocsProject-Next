@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { useSidebar } from '../../context/SidebarContext';
-
+import { useSidebar } from "../../context/SidebarContext";
+import { ArrowIcon } from "@/components/ui/icons/ArrowIcon";
 
 type SidebarProps = {
   children: ReactNode;
@@ -24,13 +24,26 @@ export function Sidebar({
         isOpen ? expandedWidthClassName : collapsedWidthClassName
       } ${className ?? ""}`}
     >
-      {/* toggle button inside sidebar */}
-      <button
-        onClick={toggle}
-        className="absolute left-2 top-2 rounded bg-white/10 px-2 py-1 text-xs text-white"
+      {/* toggle button (moved from AdminDocsSidebar) */}
+      <div
+        className={`flex items-center justify-end p-4 ${
+          isOpen ? "flex-row" : "flex-col gap-2"
+        }`}
       >
-        toggle
-      </button>
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={isOpen ? "بستن سایدبار" : "باز کردن سایدبار"}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-900 transition hover:bg-slate-100"
+        >
+          <ArrowIcon
+            strokeColor="#0f172a"
+            className={`h-4 w-4 transition-transform duration-300 ${
+              isOpen ? "rotate-270" : "rotate-90"
+            }`}
+          />
+        </button>
+      </div>
 
       {children}
     </aside>

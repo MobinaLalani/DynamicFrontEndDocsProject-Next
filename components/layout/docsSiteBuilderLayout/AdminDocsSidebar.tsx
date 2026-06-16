@@ -36,7 +36,7 @@ export function AdminDocsSidebar({
       expandedWidthClassName="w-full sm:w-[360px]"
     >
       {/* toggle */}
-      <div
+      {/* <div
         className={`flex items-center justify-end p-4 ${
           isOpen ? "flex-row" : "flex-col gap-2"
         }`}
@@ -54,7 +54,7 @@ export function AdminDocsSidebar({
             }`}
           />
         </button>
-      </div>
+      </div> */}
 
       {/* header */}
       <div
@@ -103,8 +103,8 @@ export function AdminDocsSidebar({
             }
             title="مدیریت کامپوننت ها"
           >
-            مدیریت کامپوننت ها
-          </button>
+            {isOpen? 'مدیریت کامپوننت ها' : 'icon'}
+                    </button>
 
           {/* ایجاد صفحه */}
           <button
