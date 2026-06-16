@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   ComponentsSettingSidebar,
@@ -7,8 +8,8 @@ import {
 import { ComponentsSettingProps } from "./types/componentsSettingType";
 
 export function ComponentsSetting(props: ComponentsSettingProps) {
-    
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const {
     menuGroups,
     pages,
@@ -21,8 +22,23 @@ export function ComponentsSetting(props: ComponentsSettingProps) {
     showSidebar = true,
     content,
   } = props;
+
   return (
-    <>
+    <section dir="ltr" className="relative min-h-screen overflow-hidden">
+      {/* SIDEBAR SPACE ADJUSTMENT */}
+      <div
+        className={`transition-[padding] duration-300 ${
+          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
+        }`}
+      >
+        {/* NAVBAR */}
+        {/* <ComponentsSettingNavbar session={session} /> */}
+
+        {/* MAIN CONTENT */}
+        <main className="p-6">{content}</main>
+      </div>
+
+      {/* SIDEBAR */}
       {showSidebar && (
         <ComponentsSettingSidebar
           isOpen={isSidebarOpen}
@@ -31,13 +47,11 @@ export function ComponentsSetting(props: ComponentsSettingProps) {
           activePageSlug={activePageSlug}
           activeGroupId={activeGroupId}
           interactive={interactive}
-          onToggle={() => setIsSidebarOpen((current) => !current)}
+          onToggle={() => setIsSidebarOpen((v) => !v)}
           onSelectPage={onSelectPage}
           onCreatePage={onCreatePage}
         />
       )}
-    </>
+    </section>
   );
 }
-
-
