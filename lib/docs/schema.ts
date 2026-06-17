@@ -54,9 +54,16 @@ export type CodeStyle = {
 
 export type NoteTone = "info" | "success" | "warning" | "danger";
 
+export type CapabilityOverrides = {
+  properties?: Record<string, boolean>;
+  style?: Record<string, boolean>;
+  behavior?: Record<string, boolean>;
+};
+
 export type BaseComponent = {
   id: string;
   type: PageComponentType;
+  capabilityOverrides?: CapabilityOverrides;
 };
 
 export type HeadingComponent = BaseComponent & {

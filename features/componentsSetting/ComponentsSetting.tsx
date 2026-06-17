@@ -1,6 +1,8 @@
 import { connection } from "next/server";
 
 import { requireRole } from "@/lib/auth/server";
+import { BlockCapabilityPanel } from "@/features/componentsSetting/components/BlockCapabilityPanel";
+import { BlockRegistryPanel } from "@/features/componentsSetting/components/BlockRegistryPanel";
 
 export default async function ComponentsSettingPage() {
   await connection();
@@ -55,6 +57,10 @@ export default async function ComponentsSettingPage() {
           </p>
         </div>
       </div>
+
+      <BlockRegistryPanel />
+
+      <BlockCapabilityPanel />
     </div>
   );
 }

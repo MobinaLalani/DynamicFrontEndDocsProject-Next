@@ -1,7 +1,10 @@
+"use client";
+
 import { createElement } from "react";
 
 import { paletteBlocks } from "@/lib/docs/builder";
 import type { PageComponentType } from "@/lib/docs/schema";
+import { useBlockRegistry } from "@/context/BlockRegistryContext";
 
 import {
   getBlockTypeIcon,
@@ -18,9 +21,12 @@ export function BlockPicker({
   onAddBlock,
   columnsClassName = "grid-cols-3",
 }: BlockPickerProps) {
+  const { isActive } = useBlockRegistry();
+  const visibleBlocks = paletteBlocks.filter((b) => isActive(b.type));
+
   return (
     <div className={`grid gap-3 ${columnsClassName}`}>
-      {paletteBlocks.map((block) => (
+      {visibleBlocks.map((block) => (
         <BlockIconButton
           key={block.type}
           type={block.type}
