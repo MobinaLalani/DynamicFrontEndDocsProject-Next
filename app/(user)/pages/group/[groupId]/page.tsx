@@ -31,7 +31,7 @@ export default async function GroupLandingPage({
   );
 
   return (
-    <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden ">
+    <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden">
       <DocsSitePreview
         menuGroups={workspace.menuGroups}
         pages={workspace.pages}
