@@ -37,6 +37,7 @@ export default async function GroupLandingPage({
         pages={workspace.pages}
         activeGroupId={group.id}
         session={session}
+        showSidebar={false}
         content={
           <section className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm sm:p-8">
             <header className="space-y-3">

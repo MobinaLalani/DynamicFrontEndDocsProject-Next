@@ -63,11 +63,7 @@ export default function AdminShell({ session, workspace, children }: AdminShellP
       </div>
 
       {/* Sidebar */}
-      <ComponentsSettingSidebar
-        isOpen={isOpen}
-        menuGroups={workspace.menuGroups}
-        pages={workspace.pages}
-      />
+      <ComponentsSettingSidebar />
     </section>
   );
 }

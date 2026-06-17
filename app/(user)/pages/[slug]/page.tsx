@@ -29,6 +29,7 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
         pages={workspace.pages}
         activePageSlug={page.slug}
         session={session}
+        showSidebar={false}
       />
     </main>
   );

@@ -1,6 +1,8 @@
 import { connection } from "next/server";
 
+import { UserShell } from "@/components/layout/UserShell";
 import { requireAuth } from "@/lib/auth/server";
+import { getStoredWorkspace } from "@/lib/docs/workspace-service";
 
 export default async function UserLayout({
   children,
@@ -8,7 +10,12 @@ export default async function UserLayout({
   children: React.ReactNode;
 }) {
   await connection();
-  await requireAuth();
+  const session = await requireAuth();
+  const workspace = await getStoredWorkspace();
 
-  return <>{children}</>;
+  return (
+    <UserShell workspace={workspace} session={session}>
+      {children}
+    </UserShell>
+  );
 }
