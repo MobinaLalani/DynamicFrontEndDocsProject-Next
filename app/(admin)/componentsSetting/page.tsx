@@ -18,6 +18,7 @@ export default async function ComponentsSettingPage() {
           تنظیمات کامپوننت‌ها
         </h1>
         <p className="mt-2 text-slate-500">
+          
           از این بخش می‌توانید کامپوننت‌های سیستم را مدیریت و پیکربندی کنید.
         </p>
       </div>
