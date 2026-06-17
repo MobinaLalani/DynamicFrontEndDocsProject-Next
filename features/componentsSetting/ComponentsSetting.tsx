@@ -1,57 +1,60 @@
-"use client";
+import { connection } from "next/server";
 
-import React, { useState } from "react";
-import {
-  ComponentsSettingSidebar,
-  ComponentsSettingNavbar,
-} from "./layout/index";
-import { ComponentsSettingProps } from "./types/componentsSettingType";
+import { requireRole } from "@/lib/auth/server";
 
-export function ComponentsSetting(props: ComponentsSettingProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const {
-    menuGroups,
-    pages,
-    activePageSlug,
-    activeGroupId,
-    session,
-    interactive,
-    onSelectPage,
-    onCreatePage,
-    showSidebar = true,
-    content,
-  } = props;
+export default async function ComponentsSettingPage() {
+  await connection();
+  await requireRole("admin");
 
   return (
-    <section dir="ltr" className="relative min-h-screen overflow-hidden">
-      {/* SIDEBAR SPACE ADJUSTMENT */}
-      <div
-        className={`transition-[padding] duration-300 ${
-          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
-        }`}
-      >
-        {/* NAVBAR */}
-        {/* <ComponentsSettingNavbar session={session} /> */}
-
-        {/* MAIN CONTENT */}
-        <main className="p-6">{content}</main>
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <p className="text-xs font-medium uppercase tracking-[0.24em] text-sky-600">
+          Components Setting
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold text-slate-950">
+          تنظیمات کامپوننت‌ها
+        </h1>
+        <p className="mt-2 text-slate-500">
+          از این بخش می‌توانید کامپوننت‌های سیستم را مدیریت و پیکربندی کنید.
+        </p>
       </div>
 
-      {/* SIDEBAR */}
-      {showSidebar && (
-        <ComponentsSettingSidebar
-          isOpen={isSidebarOpen}
-          menuGroups={menuGroups}
-          pages={pages}
-          activePageSlug={activePageSlug}
-          activeGroupId={activeGroupId}
-          interactive={interactive}
-          onToggle={() => setIsSidebarOpen((v) => !v)}
-          onSelectPage={onSelectPage}
-          onCreatePage={onCreatePage}
-        />
-      )}
-    </section>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-[0.24em] text-sky-600">
+            مدیریت محتوا
+          </p>
+          <p className="mt-2 text-lg font-semibold text-slate-950">
+            کامپوننت‌های محتوا
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            ساخت و مدیریت بلاک‌های محتوایی صفحات
+          </p>
+        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-[0.24em] text-sky-600">
+            تنظیمات سیستم
+          </p>
+          <p className="mt-2 text-lg font-semibold text-slate-950">
+            پیکربندی سیستم
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            تنظیمات کلی و پیکربندی پروژه
+          </p>
+        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-[0.24em] text-sky-600">
+            کاربران
+          </p>
+          <p className="mt-2 text-lg font-semibold text-slate-950">
+            مدیریت کاربران
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            مدیریت کاربران و سطوح دسترسی
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
