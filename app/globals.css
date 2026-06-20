@@ -6,6 +6,8 @@
   --darkblue:#1A3F76;
   --lightblue:#1078F9;
   --darkgray:#42648A;
+  --lightgray:#6886a8;
+  --lightYellow:#e9c46a;
 }
 
 @theme inline {
@@ -16,6 +18,8 @@
   --darkBlue:var(--darkblue);
   --lightBlue:var(--lightblue);
   --darkGray:var(--darkgray);
+  --lightGray:var(--lightgray);
+  --lightYellow: var(--lightyellow);
 }
 
 ::-webkit-scrollbar {
