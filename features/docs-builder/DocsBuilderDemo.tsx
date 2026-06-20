@@ -1,11 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { BuilderCenterPanel } from "@/components/docs/builder/editor-sections";
-import {
-  AdminDocsNavbar,
-  AdminDocsSidebar,
-} from "@/components/layout/docsSiteBuilderLayout";
+import BuilderLayout from "@/components/layout/docsSiteBuilderLayout/AdminDocsLayout";
 import { ToolsPanelContent } from "@/components/layout/sidebars";
 import { useDocsBuilder } from "@/features/docs-builder/model";
 import type { AuthSession } from "@/lib/auth/types";
@@ -21,111 +17,82 @@ export function DocsBuilderDemo({
   session,
 }: DocsBuilderDemoProps) {
   const { state, actions } = useDocsBuilder(initialWorkspace);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const displayPage = state.activePage ?? state.createPageDraft;
 
   return (
-    <section dir="ltr" className="relative min-h-screen overflow-hidden ">
-      <div
-        className={`transition-[padding] duration-300 ${
-          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
-        }`}
-      >
-        <AdminDocsNavbar session={session} />
-      </div>
-      <main
-        dir="rtl"
-        className={`flex min-h-screen flex-col p-4  transition-[padding] duration-300 sm:p-6 ${
-          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
-        }`}
-      >
-        {/* <BuilderStats
-          workspace={state.workspace}
-          activePageSlug={displayPage.slug}
-        /> */}
-        <p className="font-bold text-2xl mr-6">پیش نمایش صفحه</p>
-        <div className="flex-1 border border-(--darkBlue)  p-3 rounded-3xl m-6 bg-white">
-          {state.activeView === "blocks" ? (
-            <div dir="rtl" className="space-y-6">
-              <ToolsPanelContent
-                selectedComponent={state.selectedComponent}
-                onAddBlock={actions.addBlockToActivePage}
-                onUpdateSelectedComponent={actions.updateSelectedComponent}
-              />
-            </div>
-          ) : (
-            <BuilderCenterPanel
-              activeView={state.activeView}
-              activePage={displayPage}
-              menuGroups={state.workspace.menuGroups}
-              pages={state.workspace.pages}
-              selectedComponentId={state.selectedComponentId}
+    <BuilderLayout
+      session={session}
+      workspace={state.workspace}
+      activeView={state.activeView}
+      selectedPageSlug={state.selectedPageSlug}
+      onOpenView={actions.setActiveView}
+      onSelectPage={actions.selectPage}
+    >
+      <p className="font-bold text-2xl mr-6">پیش نمایش صفحه</p>
+      <div className="border border-(--darkBlue) p-3 rounded-3xl mb-6 bg-white">
+        {state.activeView === "blocks" ? (
+          <div dir="rtl" className="space-y-6">
+            <ToolsPanelContent
               selectedComponent={state.selectedComponent}
-              copied={state.copied}
-              jsonOutput={state.jsonOutput}
-              createPageDraft={state.createPageDraft}
-              selectedCreateComponentId={state.selectedCreateComponentId}
-              selectedCreateComponent={state.selectedCreateComponent}
-              onUpdatePage={actions.updateActivePage}
-              onUpdatePageSlug={actions.updateActivePageSlug}
-              onSelectComponent={actions.setSelectedComponentId}
-              onDropAt={actions.handleDropAt}
-              onDuplicateComponent={actions.duplicateComponentInActivePage}
-              onRemoveComponent={actions.removeComponent}
+              onAddBlock={actions.addBlockToActivePage}
               onUpdateSelectedComponent={actions.updateSelectedComponent}
-              onSetNewMenuTitle={actions.setNewMenuTitle}
-              onSetNewMenuDescription={actions.setNewMenuDescription}
-              onSetNewPageTitle={actions.setNewPageTitle}
-              onSetNewPageSlug={actions.setNewPageSlug}
-              onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
-              onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
-              onSetNewPageDescription={actions.setNewPageDescription}
-              onCreateMenu={actions.handleCreateMenu}
-              onCreatePage={actions.handleCreatePage}
-              onBackToEditor={() => actions.setActiveView("editor")}
-              onOpenEditPage={() => actions.setActiveView("editor")}
-              onSelectPage={actions.selectPage}
-              onOpenCreatePage={() => actions.setActiveView("create-page")}
-              onCopyJson={actions.copyJson}
-              onAddBlockToActivePage={actions.addBlockToActivePage}
-              onCreatePageDropAt={actions.handleCreatePageDropAt}
-              onAddBlockToNewPage={actions.addBlockToNewPage}
-              onSelectCreateComponent={actions.setSelectedCreateComponentId}
-              onDuplicateCreateComponent={actions.duplicateDraftComponent}
-              onRemoveCreateComponent={actions.removeDraftComponent}
-              onUpdateSelectedCreateComponent={
-                actions.updateSelectedCreateComponent
-              }
-              createMenuTitle={state.createMenuForm.title}
-              createMenuDescription={state.createMenuForm.description}
-              createMenuIsActive={state.createMenuForm.isActive}
-              hasUnsavedPageChanges={state.hasUnsavedPageChanges}
-              isSavingPage={state.isSavingPage}
-              saveMessage={state.saveMessage}
-              onSaveActivePage={actions.saveActivePage}
-              onSetNewMenuActive={actions.setNewMenuActive}
-              onSaveMenuGroupChanges={actions.saveMenuGroupChanges}
-              onDeleteMenuGroup={actions.deleteMenuGroup}
-              onResetMenuForm={actions.resetMenuForm}
             />
-          )}
-        </div>
-
-        {/* <div className="mt-6">
-          <AdminDocsFooter
-            workspace={state.workspace}
+          </div>
+        ) : (
+          <BuilderCenterPanel
+            activeView={state.activeView}
             activePage={displayPage}
+            menuGroups={state.workspace.menuGroups}
+            pages={state.workspace.pages}
+            selectedComponentId={state.selectedComponentId}
+            selectedComponent={state.selectedComponent}
+            copied={state.copied}
+            jsonOutput={state.jsonOutput}
+            createPageDraft={state.createPageDraft}
+            selectedCreateComponentId={state.selectedCreateComponentId}
+            selectedCreateComponent={state.selectedCreateComponent}
+            onUpdatePage={actions.updateActivePage}
+            onUpdatePageSlug={actions.updateActivePageSlug}
+            onSelectComponent={actions.setSelectedComponentId}
+            onDropAt={actions.handleDropAt}
+            onDuplicateComponent={actions.duplicateComponentInActivePage}
+            onRemoveComponent={actions.removeComponent}
+            onUpdateSelectedComponent={actions.updateSelectedComponent}
+            onSetNewMenuTitle={actions.setNewMenuTitle}
+            onSetNewMenuDescription={actions.setNewMenuDescription}
+            onSetNewPageTitle={actions.setNewPageTitle}
+            onSetNewPageSlug={actions.setNewPageSlug}
+            onSetNewPageMenuTitle={actions.setNewPageMenuTitle}
+            onSetNewPageMenuGroupId={actions.setNewPageMenuGroupId}
+            onSetNewPageDescription={actions.setNewPageDescription}
+            onCreateMenu={actions.handleCreateMenu}
+            onCreatePage={actions.handleCreatePage}
+            onBackToEditor={() => actions.setActiveView("editor")}
+            onOpenEditPage={() => actions.setActiveView("editor")}
+            onSelectPage={actions.selectPage}
+            onOpenCreatePage={() => actions.setActiveView("create-page")}
+            onCopyJson={actions.copyJson}
+            onAddBlockToActivePage={actions.addBlockToActivePage}
+            onCreatePageDropAt={actions.handleCreatePageDropAt}
+            onAddBlockToNewPage={actions.addBlockToNewPage}
+            onSelectCreateComponent={actions.setSelectedCreateComponentId}
+            onDuplicateCreateComponent={actions.duplicateDraftComponent}
+            onRemoveCreateComponent={actions.removeDraftComponent}
+            onUpdateSelectedCreateComponent={actions.updateSelectedCreateComponent}
+            createMenuTitle={state.createMenuForm.title}
+            createMenuDescription={state.createMenuForm.description}
+            createMenuIsActive={state.createMenuForm.isActive}
+            hasUnsavedPageChanges={state.hasUnsavedPageChanges}
+            isSavingPage={state.isSavingPage}
+            saveMessage={state.saveMessage}
+            onSaveActivePage={actions.saveActivePage}
+            onSetNewMenuActive={actions.setNewMenuActive}
+            onSaveMenuGroupChanges={actions.saveMenuGroupChanges}
+            onDeleteMenuGroup={actions.deleteMenuGroup}
+            onResetMenuForm={actions.resetMenuForm}
           />
-        </div> */}
-      </main>
-
-      <AdminDocsSidebar
-        activeView={state.activeView}
-        workspace={state.workspace}
-        selectedPageSlug={state.selectedPageSlug}
-        onOpenView={actions.setActiveView}
-        onSelectPage={actions.selectPage}
-      />
-    </section>
+        )}
+      </div>
+    </BuilderLayout>
   );
 }

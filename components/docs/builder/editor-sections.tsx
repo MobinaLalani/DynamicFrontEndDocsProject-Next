@@ -646,6 +646,7 @@ export function PreviewSection({
         onSelectPage={onSelectPage}
         onCreatePage={onCreatePage}
         showSidebar={false}
+        contained={false}
       />
     </section>
   );

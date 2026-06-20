@@ -18,7 +18,7 @@ export default function AdminShell({ session, workspace, children }: AdminShellP
   const { isOpen } = useSidebar();
 
   return (
-    <section dir="ltr" className="flex min-h-screen overflow-hidden">
+    <section dir="ltr" className="flex min-h-screen">
       {/* Main Area */}
       <div
         className={`flex flex-1 flex-col transition-[padding] duration-300 ${

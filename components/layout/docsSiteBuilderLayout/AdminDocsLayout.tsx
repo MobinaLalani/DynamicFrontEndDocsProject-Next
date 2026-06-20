@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import {
   AdminDocsNavbar,
   AdminDocsSidebar,
 } from "@/components/layout/docsSiteBuilderLayout";
+import { useSidebar } from "@/context/SidebarContext";
 
 import type { AuthSession } from "@/lib/auth/types";
 import type { BuilderView } from "@/features/docs-builder/model";
@@ -24,29 +24,25 @@ export default function BuilderLayout({
   workspace: DocsWorkspace;
   activeView: BuilderView;
   selectedPageSlug: string;
-  onOpenView: (v: unknown) => void;
+  onOpenView: (v: BuilderView) => void;
   onSelectPage: (slug: string) => void;
 }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isOpen } = useSidebar();
 
   return (
-    <section dir="ltr" className="flex min-h-screen overflow-hidden">
-      {/* MAIN AREA */}
+    <section dir="ltr" className="min-h-screen">
       <div
-        className={`flex flex-1 flex-col transition-[padding] duration-300 ${
-          isSidebarOpen ? "xl:pr-[360px]" : "xl:pr-18"
+        className={`flex flex-col transition-[padding] duration-300 ${
+          isOpen ? "xl:pr-90" : "xl:pr-18"
         }`}
       >
-        {/* NAVBAR */}
         <AdminDocsNavbar session={session} />
 
-        {/* PAGE CONTENT */}
-        <main dir="rtl" className="flex-1 p-6">
+        <main dir="rtl" className="p-6">
           {children}
         </main>
       </div>
 
-      {/* SIDEBAR */}
       <AdminDocsSidebar
         activeView={activeView}
         workspace={workspace}

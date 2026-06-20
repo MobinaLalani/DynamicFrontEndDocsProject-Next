@@ -9,11 +9,5 @@ export default async function AdminPage() {
   const session = await requireRole("admin");
   const workspace = await getStoredWorkspace();
 
-  return (
-    <main className="relative flex min-h-screen w-full flex-1 flex-col overflow-hidden bg-(--color-background)">
-      <DocsBuilderDemo initialWorkspace={workspace} session={session} />
-
-      
-    </main>
-  );
+  return <DocsBuilderDemo initialWorkspace={workspace} session={session} />;
 }

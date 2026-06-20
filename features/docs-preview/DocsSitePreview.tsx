@@ -27,6 +27,7 @@ type DocsSitePreviewProps = {
   onCreatePage?: () => void;
   showSidebar?: boolean;
   content?: React.ReactNode;
+  contained?: boolean;
 };
 export function DocsSitePreview(props: DocsSitePreviewProps) {
   const {
@@ -40,6 +41,7 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     onCreatePage,
     showSidebar = true,
     content,
+    contained = true,
   } = props;
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -72,14 +74,14 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     "مرور مستندات سرویس‌ها و وب‌سرویس‌ها";
 
   return (
-    <div dir="ltr" className="relative h-screen  mx-10">
-      <div 
-            className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${
+    <div dir="ltr" className={`relative mx-10 ${contained ? "h-screen" : ""}`}>
+      <div
+        className={`${contained ? "absolute inset-x-0 top-0" : "relative"} z-30 transition-[padding] duration-300 ${
           isSidebarOpen ? "xl:pr-[50px]" : "xl:pr-5"
         }`}
       >
         <div
-          className={`absolute inset-x-0 top-0 z-30 transition-[padding] duration-300 ${sidebarPaddingClass}`}
+          className={`${contained ? "absolute inset-x-0 top-0" : "sticky top-0"} z-30 transition-[padding] duration-300 ${sidebarPaddingClass}`}
         >
           <DocsSitePreviewNavbar
             session={session}
@@ -89,7 +91,7 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
         </div>
         <main
           dir="rtl"
-          className={`h-screen min-w-0 overflow-y-auto p-4 pt-28 transition-[padding] duration-300 sm:p-6 sm:pt-32 ${sidebarPaddingClass}`}
+          className={`${contained ? "h-screen overflow-y-auto pt-28 sm:pt-32" : ""} min-w-0 p-4 transition-[padding] duration-300 sm:p-6 ${sidebarPaddingClass}`}
         >
           <div className="flex min-h-full flex-col gap-6">
             <div className="flex-1">
