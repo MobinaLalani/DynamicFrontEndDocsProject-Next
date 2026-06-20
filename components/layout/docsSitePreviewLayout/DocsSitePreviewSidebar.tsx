@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { SidebarPageItem } from "@/components/layout/sidebar/SidebarPageItem";
+import type { AuthRole } from "@/lib/auth/types";
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
 
@@ -12,7 +13,8 @@ type DocsSitePreviewSidebarProps = {
   activePageSlug?: string;
   activeGroupId?: string;
   interactive?: boolean;
-  onToggle: () => void;
+  role?: AuthRole;
+  onToggle?: () => void;
   onSelectPage?: (slug: string) => void;
   onCreatePage?: () => void;
 };
@@ -22,8 +24,8 @@ export function DocsSitePreviewSidebar({
   menuGroups,
   pages,
   activePageSlug,
-  activeGroupId,
   interactive = false,
+  role,
   onSelectPage,
   onCreatePage,
 }: DocsSitePreviewSidebarProps) {
@@ -31,18 +33,8 @@ export function DocsSitePreviewSidebar({
     ? menuGroups
     : menuGroups.filter((group) => group.isActive);
 
-  const pageButtonClass = (active: boolean) =>
-    isOpen
-      ? `w-full min-w-0 overflow-hidden rounded-2xl px-4 py-3 text-right text-sm transition ${
-          active
-            ? "bg-white text-slate-950 shadow-sm"
-            : "bg-white/5 text-white hover:bg-white/10"
-        }`
-      : `flex h-11 w-11 mx-auto items-center justify-center overflow-hidden rounded-2xl text-sm transition ${
-          active
-            ? "bg-white text-slate-950 shadow-sm"
-            : "bg-white/5 text-white hover:bg-white/10"
-        }`;
+  const canCreatePage =
+    interactive && onCreatePage && (role === "admin" || role === "editor");
 
   return (
     <Sidebar
@@ -51,8 +43,8 @@ export function DocsSitePreviewSidebar({
     >
       {/* HEADER */}
       <div
-        className={`border-b border-white/10 px-5 pb-5 overflow-hidden ${
-          isOpen ? "" : "px-3"
+        className={`border-b border-white/10 pb-5 overflow-hidden ${
+          isOpen ? "px-5" : "px-3"
         }`}
       >
         {isOpen ? (
@@ -79,8 +71,8 @@ export function DocsSitePreviewSidebar({
           isOpen ? "space-y-6 px-5 py-5" : "space-y-3 px-2 py-4"
         }`}
       >
-        {/* CREATE PAGE */}
-        {interactive && onCreatePage && (
+        {/* CREATE PAGE — admin or editor only */}
+        {canCreatePage && (
           <button
             type="button"
             onClick={onCreatePage}
@@ -108,7 +100,6 @@ export function DocsSitePreviewSidebar({
                   <p className="font-semibold text-white truncate">
                     {group.title}
                   </p>
-
                   {group.description && (
                     <p className="mt-1 text-sm text-slate-400 truncate">
                       {group.description}
@@ -128,62 +119,20 @@ export function DocsSitePreviewSidebar({
 
               {/* PAGES */}
               <div className="space-y-2 overflow-hidden">
-                {groupPages.map((page) => {
-                  const isActive = page.slug === activePageSlug;
-
-                  return interactive ? (
-                    <button
-                      key={page.slug}
-                      type="button"
-                      onClick={() => onSelectPage?.(page.slug)}
-                      className={pageButtonClass(isActive)}
-                    >
-                      {isOpen ? (
-                        <div className="min-w-0 overflow-hidden">
-                          <span
-                            className={`block truncate font-medium ${
-                              isActive ? "text-slate-950" : "text-white"
-                            }`}
-                          >
-                            {page.menuTitle}
-                          </span>
-
-                          <span
-                            className={`mt-1 block truncate text-xs ${
-                              isActive ? "text-slate-600" : "text-slate-300"
-                            }`}
-                          >
-                            /pages/{page.slug}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="font-medium">
-                          {page.menuTitle.slice(0, 1)}
-                        </span>
-                      )}
-                    </button>
-                  ) : (
-                    <Link
-                      key={page.slug}
-                      href={`/pages/${page.slug}`}
-                      className={pageButtonClass(isActive)}
-                    >
-                      {isOpen ? (
-                        <span
-                          className={`block truncate font-medium ${
-                            isActive ? "text-slate-950" : "text-white"
-                          }`}
-                        >
-                          {page.menuTitle}
-                        </span>
-                      ) : (
-                        <span className="font-medium">
-                          {page.menuTitle.slice(0, 1)}
-                        </span>
-                      )}
-                    </Link>
-                  );
-                })}
+                {groupPages.map((page) => (
+                  <SidebarPageItem
+                    key={page.slug}
+                    title={page.menuTitle}
+                    subtitle={`/pages/${page.slug}`}
+                    initial={page.menuTitle.slice(0, 1)}
+                    isActive={page.slug === activePageSlug}
+                    isExpanded={isOpen}
+                    href={interactive ? undefined : `/pages/${page.slug}`}
+                    onClick={
+                      interactive ? () => onSelectPage?.(page.slug) : undefined
+                    }
+                  />
+                ))}
               </div>
             </section>
           );

@@ -13,7 +13,7 @@ type UserShellProps = {
   children: React.ReactNode;
 };
 
-export function UserShell({ workspace, children }: UserShellProps) {
+export function UserShell({ workspace, session, children }: UserShellProps) {
   const { isOpen } = useSidebar();
   const pathname = usePathname();
 
@@ -39,7 +39,7 @@ export function UserShell({ workspace, children }: UserShellProps) {
         pages={workspace.pages}
         activePageSlug={activePageSlug}
         activeGroupId={activeGroupId}
-        onToggle={() => {}}
+        role={session.role}
       />
     </section>
   );

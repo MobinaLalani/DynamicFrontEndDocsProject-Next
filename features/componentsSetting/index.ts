@@ -1,2 +1,2 @@
-export { ComponentsSetting } from "./ComponentsSetting";
+export { default as ComponentsSetting } from "./ComponentsSetting";
 

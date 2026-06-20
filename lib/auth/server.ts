@@ -51,6 +51,16 @@ export async function requireRole(role: AuthRole) {
   return session;
 }
 
+export async function requireAnyRole(roles: AuthRole[]) {
+  const session = await requireAuth();
+
+  if (!roles.includes(session.role)) {
+    redirect("/unauthorized");
+  }
+
+  return session;
+}
+
 export async function redirectIfAuthenticated() {
   const session = await getCurrentSession();
 
@@ -58,9 +68,8 @@ export async function redirectIfAuthenticated() {
     return;
   }
 
-  if (session.role === "admin") {
-    redirect("/admin");
-  }
+  if (session.role === "admin") redirect("/admin");
+  if (session.role === "editor") redirect("/editor");
 
   redirect("/pages");
 }

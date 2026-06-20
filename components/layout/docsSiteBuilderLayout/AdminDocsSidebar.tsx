@@ -1,6 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { Sidebar } from "@/components/layout/Sidebar";
+import { SidebarPageItem } from "@/components/layout/sidebar/SidebarPageItem";
 import { useSidebar } from "@/context/SidebarContext";
 import type { BuilderView } from "@/features/docs-builder/model";
 import type { DocsWorkspace } from "@/lib/docs/workspace";
@@ -13,6 +16,32 @@ type AdminDocsSidebarProps = {
   onSelectPage: (slug: string) => void;
 };
 
+type NavActionProps = {
+  label: string;
+  short: string;
+  isActive: boolean;
+  isExpanded: boolean;
+  onClick: () => void;
+};
+
+function NavAction({ label, short, isActive, isExpanded, onClick }: NavActionProps) {
+  const className = isExpanded
+    ? `w-full rounded-2xl px-4 py-3 text-right font-semibold transition overflow-hidden ${
+        isActive
+          ? "bg-white text-slate-950 shadow-sm"
+          : "bg-white/5 text-white hover:bg-white/10"
+      }`
+    : `flex h-11 w-11 mx-auto items-center justify-center rounded-2xl transition ${
+        isActive ? "bg-white text-slate-950 shadow-sm" : "bg-white/5 text-white hover:bg-white/10"
+      }`;
+
+  return (
+    <button type="button" onClick={onClick} className={className} title={label}>
+      {isExpanded ? label : short}
+    </button>
+  );
+}
+
 export function AdminDocsSidebar({
   activeView,
   workspace,
@@ -21,20 +50,7 @@ export function AdminDocsSidebar({
   onSelectPage,
 }: AdminDocsSidebarProps) {
   const { isOpen } = useSidebar();
-
-  const baseButton = "transition overflow-hidden";
-
-  const expandedNavButtonClass = (active: boolean) =>
-    `w-full rounded-2xl px-4 py-3 text-right font-semibold ${
-      active
-        ? "bg-white text-slate-950 shadow-sm"
-        : "bg-white/5 text-white hover:bg-white/10"
-    } ${baseButton}`;
-
-  const collapsedNavButtonClass = (active: boolean) =>
-    `flex h-11 w-11 mx-auto items-center justify-center rounded-2xl transition ${
-      active ? "bg-white text-slate-950 shadow-sm" : "bg-white/5 text-white hover:bg-white/10"
-    }`;
+  const router = useRouter();
 
   return (
     <Sidebar
@@ -74,50 +90,30 @@ export function AdminDocsSidebar({
         {/* MAIN ACTIONS */}
         <section className="space-y-2 overflow-hidden">
           {isOpen && (
-            <p className="text-xl font-bold text-white truncate">
-              بخش‌های اصلی
-            </p>
+            <p className="text-xl font-bold text-white truncate">بخش‌های اصلی</p>
           )}
 
-          {/* COMPONENTS */}
-          <button
-            type="button"
-            onClick={() => (window.location.href = "/componentsSetting")}
-            className={
-              isOpen ? expandedNavButtonClass(false) : collapsedNavButtonClass(false)
-            }
-            title="مدیریت کامپوننت ها"
-          >
-            {isOpen ? "مدیریت کامپوننت ها" : "C"}
-          </button>
-
-          {/* CREATE PAGE */}
-          <button
-            type="button"
+          <NavAction
+            label="مدیریت کامپوننت ها"
+            short="C"
+            isActive={false}
+            isExpanded={isOpen}
+            onClick={() => router.push("/componentsSetting")}
+          />
+          <NavAction
+            label="ایجاد صفحه جدید"
+            short="+"
+            isActive={activeView === "create-page"}
+            isExpanded={isOpen}
             onClick={() => onOpenView("create-page")}
-            className={
-              isOpen
-                ? expandedNavButtonClass(activeView === "create-page")
-                : collapsedNavButtonClass(activeView === "create-page")
-            }
-            title="ایجاد صفحه جدید"
-          >
-            {isOpen ? "ایجاد صفحه جدید" : "+"}
-          </button>
-
-          {/* MENUS */}
-          <button
-            type="button"
+          />
+          <NavAction
+            label="تعریف منو جدید"
+            short="M"
+            isActive={activeView === "menus"}
+            isExpanded={isOpen}
             onClick={() => onOpenView("menus")}
-            className={
-              isOpen
-                ? expandedNavButtonClass(activeView === "menus")
-                : collapsedNavButtonClass(activeView === "menus")
-            }
-            title="تعریف منو جدید"
-          >
-            {isOpen ? "تعریف منو جدید" : "M"}
-          </button>
+          />
         </section>
 
         {/* PAGES */}
@@ -139,7 +135,6 @@ export function AdminDocsSidebar({
                     <p className="font-semibold text-white truncate">
                       {group.title}
                     </p>
-
                     {group.description && (
                       <p className="mt-1 text-sm text-slate-400 truncate">
                         {group.description}
@@ -159,54 +154,17 @@ export function AdminDocsSidebar({
 
                 {/* PAGE LIST */}
                 <div className="space-y-2 overflow-hidden">
-                  {groupPages.map((page) => {
-                    const isActive = selectedPageSlug === page.slug;
-
-                    const className = isOpen
-                      ? `w-full rounded-2xl px-4 py-3 text-right text-sm transition overflow-hidden ${
-                          isActive
-                            ? "bg-white text-slate-950 shadow-sm"
-                            : "bg-white/5 text-white hover:bg-white/10"
-                        }`
-                      : `flex h-11 w-11 mx-auto items-center justify-center rounded-2xl transition overflow-hidden ${
-                          isActive
-                            ? "bg-white text-slate-950 shadow-sm"
-                            : "bg-white/5 text-white hover:bg-white/10"
-                        }`;
-
-                    return (
-                      <button
-                        key={page.slug}
-                        type="button"
-                        onClick={() => onSelectPage(page.slug)}
-                        className={className}
-                      >
-                        {isOpen ? (
-                          <div className="min-w-0 overflow-hidden">
-                            <span
-                              className={`block truncate font-medium ${
-                                isActive ? "text-slate-950" : "text-white"
-                              }`}
-                            >
-                              {page.menuTitle}
-                            </span>
-
-                            <span
-                              className={`mt-1 block truncate text-xs ${
-                                isActive ? "text-slate-600" : "text-slate-300"
-                              }`}
-                            >
-                              /pages/{page.slug}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="font-medium">
-                            {page.menuTitle.slice(0, 1)}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
+                  {groupPages.map((page) => (
+                    <SidebarPageItem
+                      key={page.slug}
+                      title={page.menuTitle}
+                      subtitle={`/pages/${page.slug}`}
+                      initial={page.menuTitle.slice(0, 1)}
+                      isActive={selectedPageSlug === page.slug}
+                      isExpanded={isOpen}
+                      onClick={() => onSelectPage(page.slug)}
+                    />
+                  ))}
                 </div>
               </div>
             );
