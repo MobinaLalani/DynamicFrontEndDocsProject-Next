@@ -8,7 +8,7 @@ import type { AuthSession } from "@/lib/auth/types";
 
 type SessionMenuProps = {
   session: AuthSession;
-  
+
   triggerClassName?: string;
   panelClassName?: string;
 
@@ -32,6 +32,7 @@ export function SessionMenu({
           aria-label="باز کردن منوی کاربر"
           className={
             triggerClassName ??
+            
             "flex h-10 w-10 items-center justify-center rounded-full border border-[#42648A] bg-[#42648A] text-white shadow-sm transition hover:border-[#1A3F76] hover:bg-[#1A3F76]"
           }
         >
