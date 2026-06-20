@@ -8,9 +8,10 @@ import type { AuthSession } from "@/lib/auth/types";
 
 type SessionMenuProps = {
   session: AuthSession;
+  
   triggerClassName?: string;
   panelClassName?: string;
-  
+
   position?: "bottom-left" | "bottom-right" | "top-left" | "top-right";
 };
 
