@@ -103,7 +103,7 @@ export function ComponentsSettingSidebar() {
               />
               <span className="truncate">{item.label}</span>
               {isActive && (
-                <span className="mr-auto h-1.5 w-1.5 rounded-full bg-sky-500" />
+                <span className="mr-auto h-1.5 w-1.5 rounded-full bg-(--lightBlue)" />
               )}
             </Link>
           );

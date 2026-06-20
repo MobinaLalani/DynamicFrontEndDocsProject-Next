@@ -25,12 +25,16 @@ export function AdminDocsSidebar({
   const baseButton = "transition overflow-hidden";
 
   const expandedNavButtonClass = (active: boolean) =>
-    `w-full rounded-2xl px-4 py-3 text-right font-semibold text-black ${
-      active ? "bg-white shadow-sm" : "bg-white"
+    `w-full rounded-2xl px-4 py-3 text-right font-semibold ${
+      active
+        ? "bg-white text-slate-950 shadow-sm"
+        : "bg-white/5 text-white hover:bg-white/10"
     } ${baseButton}`;
 
-  const collapsedNavButtonClass =
-    "flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-white/10 text-white";
+  const collapsedNavButtonClass = (active: boolean) =>
+    `flex h-11 w-11 mx-auto items-center justify-center rounded-2xl transition ${
+      active ? "bg-white text-slate-950 shadow-sm" : "bg-white/5 text-white hover:bg-white/10"
+    }`;
 
   return (
     <Sidebar
@@ -80,7 +84,7 @@ export function AdminDocsSidebar({
             type="button"
             onClick={() => (window.location.href = "/componentsSetting")}
             className={
-              isOpen ? expandedNavButtonClass(false) : collapsedNavButtonClass
+              isOpen ? expandedNavButtonClass(false) : collapsedNavButtonClass(false)
             }
             title="مدیریت کامپوننت ها"
           >
@@ -94,7 +98,7 @@ export function AdminDocsSidebar({
             className={
               isOpen
                 ? expandedNavButtonClass(activeView === "create-page")
-                : collapsedNavButtonClass
+                : collapsedNavButtonClass(activeView === "create-page")
             }
             title="ایجاد صفحه جدید"
           >
@@ -108,7 +112,7 @@ export function AdminDocsSidebar({
             className={
               isOpen
                 ? expandedNavButtonClass(activeView === "menus")
-                : collapsedNavButtonClass
+                : collapsedNavButtonClass(activeView === "menus")
             }
             title="تعریف منو جدید"
           >
