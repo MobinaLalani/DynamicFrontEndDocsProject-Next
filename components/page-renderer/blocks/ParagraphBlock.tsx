@@ -7,7 +7,7 @@ export function ParagraphBlock({
 }: PageBlockProps<ParagraphComponent>) {
   return (
     <p
-      className="max-w-3xl text-base leading-7 text-slate-600"
+      className="max-w-3xl text-base leading-8 text-slate-600"
       style={buildTextStyle(component.style)}
     >
       {component.text}
