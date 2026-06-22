@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
+  ArrowLeft,
   CheckCircle2,
   ChevronDown,
-  ChevronLeft,
+  Code2,
+  FileText,
   Globe,
   Layers,
   Loader2,
+  Search,
   Trash2,
   XCircle,
   Zap,
@@ -27,54 +30,75 @@ import type {
   ParsedController,
 } from "@/features/swagger-import/model";
 
+// ─── Constants ──────────────────────────────────────────────────────────────
+
 const STEPS = [
-  { key: "url", label: "آدرس" },
+  { key: "url", label: "آدرس API" },
   { key: "select", label: "انتخاب" },
   { key: "result", label: "نتیجه" },
 ] as const;
 
 type Step = (typeof STEPS)[number]["key"];
 
-const METHOD_COLORS: Record<string, string> = {
-  get: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  post: "bg-sky-50 text-sky-700 border-sky-200",
-  put: "bg-amber-50 text-amber-700 border-amber-200",
-  patch: "bg-violet-50 text-violet-700 border-violet-200",
+const METHOD_STYLES: Record<string, string> = {
+  get:    "bg-emerald-50 text-emerald-700 border-emerald-200",
+  post:   "bg-sky-50 text-sky-700 border-sky-200",
+  put:    "bg-amber-50 text-amber-700 border-amber-200",
+  patch:  "bg-violet-50 text-violet-700 border-violet-200",
   delete: "bg-rose-50 text-rose-700 border-rose-200",
 };
+
+// ─── Utilities ───────────────────────────────────────────────────────────────
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+function detectUrlHint(url: string): string | null {
+  if (!url.trim()) return null;
+  const lower = url.toLowerCase();
+  if (lower.includes("index.html") || lower.match(/\/swagger\/?$/)) {
+    return "آدرس Swagger UI هست. برای NestJS آدرس JSON رو امتحان کن: /swagger-json | برای سایرین: /api-json یا /openapi.json";
+  }
+  return null;
+}
+
+// ─── Sub-components ──────────────────────────────────────────────────────────
+
 function StepIndicator({ current }: { current: Step }) {
-  const currentIndex = STEPS.findIndex((s) => s.key === current);
+  const idx = STEPS.findIndex((s) => s.key === current);
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center">
       {STEPS.map((step, i) => {
-        const done = i < currentIndex;
-        const active = i === currentIndex;
+        const done   = i < idx;
+        const active = i === idx;
         return (
-          <div key={step.key} className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
+          <div key={step.key} className="flex items-center">
+            <div className="flex flex-col items-center gap-1">
               <div
-                className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition ${
-                  done
-                    ? "bg-(--lightBlue) text-white"
-                    : active
-                      ? "bg-(--darkBlue) text-white"
-                      : "bg-slate-100 text-slate-400"
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
+                  done   ? "bg-(--lightBlue) text-white ring-4 ring-(--lightBlue)/20"
+                : active ? "bg-(--darkBlue) text-white ring-4 ring-(--darkBlue)/15"
+                :          "bg-slate-100 text-slate-400"
                 }`}
               >
                 {done ? <CheckCircle2 className="h-4 w-4" /> : i + 1}
               </div>
               <span
-                className={`text-sm font-medium ${active ? "text-slate-950" : "text-slate-400"}`}
+                className={`text-[11px] font-medium whitespace-nowrap ${
+                  active ? "text-(--darkBlue)"
+                : done   ? "text-(--lightBlue)"
+                :          "text-slate-400"
+                }`}
               >
                 {step.label}
               </span>
             </div>
-            {i < STEPS.length - 1 && <div className="h-px w-8 bg-slate-200" />}
+            {i < STEPS.length - 1 && (
+              <div
+                className={`mx-3 mb-4 h-0.5 w-10 transition-all duration-500 ${done ? "bg-(--lightBlue)" : "bg-slate-200"}`}
+              />
+            )}
           </div>
         );
       })}
@@ -82,22 +106,103 @@ function StepIndicator({ current }: { current: Step }) {
   );
 }
 
+function IndeterminateCheckbox({
+  checked,
+  indeterminate,
+  onChange,
+  size = "md",
+}: {
+  checked: boolean;
+  indeterminate: boolean;
+  onChange: () => void;
+  size?: "sm" | "md";
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      className={`shrink-0 rounded accent-(--lightBlue) ${size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4"}`}
+    />
+  );
+}
+
+function StatChip({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: number | string;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className={`flex flex-col items-center rounded-2xl px-4 py-2 ${
+        accent ? "bg-(--darkBlue) text-white" : "bg-slate-100 text-slate-700"
+      }`}
+    >
+      <span className={`text-lg font-bold leading-none ${accent ? "text-white" : "text-(--darkBlue)"}`}>
+        {value}
+      </span>
+      <span className={`mt-0.5 text-[11px] ${accent ? "text-white/70" : "text-slate-500"}`}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export function SwaggerImportWizard() {
-  const [step, setStep] = useState<Step>("url");
-  const [url, setUrl] = useState("");
-  const [state, setState] = useState<ImportState>("idle");
-  const [error, setError] = useState<string | null>(null);
-  const [spec, setSpec] = useState<OpenApiSpec | null>(null);
-  const [controllers, setControllers] = useState<ParsedController[]>([]);
-  const [groups, setGroups] = useState<ControllerGroup[]>([]);
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  // ── Wizard state
+  const [step,          setStep]          = useState<Step>("url");
+  const [state,         setState]         = useState<ImportState>("idle");
+  const [error,         setError]         = useState<string | null>(null);
   const [importedCount, setImportedCount] = useState(0);
 
-  // Group creation state
+  // ── URL step
+  const [url, setUrl] = useState("");
+
+  // ── Select step
+  const [spec,        setSpec]        = useState<OpenApiSpec | null>(null);
+  const [controllers, setControllers] = useState<ParsedController[]>([]);
+  const [groups,      setGroups]      = useState<ControllerGroup[]>([]);
+  const [search,      setSearch]      = useState("");
+  const [expanded,       setExpanded]       = useState<Set<string>>(new Set());
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  // ── Group creation
   const [creatingGroup, setCreatingGroup] = useState(false);
-  const [newGroupName, setNewGroupName] = useState("");
-  const [newGroupTags, setNewGroupTags] = useState<Set<string>>(new Set());
+  const [newGroupName,  setNewGroupName]  = useState("");
+  const [newGroupTags,  setNewGroupTags]  = useState<Set<string>>(new Set());
+
+  // ── Derived
+  const groupedTagSet       = new Set(groups.flatMap((g) => g.tags));
+  const ungroupedControllers = controllers.filter((c) => !groupedTagSet.has(c.tag));
+  const availableForGroup    = ungroupedControllers; // only ungrouped can be added to a new group
+
+  const filteredUngrouped = search.trim()
+    ? ungroupedControllers.filter((c) =>
+        c.customName.toLowerCase().includes(search.toLowerCase()) ||
+        c.tag.toLowerCase().includes(search.toLowerCase()),
+      )
+    : ungroupedControllers;
+
+  const selectedUngroupedCount = ungroupedControllers.filter((c) => c.selected).length;
+  const totalPageCount         = selectedUngroupedCount + groups.length;
+  const totalEndpointCount     = controllers
+    .filter((c) => c.selected || groupedTagSet.has(c.tag))
+    .reduce((s, c) => s + c.endpoints.filter((e) => e.selected).length, 0);
+
+  const urlHint = detectUrlHint(url);
+
+  // ── Handlers ─────────────────────────────────────────────────────────────
 
   async function handleFetch() {
     if (!url.trim()) return;
@@ -121,6 +226,7 @@ export function SwaggerImportWizard() {
     setSpec(result.spec);
     setControllers(parsed);
     setGroups([]);
+    setSearch("");
     setState("parsed");
     setStep("select");
   }
@@ -129,12 +235,8 @@ export function SwaggerImportWizard() {
     setControllers((prev) =>
       prev.map((c) => {
         if (c.tag !== tag) return c;
-        const newSelected = !c.selected;
-        return {
-          ...c,
-          selected: newSelected,
-          endpoints: c.endpoints.map((e) => ({ ...e, selected: newSelected })),
-        };
+        const next = !c.selected;
+        return { ...c, selected: next, endpoints: c.endpoints.map((e) => ({ ...e, selected: next })) };
       }),
     );
   }
@@ -151,20 +253,25 @@ export function SwaggerImportWizard() {
     );
   }
 
-  function toggleAll() {
-    const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
-    const ungroupedControllers = controllers.filter(
-      (c) => !groupedTagSet.has(c.tag),
+  function selectAllEndpoints(tag: string, all: boolean) {
+    setControllers((prev) =>
+      prev.map((c) => {
+        if (c.tag !== tag) return c;
+        return {
+          ...c,
+          selected: all,
+          endpoints: c.endpoints.map((e) => ({ ...e, selected: all })),
+        };
+      }),
     );
+  }
+
+  function toggleAll() {
     const allSelected = ungroupedControllers.every((c) => c.selected);
     setControllers((prev) =>
       prev.map((c) => {
         if (groupedTagSet.has(c.tag)) return c;
-        return {
-          ...c,
-          selected: !allSelected,
-          endpoints: c.endpoints.map((e) => ({ ...e, selected: !allSelected })),
-        };
+        return { ...c, selected: !allSelected, endpoints: c.endpoints.map((e) => ({ ...e, selected: !allSelected })) };
       }),
     );
   }
@@ -176,19 +283,11 @@ export function SwaggerImportWizard() {
   }
 
   function toggleExpand(tag: string) {
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      next.has(tag) ? next.delete(tag) : next.add(tag);
-      return next;
-    });
+    setExpanded((prev) => { const s = new Set(prev); s.has(tag) ? s.delete(tag) : s.add(tag); return s; });
   }
 
   function toggleGroupExpand(id: string) {
-    setExpandedGroups((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
+    setExpandedGroups((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
   }
 
   function updateGroupName(id: string, name: string) {
@@ -202,19 +301,14 @@ export function SwaggerImportWizard() {
   function removeFromGroup(groupId: string, tag: string) {
     setGroups((prev) =>
       prev
-        .map((g) =>
-          g.id === groupId ? { ...g, tags: g.tags.filter((t) => t !== tag) } : g,
-        )
+        .map((g) => (g.id === groupId ? { ...g, tags: g.tags.filter((t) => t !== tag) } : g))
         .filter((g) => g.tags.length >= 1),
     );
   }
 
   function confirmCreateGroup() {
     if (!newGroupName.trim() || newGroupTags.size < 2) return;
-    setGroups((prev) => [
-      ...prev,
-      { id: uid(), name: newGroupName.trim(), tags: Array.from(newGroupTags) },
-    ]);
+    setGroups((prev) => [...prev, { id: uid(), name: newGroupName.trim(), tags: Array.from(newGroupTags) }]);
     setNewGroupName("");
     setNewGroupTags(new Set());
     setCreatingGroup(false);
@@ -222,13 +316,8 @@ export function SwaggerImportWizard() {
 
   async function handleImport() {
     if (!spec) return;
-    const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
-    const selected = controllers.filter(
-      (c) => c.selected || groupedTagSet.has(c.tag),
-    );
-    const ungroupedSelected = selected.filter((c) => !groupedTagSet.has(c.tag));
-    const totalPages = ungroupedSelected.length + groups.length;
-    if (totalPages === 0) return;
+    const selected = controllers.filter((c) => c.selected || groupedTagSet.has(c.tag));
+    if (totalPageCount === 0) return;
 
     setState("importing");
     setError(null);
@@ -247,123 +336,179 @@ export function SwaggerImportWizard() {
     setStep("result");
   }
 
-  const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
-  const ungroupedControllers = controllers.filter(
-    (c) => !groupedTagSet.has(c.tag),
-  );
-  const selectedUngroupedCount = ungroupedControllers.filter(
-    (c) => c.selected,
-  ).length;
-  const totalPageCount = selectedUngroupedCount + groups.length;
-  const totalEndpointCount =
-    controllers
-      .filter((c) => c.selected || groupedTagSet.has(c.tag))
-      .reduce((sum, c) => sum + c.endpoints.filter((e) => e.selected).length, 0);
-
-  // Controllers available for new group (not already in a group)
-  const availableForGroup = controllers.filter(
-    (c) => !groupedTagSet.has(c.tag),
-  );
+  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-6">
-      {/* Header card */}
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-5">
+
+      {/* ── Header ── */}
+      <div className="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-(--darkGray)">
-              Swagger / OpenAPI
+              Swagger / OpenAPI Import
             </p>
-            <h1 className="mt-2 text-2xl font-semibold text-slate-950">
+            <h1 className="mt-1.5 text-2xl font-semibold text-slate-950">
               ایجاد داکیومنت از API
             </h1>
             <p className="mt-1 text-sm text-slate-500">
-              لینک Swagger یا OpenAPI رو بده تا صفحات داکیومنت بصورت خودکار ساخته بشن
+              لینک JSON spec رو بده — صفحات داکیومنت بصورت خودکار ساخته میشن
             </p>
           </div>
           <StepIndicator current={step} />
         </div>
       </div>
 
-      {/* Step 1 — URL Input */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          STEP 1 — URL
+      ═══════════════════════════════════════════════════════════════════ */}
       {step === "url" && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <div className="mx-auto max-w-xl space-y-5">
-            <div className="space-y-2">
-              <label
-                htmlFor="swagger-url"
-                className="block text-sm font-medium text-slate-700"
-              >
-                آدرس Swagger JSON
-              </label>
-              <div className="flex gap-3">
-                <div className="relative flex-1">
-                  <Globe className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
-                    id="swagger-url"
-                    type="url"
-                    dir="ltr"
-                    value={url}
-                    onChange={(e) => {
-                      setUrl(e.target.value);
-                      if (error) setError(null);
-                      if (state === "error") setState("idle");
-                    }}
-                    onKeyDown={(e) => e.key === "Enter" && handleFetch()}
-                    placeholder="https://api.example.com/swagger-json"
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pr-10 pl-4 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-(--lightBlue) focus:bg-white focus:ring-2 focus:ring-(--lightBlue)/20"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={handleFetch}
-                  disabled={state === "loading" || !url.trim()}
-                  className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-5 py-3 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
-                >
-                  {state === "loading" ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Zap className="h-4 w-4" />
-                  )}
-                  {state === "loading" ? "در حال بارگذاری..." : "بارگذاری"}
-                </button>
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+          {/* Icon + title */}
+          <div className="flex flex-col items-center border-b border-slate-100 px-8 py-10 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-(--darkBlue)/10">
+              <Globe className="h-8 w-8 text-(--darkBlue)" />
+            </div>
+            <h2 className="text-lg font-semibold text-slate-950">
+              آدرس Swagger / OpenAPI
+            </h2>
+            <p className="mt-1 max-w-sm text-sm text-slate-500">
+              آدرس فایل JSON spec رو وارد کن. این آدرس باید JSON برگردونه، نه صفحه HTML.
+            </p>
+          </div>
+
+          {/* Input */}
+          <div className="mx-auto max-w-2xl space-y-4 px-8 py-8">
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Globe className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="swagger-url"
+                  type="url"
+                  dir="ltr"
+                  value={url}
+                  autoFocus
+                  onChange={(e) => {
+                    setUrl(e.target.value);
+                    if (error) { setError(null); setState("idle"); }
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && handleFetch()}
+                  placeholder="https://api.example.com/swagger-json"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-11 pl-4 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-(--lightBlue) focus:bg-white focus:ring-2 focus:ring-(--lightBlue)/20"
+                />
               </div>
-              <p className="text-xs text-slate-400">
-                مثال: https://petstore.swagger.io/v2/swagger.json
-              </p>
+              <button
+                type="button"
+                onClick={handleFetch}
+                disabled={state === "loading" || !url.trim()}
+                className="flex shrink-0 items-center gap-2 rounded-2xl bg-(--darkBlue) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {state === "loading"
+                  ? <><Loader2 className="h-4 w-4 animate-spin" /> در حال بارگذاری...</>
+                  : <><Zap className="h-4 w-4" /> بارگذاری</>
+                }
+              </button>
             </div>
 
-            {error && (
-              <div className="flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4">
-                <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" />
-                <p className="text-sm text-rose-700">{error}</p>
+            {/* Smart URL hint */}
+            {urlHint && (
+              <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400 text-white">
+                  <span className="text-[10px] font-bold">!</span>
+                </div>
+                <p className="text-sm text-amber-800">{urlHint}</p>
               </div>
             )}
+
+            {/* Error */}
+            {error && (
+              <div className="flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4">
+                <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-rose-500" />
+                <div>
+                  <p className="text-sm font-medium text-rose-800">بارگذاری ناموفق</p>
+                  <p className="mt-0.5 text-sm text-rose-700">{error}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Format hints */}
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                فرمت‌های رایج
+              </p>
+              <div className="space-y-1.5">
+                {[
+                  { label: "NestJS",       path: "/swagger-json" },
+                  { label: "Express/Koa",  path: "/api-json" },
+                  { label: "Spring Boot",  path: "/v3/api-docs" },
+                  { label: "Swagger 2.0",  path: "/swagger.json" },
+                ].map(({ label, path }) => (
+                  <div key={label} className="flex items-center gap-3">
+                    <span className="w-24 text-xs font-medium text-slate-500">{label}</span>
+                    <code className="rounded bg-slate-200 px-2 py-0.5 text-xs text-slate-700" dir="ltr">
+                      https://your-api.com{path}
+                    </code>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Step 2 — Controller Checklist */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          STEP 2 — SELECT
+      ═══════════════════════════════════════════════════════════════════ */}
       {step === "select" && (
         <div className="space-y-4">
+
+          {/* Stats row */}
+          <div className="flex flex-wrap gap-3 rounded-3xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
+            <StatChip label="کنترولر" value={controllers.length} />
+            <StatChip label="گروه"    value={groups.length} />
+            <StatChip label="API انتخاب" value={totalEndpointCount} />
+            <StatChip label="صفحه"    value={totalPageCount} accent />
+          </div>
+
           {/* Group creation panel */}
           {creatingGroup && (
-            <div className="rounded-3xl border border-(--darkBlue)/20 bg-(--darkBlue)/5 p-6 shadow-sm">
-              <p className="mb-4 text-sm font-semibold text-slate-950">
-                ایجاد گروه جدید
-              </p>
+            <div className="rounded-3xl border border-(--darkBlue)/25 bg-linear-to-b from-(--darkBlue)/8 to-(--darkBlue)/4 p-6 shadow-sm">
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Layers className="h-5 w-5 text-(--darkBlue)" />
+                  <h3 className="font-semibold text-slate-950">ایجاد گروه جدید</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setCreatingGroup(false); setNewGroupName(""); setNewGroupTags(new Set()); }}
+                  className="rounded-xl p-1.5 text-slate-400 transition hover:bg-white hover:text-slate-600"
+                >
+                  <XCircle className="h-4 w-4" />
+                </button>
+              </div>
               <div className="space-y-4">
-                <input
-                  type="text"
-                  value={newGroupName}
-                  onChange={(e) => setNewGroupName(e.target.value)}
-                  placeholder="نام گروه..."
-                  autoFocus
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-(--lightBlue) focus:ring-2 focus:ring-(--lightBlue)/20"
-                />
                 <div>
-                  <p className="mb-2 text-xs font-medium text-slate-500">
-                    کنترولرها را انتخاب کنید (حداقل ۲):
+                  <label className="mb-1.5 block text-xs font-medium text-slate-600">
+                    نام گروه (عنوان صفحه داکیومنت)
+                  </label>
+                  <input
+                    type="text"
+                    value={newGroupName}
+                    onChange={(e) => setNewGroupName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") confirmCreateGroup();
+                      if (e.key === "Escape") { setCreatingGroup(false); setNewGroupName(""); setNewGroupTags(new Set()); }
+                    }}
+                    placeholder="مثلاً: مدیریت کاربران و احراز هویت"
+                    autoFocus
+                    className="w-full rounded-2xl border border-white bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-(--lightBlue) focus:ring-2 focus:ring-(--lightBlue)/20"
+                  />
+                </div>
+                <div>
+                  <p className="mb-2 text-xs font-medium text-slate-600">
+                    کنترولرها را انتخاب کنید
+                    <span className="mr-1 text-slate-400">(حداقل ۲)</span>
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {availableForGroup.map((c) => {
@@ -374,44 +519,41 @@ export function SwaggerImportWizard() {
                           type="button"
                           onClick={() =>
                             setNewGroupTags((prev) => {
-                              const next = new Set(prev);
-                              next.has(c.tag)
-                                ? next.delete(c.tag)
-                                : next.add(c.tag);
-                              return next;
+                              const s = new Set(prev);
+                              s.has(c.tag) ? s.delete(c.tag) : s.add(c.tag);
+                              return s;
                             })
                           }
-                          className={`rounded-2xl border px-3 py-1.5 text-xs font-medium transition ${
+                          className={`flex items-center gap-1.5 rounded-2xl border px-3 py-1.5 text-xs font-medium transition ${
                             checked
-                              ? "border-(--darkBlue) bg-(--darkBlue) text-white"
-                              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                              ? "border-(--darkBlue) bg-(--darkBlue) text-white shadow-sm"
+                              : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                           }`}
                         >
+                          {checked && <CheckCircle2 className="h-3 w-3" />}
                           {c.customName || c.tag}
+                          <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${checked ? "bg-white/20" : "bg-slate-100 text-slate-500"}`}>
+                            {c.endpointCount}
+                          </span>
                         </button>
                       );
                     })}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 pt-1">
                   <button
                     type="button"
                     onClick={confirmCreateGroup}
-                    disabled={
-                      !newGroupName.trim() || newGroupTags.size < 2
-                    }
-                    className="rounded-2xl bg-(--darkBlue) px-5 py-2 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
+                    disabled={!newGroupName.trim() || newGroupTags.size < 2}
+                    className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
                   >
-                    ایجاد گروه
+                    <Layers className="h-3.5 w-3.5" />
+                    ایجاد گروه ({newGroupTags.size} کنترولر)
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setCreatingGroup(false);
-                      setNewGroupName("");
-                      setNewGroupTags(new Set());
-                    }}
-                    className="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                    onClick={() => { setCreatingGroup(false); setNewGroupName(""); setNewGroupTags(new Set()); }}
+                    className="rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
                   >
                     لغو
                   </button>
@@ -420,23 +562,29 @@ export function SwaggerImportWizard() {
             </div>
           )}
 
-          <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-              <div>
-                <p className="font-semibold text-slate-950">
-                  {controllers.length} Controller یافت شد
-                </p>
-                <p className="text-sm text-slate-500">
-                  {totalPageCount} صفحه — {totalEndpointCount} API انتخاب شده
-                </p>
+          {/* Main list card */}
+          <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+            {/* Toolbar */}
+            <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:gap-3">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="جستجوی کنترولر..."
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-2.5 pr-10 pl-4 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-(--lightBlue) focus:bg-white focus:ring-2 focus:ring-(--lightBlue)/20"
+                />
               </div>
-              <div className="flex items-center gap-2">
+              {/* Actions */}
+              <div className="flex shrink-0 items-center gap-2">
                 {availableForGroup.length >= 2 && !creatingGroup && (
                   <button
                     type="button"
                     onClick={() => setCreatingGroup(true)}
-                    className="flex items-center gap-1.5 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                    className="flex items-center gap-1.5 rounded-2xl border border-(--darkBlue)/30 bg-(--darkBlue)/8 px-3 py-2 text-sm font-medium text-(--darkBlue) transition hover:bg-(--darkBlue)/15"
                   >
                     <Layers className="h-3.5 w-3.5" />
                     گروه‌بندی
@@ -445,170 +593,217 @@ export function SwaggerImportWizard() {
                 <button
                   type="button"
                   onClick={toggleAll}
-                  className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                  className="rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
                 >
-                  {ungroupedControllers.every((c) => c.selected)
-                    ? "لغو انتخاب"
-                    : "انتخاب همه"}
+                  {ungroupedControllers.every((c) => c.selected) ? "لغو همه" : "انتخاب همه"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setStep("url");
-                    setState("idle");
-                  }}
-                  className="rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                  onClick={() => { setStep("url"); setState("idle"); }}
+                  className="flex items-center gap-1 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-4 w-4" />
+                  برگشت
                 </button>
               </div>
             </div>
 
-            {/* Groups section */}
+            {/* ── Groups section ── */}
             {groups.length > 0 && (
-              <div className="divide-y divide-slate-100 border-b border-slate-100">
-                {groups.map((group) => {
-                  const isExp = expandedGroups.has(group.id);
-                  const members = controllers.filter((c) =>
-                    group.tags.includes(c.tag),
-                  );
-                  const epCount = members.reduce(
-                    (sum, c) =>
-                      sum + c.endpoints.filter((e) => e.selected).length,
-                    0,
-                  );
-                  return (
-                    <div key={group.id}>
-                      <div className="flex items-center gap-3 bg-(--darkBlue)/5 px-6 py-4">
-                        <Layers className="h-4 w-4 shrink-0 text-(--darkBlue)" />
-                        <input
-                          type="text"
-                          value={group.name}
-                          onChange={(e) =>
-                            updateGroupName(group.id, e.target.value)
-                          }
-                          className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-950 outline-none transition border-b border-transparent focus:border-slate-400"
-                        />
-                        <span className="shrink-0 rounded-full bg-(--darkBlue)/15 px-3 py-1 text-xs font-semibold text-(--darkBlue)">
-                          {members.length} ctrl · {epCount} API
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => deleteGroup(group.id)}
-                          className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => toggleGroupExpand(group.id)}
-                          className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100"
-                        >
-                          <ChevronDown
-                            className={`h-4 w-4 transition-transform duration-200 ${isExp ? "rotate-180" : ""}`}
+              <div className="border-b border-slate-100">
+                <div className="flex items-center gap-2 bg-slate-50/80 px-5 py-2">
+                  <Layers className="h-3.5 w-3.5 text-slate-400" />
+                  <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    گروه‌ها ({groups.length})
+                  </span>
+                </div>
+                <div className="divide-y divide-slate-100">
+                  {groups.map((group) => {
+                    const isExp   = expandedGroups.has(group.id);
+                    const members = controllers.filter((c) => group.tags.includes(c.tag));
+                    const epCount = members.reduce(
+                      (s, c) => s + c.endpoints.filter((e) => e.selected).length, 0,
+                    );
+                    const totalEp = members.reduce((s, c) => s + c.endpointCount, 0);
+                    return (
+                      <div key={group.id}>
+                        <div className="flex items-center gap-3 bg-(--darkBlue)/3 px-5 py-3.5 transition hover:bg-(--darkBlue)/6">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-(--darkBlue)/15">
+                            <Layers className="h-4 w-4 text-(--darkBlue)" />
+                          </div>
+                          <input
+                            type="text"
+                            value={group.name}
+                            onChange={(e) => updateGroupName(group.id, e.target.value)}
+                            className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-950 outline-none transition border-b border-transparent focus:border-slate-400"
                           />
-                        </button>
-                      </div>
-
-                      {isExp && (
-                        <div className="border-t border-slate-100 bg-slate-50/60">
-                          {members.map((c) => (
-                            <div
-                              key={c.tag}
-                              className="flex items-center gap-3 px-10 py-3"
+                          <div className="flex shrink-0 items-center gap-2">
+                            <span className="hidden rounded-full bg-(--darkBlue)/10 px-3 py-1 text-xs font-semibold text-(--darkBlue) sm:inline-flex">
+                              {members.length} ctrl
+                            </span>
+                            <span className="rounded-full bg-(--lightBlue)/10 px-3 py-1 text-xs font-semibold text-(--lightBlue)">
+                              {epCount}/{totalEp} API
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => deleteGroup(group.id)}
+                              title="حذف گروه"
+                              className="rounded-xl p-1.5 text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
                             >
-                              <span className="flex-1 text-sm text-slate-700">
-                                {c.customName || c.tag}
-                              </span>
-                              <span className="text-xs text-slate-400">
-                                {c.endpoints.filter((e) => e.selected).length}/
-                                {c.endpointCount} API
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => removeFromGroup(group.id, c.tag)}
-                                className="text-xs text-slate-400 transition hover:text-rose-500"
-                              >
-                                حذف از گروه
-                              </button>
-                            </div>
-                          ))}
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => toggleGroupExpand(group.id)}
+                              className="rounded-xl p-1.5 text-slate-400 transition hover:bg-slate-100"
+                            >
+                              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isExp ? "rotate-180" : ""}`} />
+                            </button>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+
+                        {isExp && (
+                          <div className="bg-slate-50/60">
+                            {members.map((c) => (
+                              <div key={c.tag} className="flex items-center gap-3 border-t border-slate-100 px-14 py-3">
+                                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-200">
+                                  <Code2 className="h-3 w-3 text-slate-500" />
+                                </div>
+                                <span className="flex-1 text-sm text-slate-700">{c.customName || c.tag}</span>
+                                <span className="text-xs text-slate-400">
+                                  {c.endpoints.filter((e) => e.selected).length}/{c.endpointCount} API
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => removeFromGroup(group.id, c.tag)}
+                                  className="rounded-xl px-2 py-1 text-xs text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
+                                >
+                                  حذف از گروه
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
 
-            {/* Ungrouped controllers */}
+            {/* ── Controllers section ── */}
+            {ungroupedControllers.length > 0 && (
+              <div className="flex items-center gap-2 bg-slate-50/80 px-5 py-2 border-b border-slate-100">
+                <FileText className="h-3.5 w-3.5 text-slate-400" />
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  کنترولرها ({ungroupedControllers.length})
+                  {search && ` · ${filteredUngrouped.length} نتیجه`}
+                </span>
+              </div>
+            )}
+
             <div className="divide-y divide-slate-100">
-              {ungroupedControllers.map((controller) => {
-                const isExpanded = expanded.has(controller.tag);
-                const selectedEpCount = controller.endpoints.filter(
-                  (e) => e.selected,
-                ).length;
+              {filteredUngrouped.length === 0 && search && (
+                <div className="flex flex-col items-center gap-2 py-10 text-slate-400">
+                  <Search className="h-8 w-8 opacity-40" />
+                  <p className="text-sm">نتیجه‌ای یافت نشد</p>
+                </div>
+              )}
+
+              {filteredUngrouped.map((controller) => {
+                const isExpanded   = expanded.has(controller.tag);
+                const selEp        = controller.endpoints.filter((e) => e.selected).length;
+                const allEp        = controller.endpointCount;
+                const indeterminate = !controller.selected && selEp > 0;
 
                 return (
                   <div key={controller.tag}>
-                    <div className="flex items-center gap-3 px-6 py-4 transition hover:bg-slate-50">
-                      <input
-                        type="checkbox"
+                    {/* Controller row */}
+                    <div className="flex items-center gap-3 px-5 py-3.5 transition hover:bg-slate-50">
+                      <IndeterminateCheckbox
                         checked={controller.selected}
+                        indeterminate={indeterminate}
                         onChange={() => toggleController(controller.tag)}
-                        className="h-4 w-4 shrink-0 rounded accent-(--lightBlue)"
                       />
                       <input
                         type="text"
                         value={controller.customName}
-                        onChange={(e) =>
-                          updateName(controller.tag, e.target.value)
-                        }
+                        onChange={(e) => updateName(controller.tag, e.target.value)}
                         className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-950 outline-none transition border-b border-transparent focus:border-slate-300"
                         dir="ltr"
+                        title="نام قابل ویرایش است"
                       />
-                      <span className="shrink-0 rounded-full bg-(--darkBlue)/10 px-3 py-1 text-xs font-semibold text-(--darkBlue)">
-                        {selectedEpCount}/{controller.endpointCount} API
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => toggleExpand(controller.tag)}
-                        className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-                      >
-                        <ChevronDown
-                          className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
-                        />
-                      </button>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            selEp === allEp
+                              ? "bg-(--lightBlue)/10 text-(--lightBlue)"
+                              : selEp > 0
+                              ? "bg-amber-50 text-amber-700"
+                              : "bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          {selEp}/{allEp} API
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => toggleExpand(controller.tag)}
+                          title={isExpanded ? "بستن لیست API‌ها" : "مشاهده API‌ها"}
+                          className="rounded-xl p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                        >
+                          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
+                        </button>
+                      </div>
                     </div>
 
+                    {/* Endpoints accordion */}
                     {isExpanded && (
-                      <div className="border-t border-slate-50 bg-slate-50/60">
+                      <div className="border-t border-slate-50 bg-slate-50/70">
+                        {/* Endpoint toolbar */}
+                        <div className="flex items-center justify-between border-b border-slate-100 px-9 py-2">
+                          <span className="text-xs text-slate-400">{allEp} endpoint</span>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => selectAllEndpoints(controller.tag, true)}
+                              className="text-xs text-slate-500 transition hover:text-(--lightBlue)"
+                            >
+                              انتخاب همه
+                            </button>
+                            <span className="text-slate-300">·</span>
+                            <button
+                              type="button"
+                              onClick={() => selectAllEndpoints(controller.tag, false)}
+                              className="text-xs text-slate-500 transition hover:text-rose-500"
+                            >
+                              لغو همه
+                            </button>
+                          </div>
+                        </div>
+
                         {controller.endpoints.map((ep, i) => (
                           <label
                             key={`${ep.method}-${ep.path}-${i}`}
-                            className="flex cursor-pointer items-center gap-3 px-8 py-2.5 transition hover:bg-slate-100"
+                            className="flex cursor-pointer items-center gap-3 px-9 py-2.5 transition hover:bg-slate-100"
                           >
-                            <input
-                              type="checkbox"
+                            <IndeterminateCheckbox
                               checked={ep.selected}
-                              onChange={() =>
-                                toggleEndpoint(controller.tag, i)
-                              }
-                              className="h-3.5 w-3.5 shrink-0 rounded accent-(--lightBlue)"
+                              indeterminate={false}
+                              onChange={() => toggleEndpoint(controller.tag, i)}
+                              size="sm"
                             />
                             <span
-                              className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${(METHOD_COLORS[ep.method] ?? "bg-slate-100 text-slate-600 border-slate-200")}`}
+                              className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                                METHOD_STYLES[ep.method] ?? "bg-slate-100 text-slate-600 border-slate-200"
+                              }`}
                             >
                               {ep.method}
                             </span>
-                            <span
-                              className="flex-1 truncate font-mono text-xs text-slate-600"
-                              dir="ltr"
-                            >
+                            <span className="flex-1 truncate font-mono text-xs text-slate-600" dir="ltr">
                               {ep.path}
                             </span>
                             {ep.summary && (
-                              <span className="hidden max-w-50 shrink-0 truncate text-xs text-slate-400 sm:block">
+                              <span className="hidden max-w-52 shrink-0 truncate text-xs text-slate-400 sm:block">
                                 {ep.summary}
                               </span>
                             )}
@@ -621,31 +816,31 @@ export function SwaggerImportWizard() {
               })}
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-between border-t border-slate-100 px-6 py-4">
-              {error && (
-                <div className="flex items-center gap-2 text-sm text-rose-600">
-                  <XCircle className="h-4 w-4" />
-                  {error}
+            {/* Footer bar */}
+            <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-5 py-4">
+              <div className="flex items-center gap-3">
+                {error && (
+                  <div className="flex items-center gap-2 text-sm text-rose-600">
+                    <XCircle className="h-4 w-4" />
+                    <span>{error}</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="hidden text-right sm:block">
+                  <p className="text-sm font-semibold text-slate-950">{totalPageCount} صفحه</p>
+                  <p className="text-xs text-slate-400">{totalEndpointCount} API انتخاب شده</p>
                 </div>
-              )}
-              <div className="mr-auto flex items-center gap-3">
-                <p className="text-sm text-slate-500">
-                  {totalPageCount} صفحه ({totalEndpointCount} API){" "}
-                  <span className="font-semibold text-slate-950">→ ساخته میشه</span>
-                </p>
                 <button
                   type="button"
                   onClick={handleImport}
                   disabled={state === "importing" || totalPageCount === 0}
-                  className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-7 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-(--lightBlue) disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {state === "importing" ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Zap className="h-4 w-4" />
-                  )}
-                  {state === "importing" ? "در حال ساخت..." : "تولید داکیومنت"}
+                  {state === "importing"
+                    ? <><Loader2 className="h-4 w-4 animate-spin" /> در حال ساخت...</>
+                    : <><Zap className="h-4 w-4" /> تولید داکیومنت</>
+                  }
                 </button>
               </div>
             </div>
@@ -653,36 +848,53 @@ export function SwaggerImportWizard() {
         </div>
       )}
 
-      {/* Step 3 — Result */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          STEP 3 — RESULT
+      ═══════════════════════════════════════════════════════════════════ */}
       {step === "result" && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <div className="mx-auto max-w-md space-y-6 text-center">
-            <div className="flex justify-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
-                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex flex-col items-center px-8 py-14 text-center">
+            {/* Animated success ring */}
+            <div className="relative mb-6 flex h-20 w-20 items-center justify-center">
+              <div className="absolute inset-0 animate-ping rounded-full bg-emerald-100 opacity-60" style={{ animationDuration: "2s" }} />
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 ring-4 ring-emerald-100">
+                <CheckCircle2 className="h-10 w-10 text-emerald-500" />
               </div>
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-slate-950">
-                داکیومنت با موفقیت ساخته شد
-              </h2>
-              <p className="mt-2 text-slate-500">
-                {importedCount} صفحه داکیومنت از Swagger spec ایجاد شد
-              </p>
+
+            <h2 className="text-2xl font-semibold text-slate-950">داکیومنت ساخته شد</h2>
+            <p className="mt-2 text-slate-500">Swagger spec با موفقیت به داکیومنت تبدیل شد</p>
+
+            {/* Stats */}
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <StatChip label="صفحه ساخته شد" value={importedCount} accent />
+              <StatChip label="API اضافه شد"   value={totalEndpointCount} />
+              <StatChip label="گروه"           value={groups.length} />
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+
+            {/* Actions */}
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Link
                 href="/admin"
-                className="rounded-2xl bg-(--darkBlue) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--lightBlue)"
+                className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-7 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-(--lightBlue)"
               >
+                <FileText className="h-4 w-4" />
                 مشاهده در داکیومنت ساز
               </Link>
               <Link
                 href="/pages"
-                className="rounded-2xl border border-slate-200 px-6 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="flex items-center gap-2 rounded-2xl border border-slate-200 px-7 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
                 پیش‌نمایش داکیومنت
               </Link>
+              <button
+                type="button"
+                onClick={() => { setStep("url"); setState("idle"); setUrl(""); setControllers([]); setGroups([]); }}
+                className="flex items-center gap-2 rounded-2xl border border-slate-200 px-7 py-3 text-sm font-medium text-slate-500 transition hover:bg-slate-50"
+              >
+                <Globe className="h-4 w-4" />
+                ورود مجدد
+              </button>
             </div>
           </div>
         </div>
