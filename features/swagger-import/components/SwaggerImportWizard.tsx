@@ -7,7 +7,9 @@ import {
   ChevronDown,
   ChevronLeft,
   Globe,
+  Layers,
   Loader2,
+  Trash2,
   XCircle,
   Zap,
 } from "lucide-react";
@@ -19,6 +21,7 @@ import {
 import { generateDocsFromSpec } from "@/features/swagger-import/generateDocs";
 import { parseControllers } from "@/features/swagger-import/parseOpenApi";
 import type {
+  ControllerGroup,
   ImportState,
   OpenApiSpec,
   ParsedController,
@@ -39,6 +42,10 @@ const METHOD_COLORS: Record<string, string> = {
   patch: "bg-violet-50 text-violet-700 border-violet-200",
   delete: "bg-rose-50 text-rose-700 border-rose-200",
 };
+
+function uid() {
+  return Math.random().toString(36).slice(2, 10);
+}
 
 function StepIndicator({ current }: { current: Step }) {
   const currentIndex = STEPS.findIndex((s) => s.key === current);
@@ -67,9 +74,7 @@ function StepIndicator({ current }: { current: Step }) {
                 {step.label}
               </span>
             </div>
-            {i < STEPS.length - 1 && (
-              <div className="h-px w-8 bg-slate-200" />
-            )}
+            {i < STEPS.length - 1 && <div className="h-px w-8 bg-slate-200" />}
           </div>
         );
       })}
@@ -84,8 +89,15 @@ export function SwaggerImportWizard() {
   const [error, setError] = useState<string | null>(null);
   const [spec, setSpec] = useState<OpenApiSpec | null>(null);
   const [controllers, setControllers] = useState<ParsedController[]>([]);
+  const [groups, setGroups] = useState<ControllerGroup[]>([]);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [importedCount, setImportedCount] = useState(0);
+
+  // Group creation state
+  const [creatingGroup, setCreatingGroup] = useState(false);
+  const [newGroupName, setNewGroupName] = useState("");
+  const [newGroupTags, setNewGroupTags] = useState<Set<string>>(new Set());
 
   async function handleFetch() {
     if (!url.trim()) return;
@@ -108,6 +120,7 @@ export function SwaggerImportWizard() {
 
     setSpec(result.spec);
     setControllers(parsed);
+    setGroups([]);
     setState("parsed");
     setStep("select");
   }
@@ -139,13 +152,20 @@ export function SwaggerImportWizard() {
   }
 
   function toggleAll() {
-    const allSelected = controllers.every((c) => c.selected);
+    const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
+    const ungroupedControllers = controllers.filter(
+      (c) => !groupedTagSet.has(c.tag),
+    );
+    const allSelected = ungroupedControllers.every((c) => c.selected);
     setControllers((prev) =>
-      prev.map((c) => ({
-        ...c,
-        selected: !allSelected,
-        endpoints: c.endpoints.map((e) => ({ ...e, selected: !allSelected })),
-      })),
+      prev.map((c) => {
+        if (groupedTagSet.has(c.tag)) return c;
+        return {
+          ...c,
+          selected: !allSelected,
+          endpoints: c.endpoints.map((e) => ({ ...e, selected: !allSelected })),
+        };
+      }),
     );
   }
 
@@ -163,17 +183,57 @@ export function SwaggerImportWizard() {
     });
   }
 
+  function toggleGroupExpand(id: string) {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function updateGroupName(id: string, name: string) {
+    setGroups((prev) => prev.map((g) => (g.id === id ? { ...g, name } : g)));
+  }
+
+  function deleteGroup(id: string) {
+    setGroups((prev) => prev.filter((g) => g.id !== id));
+  }
+
+  function removeFromGroup(groupId: string, tag: string) {
+    setGroups((prev) =>
+      prev
+        .map((g) =>
+          g.id === groupId ? { ...g, tags: g.tags.filter((t) => t !== tag) } : g,
+        )
+        .filter((g) => g.tags.length >= 1),
+    );
+  }
+
+  function confirmCreateGroup() {
+    if (!newGroupName.trim() || newGroupTags.size < 2) return;
+    setGroups((prev) => [
+      ...prev,
+      { id: uid(), name: newGroupName.trim(), tags: Array.from(newGroupTags) },
+    ]);
+    setNewGroupName("");
+    setNewGroupTags(new Set());
+    setCreatingGroup(false);
+  }
+
   async function handleImport() {
     if (!spec) return;
+    const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
     const selected = controllers.filter(
-      (c) => c.selected && c.endpoints.some((e) => e.selected),
+      (c) => c.selected || groupedTagSet.has(c.tag),
     );
-    if (selected.length === 0) return;
+    const ungroupedSelected = selected.filter((c) => !groupedTagSet.has(c.tag));
+    const totalPages = ungroupedSelected.length + groups.length;
+    if (totalPages === 0) return;
 
     setState("importing");
     setError(null);
 
-    const { menuGroups, pages } = generateDocsFromSpec(spec, selected);
+    const { menuGroups, pages } = generateDocsFromSpec(spec, selected, groups);
     const result = await importDocsAction(menuGroups, pages);
 
     if (!result.success) {
@@ -187,10 +247,22 @@ export function SwaggerImportWizard() {
     setStep("result");
   }
 
-  const selectedCount = controllers.filter((c) => c.selected).length;
-  const totalEndpointCount = controllers.reduce(
-    (sum, c) => sum + c.endpoints.filter((e) => e.selected).length,
-    0,
+  const groupedTagSet = new Set(groups.flatMap((g) => g.tags));
+  const ungroupedControllers = controllers.filter(
+    (c) => !groupedTagSet.has(c.tag),
+  );
+  const selectedUngroupedCount = ungroupedControllers.filter(
+    (c) => c.selected,
+  ).length;
+  const totalPageCount = selectedUngroupedCount + groups.length;
+  const totalEndpointCount =
+    controllers
+      .filter((c) => c.selected || groupedTagSet.has(c.tag))
+      .reduce((sum, c) => sum + c.endpoints.filter((e) => e.selected).length, 0);
+
+  // Controllers available for new group (not already in a group)
+  const availableForGroup = controllers.filter(
+    (c) => !groupedTagSet.has(c.tag),
   );
 
   return (
@@ -273,148 +345,309 @@ export function SwaggerImportWizard() {
 
       {/* Step 2 — Controller Checklist */}
       {step === "select" && (
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
-          {/* Checklist header */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <div>
-              <p className="font-semibold text-slate-950">
-                {controllers.length} Controller یافت شد
+        <div className="space-y-4">
+          {/* Group creation panel */}
+          {creatingGroup && (
+            <div className="rounded-3xl border border-(--darkBlue)/20 bg-(--darkBlue)/5 p-6 shadow-sm">
+              <p className="mb-4 text-sm font-semibold text-slate-950">
+                ایجاد گروه جدید
               </p>
-              <p className="text-sm text-slate-500">
-                {selectedCount} controller — {totalEndpointCount} API انتخاب شده
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={toggleAll}
-                className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-              >
-                {controllers.every((c) => c.selected)
-                  ? "لغو انتخاب همه"
-                  : "انتخاب همه"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStep("url");
-                  setState("idle");
-                }}
-                className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Controller list */}
-          <div className="divide-y divide-slate-100">
-            {controllers.map((controller) => {
-              const isExpanded = expanded.has(controller.tag);
-              const selectedEpCount = controller.endpoints.filter(
-                (e) => e.selected,
-              ).length;
-
-              return (
-                <div key={controller.tag}>
-                  {/* Controller row */}
-                  <div className="flex items-center gap-3 px-6 py-4 transition hover:bg-slate-50">
-                    <input
-                      type="checkbox"
-                      checked={controller.selected}
-                      onChange={() => toggleController(controller.tag)}
-                      className="h-4 w-4 shrink-0 rounded accent-(--lightBlue)"
-                    />
-                    <input
-                      type="text"
-                      value={controller.customName}
-                      onChange={(e) =>
-                        updateName(controller.tag, e.target.value)
-                      }
-                      className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-950 outline-none transition border-b border-transparent focus:border-slate-300"
-                      dir="ltr"
-                    />
-                    <span className="shrink-0 rounded-full bg-(--darkBlue)/10 px-3 py-1 text-xs font-semibold text-(--darkBlue)">
-                      {selectedEpCount}/{controller.endpointCount} API
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleExpand(controller.tag)}
-                      className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-                    >
-                      <ChevronDown
-                        className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                  </div>
-
-                  {/* Endpoint list (accordion) */}
-                  {isExpanded && (
-                    <div className="border-t border-slate-50 bg-slate-50/60">
-                      {controller.endpoints.map((ep, i) => (
-                        <label
-                          key={`${ep.method}-${ep.path}-${i}`}
-                          className="flex cursor-pointer items-center gap-3 px-8 py-2.5 transition hover:bg-slate-100"
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                  placeholder="نام گروه..."
+                  autoFocus
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-(--lightBlue) focus:ring-2 focus:ring-(--lightBlue)/20"
+                />
+                <div>
+                  <p className="mb-2 text-xs font-medium text-slate-500">
+                    کنترولرها را انتخاب کنید (حداقل ۲):
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {availableForGroup.map((c) => {
+                      const checked = newGroupTags.has(c.tag);
+                      return (
+                        <button
+                          key={c.tag}
+                          type="button"
+                          onClick={() =>
+                            setNewGroupTags((prev) => {
+                              const next = new Set(prev);
+                              next.has(c.tag)
+                                ? next.delete(c.tag)
+                                : next.add(c.tag);
+                              return next;
+                            })
+                          }
+                          className={`rounded-2xl border px-3 py-1.5 text-xs font-medium transition ${
+                            checked
+                              ? "border-(--darkBlue) bg-(--darkBlue) text-white"
+                              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                          }`}
                         >
-                          <input
-                            type="checkbox"
-                            checked={ep.selected}
-                            onChange={() => toggleEndpoint(controller.tag, i)}
-                            className="h-3.5 w-3.5 shrink-0 rounded accent-(--lightBlue)"
-                          />
-                          <span
-                            className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${(METHOD_COLORS[ep.method] ?? "bg-slate-100 text-slate-600 border-slate-200")}`}
-                          >
-                            {ep.method}
-                          </span>
-                          <span
-                            className="flex-1 truncate font-mono text-xs text-slate-600"
-                            dir="ltr"
-                          >
-                            {ep.path}
-                          </span>
-                          {ep.summary && (
-                            <span className="hidden max-w-50 shrink-0 truncate text-xs text-slate-400 sm:block">
-                              {ep.summary}
-                            </span>
-                          )}
-                        </label>
-                      ))}
-                    </div>
-                  )}
+                          {c.customName || c.tag}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={confirmCreateGroup}
+                    disabled={
+                      !newGroupName.trim() || newGroupTags.size < 2
+                    }
+                    className="rounded-2xl bg-(--darkBlue) px-5 py-2 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
+                  >
+                    ایجاد گروه
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCreatingGroup(false);
+                      setNewGroupName("");
+                      setNewGroupTags(new Set());
+                    }}
+                    className="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                  >
+                    لغو
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
-          {/* Footer */}
-          <div className="flex items-center justify-between border-t border-slate-100 px-6 py-4">
-            {error && (
-              <div className="flex items-center gap-2 text-sm text-rose-600">
-                <XCircle className="h-4 w-4" />
-                {error}
+          <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+              <div>
+                <p className="font-semibold text-slate-950">
+                  {controllers.length} Controller یافت شد
+                </p>
+                <p className="text-sm text-slate-500">
+                  {totalPageCount} صفحه — {totalEndpointCount} API انتخاب شده
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                {availableForGroup.length >= 2 && !creatingGroup && (
+                  <button
+                    type="button"
+                    onClick={() => setCreatingGroup(true)}
+                    className="flex items-center gap-1.5 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                  >
+                    <Layers className="h-3.5 w-3.5" />
+                    گروه‌بندی
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={toggleAll}
+                  className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                >
+                  {ungroupedControllers.every((c) => c.selected)
+                    ? "لغو انتخاب"
+                    : "انتخاب همه"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep("url");
+                    setState("idle");
+                  }}
+                  className="rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Groups section */}
+            {groups.length > 0 && (
+              <div className="divide-y divide-slate-100 border-b border-slate-100">
+                {groups.map((group) => {
+                  const isExp = expandedGroups.has(group.id);
+                  const members = controllers.filter((c) =>
+                    group.tags.includes(c.tag),
+                  );
+                  const epCount = members.reduce(
+                    (sum, c) =>
+                      sum + c.endpoints.filter((e) => e.selected).length,
+                    0,
+                  );
+                  return (
+                    <div key={group.id}>
+                      <div className="flex items-center gap-3 bg-(--darkBlue)/5 px-6 py-4">
+                        <Layers className="h-4 w-4 shrink-0 text-(--darkBlue)" />
+                        <input
+                          type="text"
+                          value={group.name}
+                          onChange={(e) =>
+                            updateGroupName(group.id, e.target.value)
+                          }
+                          className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-950 outline-none transition border-b border-transparent focus:border-slate-400"
+                        />
+                        <span className="shrink-0 rounded-full bg-(--darkBlue)/15 px-3 py-1 text-xs font-semibold text-(--darkBlue)">
+                          {members.length} ctrl · {epCount} API
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => deleteGroup(group.id)}
+                          className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => toggleGroupExpand(group.id)}
+                          className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100"
+                        >
+                          <ChevronDown
+                            className={`h-4 w-4 transition-transform duration-200 ${isExp ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                      </div>
+
+                      {isExp && (
+                        <div className="border-t border-slate-100 bg-slate-50/60">
+                          {members.map((c) => (
+                            <div
+                              key={c.tag}
+                              className="flex items-center gap-3 px-10 py-3"
+                            >
+                              <span className="flex-1 text-sm text-slate-700">
+                                {c.customName || c.tag}
+                              </span>
+                              <span className="text-xs text-slate-400">
+                                {c.endpoints.filter((e) => e.selected).length}/
+                                {c.endpointCount} API
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => removeFromGroup(group.id, c.tag)}
+                                className="text-xs text-slate-400 transition hover:text-rose-500"
+                              >
+                                حذف از گروه
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
-            <div className="mr-auto flex items-center gap-3">
-              <p className="text-sm text-slate-500">
-                {selectedCount} controller ({totalEndpointCount} API) →{" "}
-                <span className="font-semibold text-slate-950">
-                  {selectedCount} صفحه
-                </span>
-              </p>
-              <button
-                type="button"
-                onClick={handleImport}
-                disabled={state === "importing" || selectedCount === 0}
-                className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
-              >
-                {state === "importing" ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Zap className="h-4 w-4" />
-                )}
-                {state === "importing" ? "در حال ساخت..." : "تولید داکیومنت"}
-              </button>
+
+            {/* Ungrouped controllers */}
+            <div className="divide-y divide-slate-100">
+              {ungroupedControllers.map((controller) => {
+                const isExpanded = expanded.has(controller.tag);
+                const selectedEpCount = controller.endpoints.filter(
+                  (e) => e.selected,
+                ).length;
+
+                return (
+                  <div key={controller.tag}>
+                    <div className="flex items-center gap-3 px-6 py-4 transition hover:bg-slate-50">
+                      <input
+                        type="checkbox"
+                        checked={controller.selected}
+                        onChange={() => toggleController(controller.tag)}
+                        className="h-4 w-4 shrink-0 rounded accent-(--lightBlue)"
+                      />
+                      <input
+                        type="text"
+                        value={controller.customName}
+                        onChange={(e) =>
+                          updateName(controller.tag, e.target.value)
+                        }
+                        className="min-w-0 flex-1 bg-transparent text-sm font-medium text-slate-950 outline-none transition border-b border-transparent focus:border-slate-300"
+                        dir="ltr"
+                      />
+                      <span className="shrink-0 rounded-full bg-(--darkBlue)/10 px-3 py-1 text-xs font-semibold text-(--darkBlue)">
+                        {selectedEpCount}/{controller.endpointCount} API
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleExpand(controller.tag)}
+                        className="shrink-0 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                      >
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                    </div>
+
+                    {isExpanded && (
+                      <div className="border-t border-slate-50 bg-slate-50/60">
+                        {controller.endpoints.map((ep, i) => (
+                          <label
+                            key={`${ep.method}-${ep.path}-${i}`}
+                            className="flex cursor-pointer items-center gap-3 px-8 py-2.5 transition hover:bg-slate-100"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={ep.selected}
+                              onChange={() =>
+                                toggleEndpoint(controller.tag, i)
+                              }
+                              className="h-3.5 w-3.5 shrink-0 rounded accent-(--lightBlue)"
+                            />
+                            <span
+                              className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${(METHOD_COLORS[ep.method] ?? "bg-slate-100 text-slate-600 border-slate-200")}`}
+                            >
+                              {ep.method}
+                            </span>
+                            <span
+                              className="flex-1 truncate font-mono text-xs text-slate-600"
+                              dir="ltr"
+                            >
+                              {ep.path}
+                            </span>
+                            {ep.summary && (
+                              <span className="hidden max-w-50 shrink-0 truncate text-xs text-slate-400 sm:block">
+                                {ep.summary}
+                              </span>
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between border-t border-slate-100 px-6 py-4">
+              {error && (
+                <div className="flex items-center gap-2 text-sm text-rose-600">
+                  <XCircle className="h-4 w-4" />
+                  {error}
+                </div>
+              )}
+              <div className="mr-auto flex items-center gap-3">
+                <p className="text-sm text-slate-500">
+                  {totalPageCount} صفحه ({totalEndpointCount} API){" "}
+                  <span className="font-semibold text-slate-950">→ ساخته میشه</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={handleImport}
+                  disabled={state === "importing" || totalPageCount === 0}
+                  className="flex items-center gap-2 rounded-2xl bg-(--darkBlue) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--lightBlue) disabled:opacity-50"
+                >
+                  {state === "importing" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Zap className="h-4 w-4" />
+                  )}
+                  {state === "importing" ? "در حال ساخت..." : "تولید داکیومنت"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

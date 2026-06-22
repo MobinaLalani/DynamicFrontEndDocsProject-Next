@@ -64,6 +64,12 @@ export type ParsedController = {
   endpoints: ParsedEndpoint[];
 };
 
+export type ControllerGroup = {
+  id: string;
+  name: string;
+  tags: string[];
+};
+
 export type ImportState =
   | "idle"
   | "loading"
