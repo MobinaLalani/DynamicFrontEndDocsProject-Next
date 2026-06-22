@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Puzzle } from "lucide-react";
+import { LayoutDashboard, Puzzle, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -24,6 +24,11 @@ const adminNavItems: NavItem[] = [
     label: "تنظیمات کامپوننت‌ها",
     href: "/admin/componentsSetting",
     icon: Puzzle,
+  },
+  {
+    label: "ایمپورت از Swagger",
+    href: "/swagger-import",
+    icon: Zap,
   },
 ];
 

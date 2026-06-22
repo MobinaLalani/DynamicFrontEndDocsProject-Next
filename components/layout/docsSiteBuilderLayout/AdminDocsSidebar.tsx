@@ -101,6 +101,13 @@ export function AdminDocsSidebar({
             onClick={() => router.push("/componentsSetting")}
           />
           <NavAction
+            label="ایمپورت از Swagger"
+            short="S"
+            isActive={false}
+            isExpanded={isOpen}
+            onClick={() => router.push("/swagger-import")}
+          />
+          <NavAction
             label="ایجاد صفحه جدید"
             short="+"
             isActive={activeView === "create-page"}
