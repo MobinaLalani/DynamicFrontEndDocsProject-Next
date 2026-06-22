@@ -28,10 +28,11 @@ export function DocsBuilderDemo({
       onOpenView={actions.setActiveView}
       onSelectPage={actions.selectPage}
     >
-      <p className="font-bold text-2xl mr-6">پیش نمایش صفحه</p>
+      <p className="font-bold text-2xl mr-6 mb-4">پیش نمایش صفحه</p>
       <div className="border border-(--darkBlue) p-3 rounded-3xl mb-6 bg-white">
         {state.activeView === "blocks" ? (
           <div dir="rtl" className="space-y-6">
+            
             <ToolsPanelContent
               selectedComponent={state.selectedComponent}
               onAddBlock={actions.addBlockToActivePage}
@@ -78,7 +79,9 @@ export function DocsBuilderDemo({
             onSelectCreateComponent={actions.setSelectedCreateComponentId}
             onDuplicateCreateComponent={actions.duplicateDraftComponent}
             onRemoveCreateComponent={actions.removeDraftComponent}
-            onUpdateSelectedCreateComponent={actions.updateSelectedCreateComponent}
+            onUpdateSelectedCreateComponent={
+              actions.updateSelectedCreateComponent
+            }
             createMenuTitle={state.createMenuForm.title}
             createMenuDescription={state.createMenuForm.description}
             createMenuIsActive={state.createMenuForm.isActive}

@@ -12,7 +12,6 @@ type SidebarPageItemProps = {
 
 export function SidebarPageItem({
   title,
-  subtitle,
   initial,
   isActive,
   isExpanded,
@@ -20,38 +19,35 @@ export function SidebarPageItem({
   onClick,
 }: SidebarPageItemProps) {
   const className = isExpanded
-    ? `w-full min-w-0 overflow-hidden rounded-2xl px-4 py-3 text-right text-sm transition ${
+    ? `group relative flex w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-xl px-3 py-2.5 text-right text-sm transition-all duration-150 ${
         isActive
           ? "bg-white text-slate-950 shadow-sm"
-          : "bg-white/5 text-white hover:bg-white/10"
+          : "text-white/70 hover:bg-white/8 hover:text-white"
       }`
-    : `flex h-11 w-11 mx-auto items-center justify-center overflow-hidden rounded-2xl text-sm transition ${
+    : `flex h-10 w-10 mx-auto items-center justify-center overflow-hidden rounded-xl text-sm font-semibold transition-all duration-150 ${
         isActive
           ? "bg-white text-slate-950 shadow-sm"
-          : "bg-white/5 text-white hover:bg-white/10"
+          : "bg-white/8 text-white/70 hover:bg-white/15 hover:text-white"
       }`;
 
   const content = isExpanded ? (
-    <div className="min-w-0 overflow-hidden">
+    <>
+      {/* Active indicator dot */}
       <span
-        className={`block truncate font-medium ${
-          isActive ? "text-slate-950" : "text-white"
+        className={`h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-150 ${
+          isActive ? "bg-(--lightBlue)" : "bg-white/20 group-hover:bg-white/40"
+        }`}
+      />
+      <span
+        className={`min-w-0 flex-1 truncate font-medium ${
+          isActive ? "text-slate-900" : "text-white/80"
         }`}
       >
         {title}
       </span>
-      {subtitle && (
-        <span
-          className={`mt-1 block truncate text-xs ${
-            isActive ? "text-slate-600" : "text-slate-300"
-          }`}
-        >
-          {subtitle}
-        </span>
-      )}
-    </div>
+    </>
   ) : (
-    <span className="font-medium">{initial}</span>
+    <span>{initial}</span>
   );
 
   if (href) {

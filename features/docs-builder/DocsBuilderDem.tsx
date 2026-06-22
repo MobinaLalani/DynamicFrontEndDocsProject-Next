@@ -16,7 +16,7 @@ export function DocsBuilderPage({ initialWorkspace }: Props) {
 
   return (
     <>
-      <p className="mr-6 text-2xl font-bold">پیش نمایش صفحه</p>
+      <p className="mr-6 text-2xl font-bold mb-4">پیش نمایش صفحه</p>
 
       <div className="m-6 flex-1 rounded-3xl border border-(--darkBlue) bg-white p-3">
         

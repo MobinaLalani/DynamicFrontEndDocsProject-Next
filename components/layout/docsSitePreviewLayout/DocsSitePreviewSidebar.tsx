@@ -2,25 +2,23 @@
 
 import { Sidebar } from "@/components/layout/Sidebar";
 import { SidebarPageItem } from "@/components/layout/sidebar/SidebarPageItem";
+import { useSidebar } from "@/context/SidebarContext";
 import type { AuthRole } from "@/lib/auth/types";
 import type { DocPage } from "@/lib/docs/schema";
 import type { MenuGroup } from "@/lib/docs/workspace";
 
 type DocsSitePreviewSidebarProps = {
-  isOpen: boolean;
   menuGroups: MenuGroup[];
   pages: DocPage[];
   activePageSlug?: string;
   activeGroupId?: string;
   interactive?: boolean;
   role?: AuthRole;
-  onToggle?: () => void;
   onSelectPage?: (slug: string) => void;
   onCreatePage?: () => void;
 };
 
 export function DocsSitePreviewSidebar({
-  isOpen,
   menuGroups,
   pages,
   activePageSlug,
@@ -29,6 +27,7 @@ export function DocsSitePreviewSidebar({
   onSelectPage,
   onCreatePage,
 }: DocsSitePreviewSidebarProps) {
+  const { isOpen } = useSidebar();
   const visibleMenuGroups = interactive
     ? menuGroups
     : menuGroups.filter((group) => group.isActive);
@@ -93,47 +92,68 @@ export function DocsSitePreviewSidebar({
           );
 
           return (
-            <section key={group.id} className="space-y-3 overflow-hidden">
+            <section key={group.id} className="overflow-hidden">
               {/* GROUP HEADER */}
               {isOpen ? (
-                <div className="overflow-hidden">
-                  <p className="font-semibold text-white truncate">
+                <div className="mb-1.5 flex items-center gap-2 overflow-hidden px-1">
+                  <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">
                     {group.title}
-                  </p>
-                  {group.description && (
-                    <p className="mt-1 text-sm text-slate-400 truncate">
-                      {group.description}
-                    </p>
-                  )}
+                  </span>
+                  <span className="h-px flex-1 bg-white/10" />
                 </div>
               ) : (
-                <div className="flex justify-center">
+                <div className="mb-1 flex justify-center">
                   <span
                     title={group.title}
-                    className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-xs font-semibold text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-xs font-bold text-white/60"
                   >
                     {group.title.slice(0, 1)}
                   </span>
                 </div>
               )}
 
-              {/* PAGES */}
-              <div className="space-y-2 overflow-hidden">
-                {groupPages.map((page) => (
-                  <SidebarPageItem
-                    key={page.slug}
-                    title={page.menuTitle}
-                    subtitle={`/pages/${page.slug}`}
-                    initial={page.menuTitle.slice(0, 1)}
-                    isActive={page.slug === activePageSlug}
-                    isExpanded={isOpen}
-                    href={interactive ? undefined : `/pages/${page.slug}`}
-                    onClick={
-                      interactive ? () => onSelectPage?.(page.slug) : undefined
-                    }
-                  />
-                ))}
-              </div>
+              {/* PAGES — indented with tree line */}
+              {isOpen ? (
+                <div className="relative pr-2">
+                  {/* Vertical tree line */}
+                  <span className="absolute right-4.5 top-0 bottom-2 w-px bg-white/10" />
+                  <div className="space-y-0.5">
+                    {groupPages.map((page) => (
+                      <SidebarPageItem
+                        key={page.slug}
+                        title={page.menuTitle}
+                        initial={page.menuTitle.slice(0, 1)}
+                        isActive={page.slug === activePageSlug}
+                        isExpanded={isOpen}
+                        href={interactive ? undefined : `/pages/${page.slug}`}
+                        onClick={
+                          interactive
+                            ? () => onSelectPage?.(page.slug)
+                            : undefined
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {groupPages.map((page) => (
+                    <SidebarPageItem
+                      key={page.slug}
+                      title={page.menuTitle}
+                      initial={page.menuTitle.slice(0, 1)}
+                      isActive={page.slug === activePageSlug}
+                      isExpanded={isOpen}
+                      href={interactive ? undefined : `/pages/${page.slug}`}
+                      onClick={
+                        interactive
+                          ? () => onSelectPage?.(page.slug)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              )}
             </section>
           );
         })}

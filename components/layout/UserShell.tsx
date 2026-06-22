@@ -34,7 +34,6 @@ export function UserShell({ workspace, session, children }: UserShellProps) {
       </div>
 
       <DocsSitePreviewSidebar
-        isOpen={isOpen}
         menuGroups={workspace.menuGroups}
         pages={workspace.pages}
         activePageSlug={activePageSlug}

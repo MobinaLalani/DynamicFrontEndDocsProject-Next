@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSidebar } from "@/context/SidebarContext";
 import {
   DocsSitePreviewFooter,
   DocsSitePreviewNavbar,
@@ -43,7 +43,7 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
     content,
     contained = true,
   } = props;
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isOpen: isSidebarOpen } = useSidebar();
 
   const activePage = activePageSlug
     ? (pages.find((p) => p.slug === activePageSlug) ?? pages[0])
@@ -124,13 +124,11 @@ export function DocsSitePreview(props: DocsSitePreviewProps) {
 
         {showSidebar && (
           <DocsSitePreviewSidebar
-            isOpen={isSidebarOpen}
             menuGroups={menuGroups}
             pages={pages}
             activePageSlug={activePageSlug}
             activeGroupId={activeGroupId}
             interactive={interactive}
-            onToggle={() => setIsSidebarOpen((current) => !current)}
             onSelectPage={onSelectPage}
             onCreatePage={onCreatePage}
           />
