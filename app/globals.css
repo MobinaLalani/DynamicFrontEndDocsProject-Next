@@ -67,3 +67,40 @@ a {
   text-decoration: none;
 }
 
+/* Login page animations */
+@keyframes login-float1 {
+  0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+  25%  { transform: translateY(-28px) translateX(12px) scale(1.04); }
+  50%  { transform: translateY(-14px) translateX(-8px) scale(0.97); }
+  75%  { transform: translateY(-36px) translateX(4px) scale(1.02); }
+}
+@keyframes login-float2 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%  { transform: translateY(22px) translateX(-18px); }
+  66%  { transform: translateY(-18px) translateX(10px); }
+}
+@keyframes login-float3 {
+  0%, 100% { transform: translateY(0px) scale(1); opacity: 0.15; }
+  50%  { transform: translateY(-30px) scale(1.1); opacity: 0.25; }
+}
+@keyframes login-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes login-spin-r {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg); }
+}
+@keyframes login-pulse {
+  0%, 100% { opacity: 0.12; transform: scale(1); }
+  50%       { opacity: 0.22; transform: scale(1.06); }
+}
+
+.login-orb-1  { animation: login-float1 9s ease-in-out infinite; }
+.login-orb-2  { animation: login-float2 12s ease-in-out infinite; }
+.login-orb-3  { animation: login-float3 7s ease-in-out infinite; }
+.login-ring-1 { animation: login-spin   22s linear infinite; }
+.login-ring-2 { animation: login-spin-r 16s linear infinite; }
+.login-ring-3 { animation: login-spin   30s linear infinite; }
+.login-pulse  { animation: login-pulse  5s ease-in-out infinite; }
+
