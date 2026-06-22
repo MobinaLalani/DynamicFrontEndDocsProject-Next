@@ -13,6 +13,7 @@ export function AdminDocsNavbar({
   session,
   title = "پنل مدیریت داکیومنت",
   className,
+  
 }: AdminDocsNavbarProps) {
   return (
     <Navbar
