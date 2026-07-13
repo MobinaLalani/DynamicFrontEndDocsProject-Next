@@ -20,7 +20,7 @@ export default function BuilderLayout({
   session,
 }: BuilderLayoutProps) {
   const { state, actions } = useDocsBuilderContext();
-
+  
   const { isOpen } = useSidebar();
 
   return (

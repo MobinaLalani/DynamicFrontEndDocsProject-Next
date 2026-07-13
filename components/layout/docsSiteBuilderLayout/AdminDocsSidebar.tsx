@@ -1,7 +1,4 @@
 "use client";
-
-import { useRouter } from "next/navigation";
-
 import { Sidebar } from "@/components/layout/Sidebar";
 import { SidebarPageItem } from "@/components/layout/sidebar/SidebarPageItem";
 import { useSidebar } from "@/context/SidebarContext";
@@ -50,7 +47,6 @@ export function AdminDocsSidebar({
   onSelectPage,
 }: AdminDocsSidebarProps) {
   const { isOpen } = useSidebar();
-  const router = useRouter();
 
 return (
   <Sidebar
@@ -74,21 +70,19 @@ return (
           {/* MAIN ACTIONS */}
           <section className="space-y-2">
             <p className="text-xl font-bold text-white">بخش‌های اصلی</p>
-
             <NavAction
               label="مدیریت کامپوننت ها"
               short="C"
-              isActive={false}
+              isActive={activeView === "components-setting"}
               isExpanded={true}
-              onClick={() => router.push("/componentsSetting")}
+              onClick={() => onOpenView("components-setting")}
             />
-
             <NavAction
               label="ایمپورت از Swagger"
+              isActive={activeView === "import-swagger"}
               short="S"
-              isActive={false}
               isExpanded={true}
-              onClick={() => router.push("/swagger-import")}
+              onClick={() => onOpenView("import-swagger")}
             />
 
             <NavAction
