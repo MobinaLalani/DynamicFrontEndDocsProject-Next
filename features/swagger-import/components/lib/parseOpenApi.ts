@@ -4,7 +4,7 @@ import type {
   OpenApiSpec,
   ParsedController,
   ParsedEndpoint,
-} from "../model";
+} from "../model/index";
 
 const HTTP_METHODS: HttpMethod[] = ["get", "post", "put", "patch", "delete"];
 

@@ -8,7 +8,7 @@ import type {
   ParsedController,
   ControllerGroup,
   OpenApiSpec,
-} from "../model";
+} from "../model/index";
 
 import { fetchSwaggerSpec } from "../services/swaggerImport.service";
 
