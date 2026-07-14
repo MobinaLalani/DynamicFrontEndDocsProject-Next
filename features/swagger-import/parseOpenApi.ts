@@ -3,7 +3,7 @@ import type {
   OpenApiSpec,
   ParsedController,
   ParsedEndpoint,
-} from "./model";
+} from "./components/model/index";
 
 const HTTP_METHODS: readonly HttpMethod[] = [
   "get",

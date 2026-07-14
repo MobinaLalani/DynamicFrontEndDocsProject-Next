@@ -51,7 +51,7 @@ export interface OpenApiPathItem {
 
 export interface OpenApiSpec {
   openapi?: string;
-
+  tags?: OpenApiTag[];
   swagger?: string;
 
   info?: OpenApiInfo;
@@ -87,6 +87,20 @@ export interface ParsedController {
   endpoints: ParsedEndpoint[];
 }
 
+export type OpenApiTag = {
+  name: string;
+  description?: string;
+};
+// export type OpenApiSpec = {
+//   openapi?: string;
+//   swagger?: string;
+//   info?: { title?: string; description?: string; version?: string };
+
+//   paths?: Record<string, Record<string, OpenApiOperation>>;
+//   components?: {
+//     schemas?: Record<string, OpenApiSchema>;
+//   };
+// };
 // ─────────────────────────────
 // Groups
 // ─────────────────────────────

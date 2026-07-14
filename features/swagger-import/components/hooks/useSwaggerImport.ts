@@ -3,18 +3,12 @@
 import { useState } from "react";
 
 import type {
-  SwaggerStep,
-  ImportState,
-  ParsedController,
   ControllerGroup,
+  ImportState,
   OpenApiSpec,
-} from "../model/index";
-
-import { fetchSwaggerSpec } from "../services/swaggerImport.service";
-
-import { parseControllers } from "../lib/parseOpenApi";
-
-import { uid } from "../utils/uid";
+  ParsedController,
+  SwaggerStep,
+} from "../model";
 
 export function useSwaggerImport() {
   const [step, setStep] = useState<SwaggerStep>("url");
@@ -31,83 +25,58 @@ export function useSwaggerImport() {
 
   const [groups, setGroups] = useState<ControllerGroup[]>([]);
 
-async function fetchSwagger() {
-  setState("loading");
-  setError(null);
+  const [search, setSearch] = useState("");
 
-  const result = await fetchSwaggerSpec(url);
+  const [expandedControllers, setExpandedControllers] = useState<Set<string>>(
+    new Set(),
+  );
 
-  if (!result.spec) {
-    setError(result.error ?? "Swagger spec دریافت نشد");
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
-    setState("error");
+  const [creatingGroup, setCreatingGroup] = useState(false);
 
-    return;
-  }
+  const [newGroupName, setNewGroupName] = useState("");
 
-  const parsed = parseControllers(result.spec!);
-
-  setSpec(result.spec!);
-
-  setControllers(parsed);
-
-  setStep("select");
-
-  setState("parsed");
-}
-  function toggleController(tag: string) {
-    setControllers((prev) =>
-      prev.map((c) => {
-        if (c.tag !== tag) return c;
-
-        const selected = !c.selected;
-
-        return {
-          ...c,
-
-          selected,
-
-          endpoints: c.endpoints.map((e) => ({
-            ...e,
-            selected,
-          })),
-        };
-      }),
-    );
-  }
-
-  function createGroup(name: string, tags: string[]) {
-    setGroups((prev) => [
-      ...prev,
-      {
-        id: uid(),
-        name,
-        tags,
-      },
-    ]);
-  }
+  const [newGroupTags, setNewGroupTags] = useState<Set<string>>(new Set());
 
   return {
     step,
     setStep,
 
     state,
+    setState,
 
     url,
     setUrl,
 
     error,
+    setError,
 
     spec,
+    setSpec,
 
     controllers,
+    setControllers,
 
     groups,
+    setGroups,
 
-    fetchSwagger,
+    search,
+    setSearch,
 
-    toggleController,
+    expandedControllers,
+    setExpandedControllers,
 
-    createGroup,
+    expandedGroups,
+    setExpandedGroups,
+
+    creatingGroup,
+    setCreatingGroup,
+
+    newGroupName,
+    setNewGroupName,
+
+    newGroupTags,
+    setNewGroupTags,
   };
 }

@@ -1,3 +1,4 @@
+import { ParsedEndpoint } from "./components/model";
 export type OpenApiTag = {
   name: string;
   description?: string;
@@ -50,12 +51,12 @@ export type OpenApiSpec = {
   };
 };
 
-export type ParsedEndpoint = {
-  method: string;
-  path: string;
-  summary?: string;
-  selected: boolean;
-};
+// export type ParsedEndpoint = {
+//   method: string;
+//   path: string;
+//   summary?: string;
+//   selected: boolean;
+// };
 
 export type ParsedController = {
   tag: string;

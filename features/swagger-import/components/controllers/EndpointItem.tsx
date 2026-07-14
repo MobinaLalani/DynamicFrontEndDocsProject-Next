@@ -1,6 +1,6 @@
 "use client";
 
-import type { ParsedEndpoint } from "../../model";
+import type { ParsedEndpoint } from "../model/index";
 
 import { IndeterminateCheckbox } from "../shared/IndeterminateCheckbox";
 import { MethodBadge } from "../shared/MethodBadge";
@@ -19,7 +19,7 @@ export function EndpointItem({ endpoint, onToggle }: Props) {
         indeterminate={false}
         onChange={onToggle}
         size="sm"
-      />
+      />ّ
 
       <MethodBadge method={endpoint.method} />
 
