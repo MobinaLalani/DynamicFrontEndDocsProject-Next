@@ -67,13 +67,14 @@ return (
 
         {/* CONTENT */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-6 px-5 py-5">
+          
           {/* MAIN ACTIONS */}
           <section className="space-y-2">
             <p className="text-xl font-bold text-white">بخش‌های اصلی</p>
             <NavAction
               label="مدیریت کامپوننت ها"
               short="C"
-              
+
               isActive={activeView === "components-setting"}
               isExpanded={true}
               onClick={() => onOpenView("components-setting")}
