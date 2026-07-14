@@ -61,13 +61,13 @@ return (
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
               API DOCS CMS
             </p>
-            <h2 className="mt-2 text-2xl font-semibold">پنل مدیریت داکیومنت</h2>
+            <h2 className="mt-2 text-2xl font-semibold   ">پنل مدیریت داکیومنت</h2>
           </div>
         </div>
 
         {/* CONTENT */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-6 px-5 py-5">
-          
+
           {/* MAIN ACTIONS */}
           <section className="space-y-2">
             <p className="text-xl font-bold text-white">بخش‌های اصلی</p>
