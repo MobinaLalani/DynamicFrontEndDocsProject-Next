@@ -71,6 +71,7 @@ return (
           {/* MAIN ACTIONS */}
           <section className="space-y-2">
             <p className="text-xl font-bold text-white">بخش‌های اصلی</p>
+            
             <NavAction
               label="مدیریت کامپوننت ها"
               short="C"
