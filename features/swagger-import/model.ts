@@ -3,6 +3,8 @@ export type OpenApiTag = {
   description?: string;
 };
 
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+
 export type OpenApiParameter = {
   name: string;
   in: "query" | "path" | "header" | "cookie";
