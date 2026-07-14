@@ -8,6 +8,7 @@ import { MenuView } from "./views/MenuView";
 import { JsonView } from "./views/JsonView";
 import { CreatePageView } from "./views/CreatePageView";
 import { ComponentsSettingView } from "./views/ComponentsSettingView";
+import { ImportSwaggerView } from "./views/importSwaggerView";
 
 export function BuilderCenterPanel() {
   const { state } = useDocsBuilderContext();
@@ -25,6 +26,8 @@ export function BuilderCenterPanel() {
       {state.activeView === "create-page" && <CreatePageView />}
 
       {state.activeView === "components-setting" && <ComponentsSettingView />}
+
+      {state.activeView === "import-swagger" && <ImportSwaggerView />}
     </div>
   );
 }
