@@ -73,6 +73,7 @@ return (
             <NavAction
               label="مدیریت کامپوننت ها"
               short="C"
+              
               isActive={activeView === "components-setting"}
               isExpanded={true}
               onClick={() => onOpenView("components-setting")}
