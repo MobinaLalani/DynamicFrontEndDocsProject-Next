@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 
-import type { ParsedController } from "../../model";
+import type { ParsedController } from "../model/index";
 
 import { IndeterminateCheckbox } from "../shared/IndeterminateCheckbox";
 import { EndpointList } from "./EndpointList";

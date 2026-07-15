@@ -30,7 +30,7 @@ function createEndpoint(
 export function parseControllers(spec: OpenApiSpec): ParsedController[] {
   const controllers = new Map<string, ParsedController>();
 
-  Object.entries(spec.paths).forEach(([path, pathItem]) => {
+  Object.entries(spec.paths ?? {}).forEach(([path, pathItem]) => {
     Object.entries(pathItem).forEach(([method, operation]) => {
       if (!isHttpMethod(method)) {
         return;

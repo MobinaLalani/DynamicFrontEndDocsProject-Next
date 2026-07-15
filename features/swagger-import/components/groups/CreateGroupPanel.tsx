@@ -2,7 +2,7 @@
 
 import { CheckCircle2, Layers, XCircle } from "lucide-react";
 
-import type { ParsedController } from "../../model";
+import type { ParsedController } from "../model/index";
 
 type CreateGroupPanelProps = {
   controllers: ParsedController[];

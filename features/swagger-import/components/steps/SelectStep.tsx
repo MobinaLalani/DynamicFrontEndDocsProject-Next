@@ -1,6 +1,6 @@
 "use client";
 
-import type { ControllerGroup, ParsedController } from "../../model";
+import type { ControllerGroup, ParsedController } from "../model/index";
 
 import { ControllerList } from "../controllers/ControllerList";
 import { CreateGroupPanel } from "../groups/CreateGroupPanel";

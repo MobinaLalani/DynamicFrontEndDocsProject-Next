@@ -40,16 +40,16 @@ export type OpenApiOperation = {
   >;
 };
 
-export type OpenApiSpec = {
-  openapi?: string;
-  swagger?: string;
-  info?: { title?: string; description?: string; version?: string };
-  tags?: OpenApiTag[];
-  paths?: Record<string, Record<string, OpenApiOperation>>;
-  components?: {
-    schemas?: Record<string, OpenApiSchema>;
-  };
-};
+// export type OpenApiSpec = {
+//   openapi?: string;
+//   swagger?: string;
+//   info?: { title?: string; description?: string; version?: string };
+//   tags?: OpenApiTag[];
+//   paths?: Record<string, Record<string, OpenApiOperation>>;
+//   components?: {
+//     schemas?: Record<string, OpenApiSchema>;
+//   };
+// };
 
 // export type ParsedEndpoint = {
 //   method: string;

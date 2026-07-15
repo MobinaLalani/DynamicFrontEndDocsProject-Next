@@ -2,7 +2,7 @@
 
 import { ChevronDown, Layers, Trash2 } from "lucide-react";
 
-import type { ControllerGroup, ParsedController } from "../../model";
+import type { ControllerGroup, ParsedController } from "../model/index";
 
 type Props = {
   group: ControllerGroup;

@@ -28,7 +28,7 @@ import type {
   ImportState,
   OpenApiSpec,
   ParsedController,
-} from "@/features/swagger-import/model";
+} from "@/features/swagger-import/components/model/index";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 

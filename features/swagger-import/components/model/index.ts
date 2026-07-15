@@ -37,26 +37,27 @@ export interface OpenApiOperation {
   description?: string;
 }
 
-export interface OpenApiPathItem {
-  get?: OpenApiOperation;
-
-  post?: OpenApiOperation;
-
-  put?: OpenApiOperation;
-
-  patch?: OpenApiOperation;
-
-  delete?: OpenApiOperation;
-}
+export type OpenApiPathItem = Record<string, OpenApiOperation | undefined>;
+export type OpenApiSchema = {
+  type?: string;
+  format?: string;
+  description?: string;
+  properties?: Record<string, OpenApiSchema>;
+  items?: OpenApiSchema;
+  required?: string[];
+  $ref?: string;
+};
 
 export interface OpenApiSpec {
   openapi?: string;
   tags?: OpenApiTag[];
   swagger?: string;
-
+components?: {
+    schemas?: Record<string, OpenApiSchema>;
+  };
   info?: OpenApiInfo;
 
-  paths: Record<string, OpenApiPathItem>;
+  paths?: Record<string, OpenApiPathItem>;
 }
 
 // ─────────────────────────────

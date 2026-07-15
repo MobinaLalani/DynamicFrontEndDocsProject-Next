@@ -1,6 +1,6 @@
 "use client";
 
-import type { ParsedController } from "../../model";
+import type { ParsedController } from "../model/index";
 
 import { EndpointItem } from "./EndpointItem";
 
