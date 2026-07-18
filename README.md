@@ -200,6 +200,6 @@ src/
 
 # 📄 License
 
-MIT License © 2026 API Documentation Builder
+MIT License 
 
 Free to use, modify, and distribute.
