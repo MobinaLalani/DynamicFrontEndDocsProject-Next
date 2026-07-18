@@ -29,21 +29,21 @@ It bridges the gap between backend API definitions and developer-friendly docume
 <table>
 <tr>
 <td>
-<img src="@/src/assets/Images/AdminBase.png" width="400"/>
+<img src="@/assets/Images/AdminBase.png" width="400"/>
 </td>
 
 <td>
-<img src="@/src/assets/Images/componentManagement.png" width="400"/>
+<img src="@/assets/Images/componentManagement.png" width="400"/>
 </td>
 </tr>
 
 <tr>
 <td>
-<img src="@/src/assets/Images/createNewPage.png" width="400"/>
+<img src="@/assets/Images/createNewPage.png" width="400"/>
 </td>
 
 <td>
-<img src="@/src/assets/Images/Import-swagger.png" width="400"/>
+<img src="@/assets/Images/Import-swagger.png" width="400"/>
 </td>
 </tr>
 
