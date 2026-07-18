@@ -16,18 +16,7 @@ The platform provides a visual builder where developers can create, organize, an
 
 It bridges the gap between backend API definitions and developer-friendly documentation experiences.
 
-API Documentation Builder provides a flexible workspace for developers and technical teams to:
-
-- Import Swagger/OpenAPI specifications
-- Automatically generate API documentation structures
-- Create and customize documentation pages visually
-- Organize endpoints into groups and menus
-- Preview documentation in real-time
-
-The goal of this project is to simplify the process of maintaining developer-friendly API documentation.
-
 ---
-
 
 # 🎯 Features
 
@@ -113,25 +102,11 @@ Improve documentation quality with AI assistance:
 - Create examples from schemas
 - Suggest improvements for technical documentation
 - Help teams maintain consistent documentation standards
-# ⚙️ Installation
-
-Follow these steps to run the project locally.
-
-## 📋 Prerequisites
-
-Make sure you have the following installed:
-
-- Node.js (v18 or higher)
-- npm / yarn / pnpm
 
 ---
 
-## 📥 Clone the Repository
 
-```bash
-git clone <https://github.com/MobinaLalani/DynamicFrontEndDocsProject-Next.git>
 
-cd api-documentation-builder
 # 🛠 Tech Stack
 
 ## Frontend
@@ -144,11 +119,11 @@ cd api-documentation-builder
 - TanStack React Query
 - Framer Motion
 
-<!-- ## Backend
+## Backend
 
 - .NET Web API
 - Swagger / OpenAPI
-- SQL Server -->
+- SQL Server
 
 ---
 
@@ -217,8 +192,11 @@ src/
 ├── lib/
 │  
 └── assets/
-    └── # fonts,....
+    └── # fonts  
 </pre>
+
+----
+---
 
 # 📄 License
 
