@@ -97,22 +97,43 @@ Future improvements:
 # 📂 Project Architecture
 <pre>
 src/
+│
 ├── app/
-
+│   └── # Next.js App Router structure, layouts and application routes
+│
 ├── components/
+│   │
 │   ├── builder/
+│   │   └── # Visual documentation builder components
+│   │
 │   ├── preview/
+│   │   └── # Components responsible for rendering documentation preview
+│   │
 │   ├── sidebar/
+│   │   └── # Navigation and documentation menu components
+│   │
 │   └── shared/
-
+│       └── # Reusable UI components shared across the application
+│
 ├── features/
+│   │
 │   └── docs-builder/
+│       │
 │       ├── components/
+│       │   └── # Feature-specific React components
+│       │
 │       ├── hooks/
+│       │   └── # Custom React hooks for docs builder logic
+│       │
 │       ├── models/
+│       │   └── # TypeScript interfaces, types and domain models
+│       │
 │       └── services/
-
+│           └── # API communication and business logic services
+│
 ├── stores/
-
+│   └── # Global state management (Zustand stores)
+│
 └── utils/
+    └── # Helper functions and common utilities
 </pre>
