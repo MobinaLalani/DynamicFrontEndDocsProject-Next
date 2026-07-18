@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 API Documentation Builder
 
-## Getting Started
+A modern visual documentation management platform built with Next.js and TypeScript.
 
-First, run the development server:
+This project helps teams create, manage, and publish API documentation faster by importing OpenAPI/Swagger definitions and transforming them into customizable documentation pages.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+API Documentation Builder provides a flexible workspace for developers and technical teams to:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Import Swagger/OpenAPI specifications
+- Automatically generate API documentation structures
+- Create and customize documentation pages visually
+- Organize endpoints into groups and menus
+- Preview documentation in real-time
 
-## Learn More
+The goal of this project is to simplify the process of maintaining developer-friendly API documentation.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 🎯 Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📌 OpenAPI / Swagger Integration
 
-## Deploy on Vercel
+- Import Swagger JSON files
+- Parse controllers and API endpoints
+- Generate documentation blocks automatically
+- Support request parameters and response schemas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🧩 Visual Documentation Builder
+
+- Create documentation pages dynamically
+- Build pages using reusable components
+- Manage menus and documentation sections
+- Real-time preview while editing
+
+---
+
+## 📚 Documentation Components
+
+Supported content blocks:
+
+- Swagger Endpoint Viewer
+- Request Parameters Table
+- Response Schema Viewer
+- Text Documentation
+- Code Examples
+- Custom Content Sections
+
+---
+
+## 🔄 Version Management *(Roadmap)*
+
+Planned features:
+
+- Draft and published versions
+- Documentation history
+- Change comparison
+- Rollback support
+
+---
+
+## 🤖 AI Documentation Assistant *(Roadmap)*
+
+Future improvements:
+
+- Generate API descriptions automatically
+- Create examples from API schemas
+- Improve technical documentation quality
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Zustand
+- TanStack React Query
+- Framer Motion
+
+## Backend
+
+- .NET Web API
+- Swagger / OpenAPI
+- SQL Server
+
+---
+
+# 📂 Project Architecture
