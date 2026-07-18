@@ -22,7 +22,7 @@ It bridges the gap between backend API definitions and developer-friendly docume
 
 ---
 
-## 🖼️ Preview
+<!-- ## 🖼️ Preview
 
 <div align="center">
 
@@ -51,7 +51,7 @@ It bridges the gap between backend API definitions and developer-friendly docume
 
 </div>
 
----
+--- -->
 
 ## 🚀 Dynamic Documentation Generation
 
