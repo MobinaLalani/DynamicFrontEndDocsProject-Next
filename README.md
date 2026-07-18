@@ -103,37 +103,61 @@ src/
 │
 ├── components/
 │   │
-│   ├── builder/
-│   │   └── # Visual documentation builder components
+│   ├── auth/
+│   │   └── # Authentication section
 │   │
-│   ├── preview/
+│   ├── ui/
 │   │   └── # Components responsible for rendering documentation preview
 │   │
-│   ├── sidebar/
+│   ├── hooks/
 │   │   └── # Navigation and documentation menu components
 │   │
-│   └── shared/
+│   ├──page-rende
+│   │
+│   └── layout/
 │       └── # Reusable UI components shared across the application
+│
+├── context/
+│       └── # BlockRegistry and sidebar context
+│
+├── data/
+│    └── # file that stores data for created pages.
 │
 ├── features/
 │   │
-│   └── docs-builder/
-│       │
-│       ├── components/
-│       │   └── # Feature-specific React components
-│       │
-│       ├── hooks/
-│       │   └── # Custom React hooks for docs builder logic
-│       │
-│       ├── models/
-│       │   └── # TypeScript interfaces, types and domain models
-│       │
-│       └── services/
-│           └── # API communication and business logic services
+│   ├── docs-builder/
+│   │   │
+│   │   ├── components/
+│   │   │   └── # Feature-specific React components
+│   │   │
+│   │   ├── hooks/
+│   │   │   └── # Custom React hooks for docs builder logic
+│   │   │
+│   │   ├── models/
+│   │   └── # TypeScript interfaces, types and domain models
+│   │   │
+│   │   └── services/
+│   │       └── # API communication and business logic services
+│   │
+│   │
+│   │
+│   ├── docs-preview/
+│   │   │
+│   │   ├── model/ 
+│   │   │    └── # TypeScript interfaces, types and domain models 
+│   │   │
+│   │   └──components/
+│   │        └── ui/ 
+│   │             └── # preview ui components
+│   │
+│   │
+│   └── swagger-import/ 
+│   
+│   
 │
-├── stores/
-│   └── # Global state management (Zustand stores)
 │
-└── utils/
-    └── # Helper functions and common utilities
+├── lib/
+│  
+└── assets/
+    └── # fonts,....
 </pre>
