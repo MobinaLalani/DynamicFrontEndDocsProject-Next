@@ -2,7 +2,7 @@
 
 import { useState, type DragEvent } from "react";
 
-import { PageRenderer } from "@/features/page-renderer";
+import { PageRenderer } from "@/features/docs-builder/components/renderer/PageRenderer";
 
 import {
   componentTransferKey,

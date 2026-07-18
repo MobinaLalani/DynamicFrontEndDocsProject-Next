@@ -1,5 +1,5 @@
 import type { EndpointComponent } from "@/lib/docs/schema";
-import type { PageBlockProps } from "@/components/page-renderer/types";
+import type { PageBlockProps } from "@/features/docs-builder/types/types";
 
 const methodConfig: Record<
   EndpointComponent["method"],
@@ -113,7 +113,9 @@ function MetaCell({
   leftBorder?: boolean;
 }) {
   return (
-    <div className={`px-5 py-4 ${leftBorder ? "border-l border-slate-200" : ""}`}>
+    <div
+      className={`px-5 py-4 ${leftBorder ? "border-l border-slate-200" : ""}`}
+    >
       <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
         {label}
       </p>

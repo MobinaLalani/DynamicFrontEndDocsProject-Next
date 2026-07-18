@@ -1,5 +1,5 @@
 import type { DocPage } from "@/lib/docs/schema";
-import { renderComponent } from "@/components/page-renderer/renderComponent";
+import { renderComponent } from "./RenderComponents";
 
 type PageRendererProps = {
   page: DocPage;

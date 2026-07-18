@@ -1,6 +1,6 @@
 import type { HeadingComponent } from "@/lib/docs/schema";
-import type { PageBlockProps } from "@/components/page-renderer/types";
-import { buildTextStyle } from "@/components/page-renderer/style-utils";
+import type { PageBlockProps } from "@/features/docs-builder/types/types";
+import { buildTextStyle } from "../../utils/textStyle";
 
 const levelClasses: Record<1 | 2 | 3, string> = {
   1: "text-3xl font-bold tracking-tight text-slate-900 border-b-2 border-slate-200 pb-3",

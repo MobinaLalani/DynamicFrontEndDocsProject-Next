@@ -1,6 +1,6 @@
 import type { NoteComponent } from "@/lib/docs/schema";
-import type { PageBlockProps } from "@/components/page-renderer/types";
-import { buildTextStyle } from "@/components/page-renderer/style-utils";
+import type { PageBlockProps } from "@/features/docs-builder/types/types";
+import { buildTextStyle } from "../../utils/textStyle";
 import { Info, CheckCircle, AlertTriangle, AlertCircle } from "lucide-react";
 import type { ElementType } from "react";
 

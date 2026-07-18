@@ -1,9 +1,6 @@
 import type { TableComponent } from "@/lib/docs/schema";
-import type { PageBlockProps } from "@/components/page-renderer/types";
-import {
-  getFontSizeValue,
-  getFontWeightValue,
-} from "@/components/page-renderer/style-utils";
+import type { PageBlockProps } from "@/features/docs-builder/types/types";
+import { getFontSizeValue, getFontWeightValue } from "../../utils/textStyle";
 
 export function TableBlock({ component }: PageBlockProps<TableComponent>) {
   const tableStyle = component.style;
@@ -44,7 +41,9 @@ export function TableBlock({ component }: PageBlockProps<TableComponent>) {
                     borderColor: tableStyle?.borderColor,
                     color: tableStyle?.headerTextColor,
                     fontSize: getFontSizeValue(tableStyle?.textSize),
-                    fontWeight: getFontWeightValue(tableStyle?.headerFontWeight),
+                    fontWeight: getFontWeightValue(
+                      tableStyle?.headerFontWeight,
+                    ),
                   }}
                 >
                   {column.title}

@@ -1,10 +1,7 @@
 import type { FieldGroupComponent, ApiFieldKind } from "@/lib/docs/schema";
-import type { PageBlockProps } from "@/components/page-renderer/types";
+import type { PageBlockProps } from "@/features/docs-builder/types/types";
 
-const kindConfig: Record<
-  ApiFieldKind,
-  { label: string; badge: string }
-> = {
+const kindConfig: Record<ApiFieldKind, { label: string; badge: string }> = {
   headers: {
     label: "Headers",
     badge: "bg-violet-100 text-violet-700 border-violet-200",

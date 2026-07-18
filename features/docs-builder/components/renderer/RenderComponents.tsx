@@ -1,6 +1,6 @@
 import type { PageComponent } from "@/lib/docs/schema";
-import { pageBlockRegistry } from "@/components/page-renderer/registry";
-import type { PageBlockComponent } from "@/components/page-renderer/types";
+import { pageBlockRegistry } from "./pageBlockRegistry";
+import type { PageBlockComponent } from "@/features/docs-builder/types/types";
 
 function resolveBlockComponent<T extends PageComponent>(
   component: T,

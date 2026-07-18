@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import type { CodeComponent } from "@/lib/docs/schema";
-import type { PageBlockProps } from "@/components/page-renderer/types";
-import { getFontSizeValue } from "@/components/page-renderer/style-utils";
+import type { PageBlockProps } from "@/features/docs-builder/types/types";
+import { getFontSizeValue } from "../../utils/textStyle";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Copy, Check } from "lucide-react";
