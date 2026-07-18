@@ -95,3 +95,23 @@ Future improvements:
 ---
 
 # 📂 Project Architecture
+src
+│
+├── app
+│
+├── components
+│ ├── builder
+│ ├── preview
+│ ├── sidebar
+│ └── shared
+│
+├── features
+│ └── docs-builder
+│ ├── components
+│ ├── hooks
+│ ├── models
+│ └── services
+│
+├── stores
+│
+└── utils
