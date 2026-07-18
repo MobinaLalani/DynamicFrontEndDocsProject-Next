@@ -20,6 +20,39 @@ It bridges the gap between backend API definitions and developer-friendly docume
 
 # 🎯 Features
 
+---
+
+## 🖼️ Preview
+
+<div align="center">
+
+<table>
+<tr>
+<td>
+<img src="./src/assets/Images/AdminBase.png" width="400"/>
+</td>
+
+<td>
+<img src="./src/assets/Images/componentManagement.png" width="400"/>
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./src/assets/Images/createNewPage.png" width="400"/>
+</td>
+
+<td>
+<img src="./src/assets/Images/Import-swagger.png" width="400"/>
+</td>
+</tr>
+
+</table>
+
+</div>
+
+---
+
 ## 🚀 Dynamic Documentation Generation
 
 Unlike traditional Swagger viewers, this platform does not only display API endpoints.
@@ -107,25 +140,6 @@ Improve documentation quality with AI assistance:
 
 
 
-# 🛠 Tech Stack
-
-## Frontend
-
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- Zustand
-- TanStack React Query
-- Framer Motion
-
-## Backend
-
-- .NET Web API
-- Swagger / OpenAPI
-- SQL Server
-
----
 
 # 📂 Project Architecture
 <pre>
