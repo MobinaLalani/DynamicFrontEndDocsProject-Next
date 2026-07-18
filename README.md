@@ -133,7 +133,7 @@ src/
 │   ├── hooks/
 │   │   └── # Navigation and documentation menu components
 │   │
-│   ├──page-rende
+│   │
 │   │
 │   └── layout/
 │       └── # Reusable UI components shared across the application
