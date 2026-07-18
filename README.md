@@ -97,21 +97,21 @@ Future improvements:
 # 📂 Project Architecture
 src
 │
-├── app
+├── app                 # Next.js routing and application setup
 │
-├── components
-│ ├── builder
-│ ├── preview
-│ ├── sidebar
-│ └── shared
+├── components         # Shared UI components
+│   ├── builder         # Documentation builder components
+│   ├── preview         # Documentation preview components
+│   ├── sidebar         # Navigation components
+│   └── shared          # Reusable UI elements
 │
-├── features
-│ └── docs-builder
-│ ├── components
-│ ├── hooks
-│ ├── models
-│ └── services
+├── features            # Business features
+│   └── docs-builder
+│       ├── components  # Feature-specific components
+│       ├── hooks       # Custom React hooks
+│       ├── models      # TypeScript models and types
+│       └── services    # API and business logic
 │
-├── stores
+├── stores              # Global state management
 │
-└── utils
+└── utils               # Helper functions
