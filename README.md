@@ -20,6 +20,7 @@ The goal of this project is to simplify the process of maintaining developer-fri
 
 ---
 
+
 # 🎯 Features
 
 ## 📌 OpenAPI / Swagger Integration
@@ -74,6 +75,26 @@ Future improvements:
 
 ---
 
+
+# ⚙️ Installation
+
+Follow these steps to run the project locally.
+
+## 📋 Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js (v18 or higher)
+- npm / yarn / pnpm
+
+---
+
+## 📥 Clone the Repository
+
+```bash
+git clone <https://github.com/MobinaLalani/DynamicFrontEndDocsProject-Next.git>
+
+cd api-documentation-builder
 # 🛠 Tech Stack
 
 ## Frontend
@@ -86,11 +107,11 @@ Future improvements:
 - TanStack React Query
 - Framer Motion
 
-## Backend
+<!-- ## Backend
 
 - .NET Web API
 - Swagger / OpenAPI
-- SQL Server
+- SQL Server -->
 
 ---
 
